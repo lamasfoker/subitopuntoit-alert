@@ -4,8 +4,6 @@ use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use SubitoPuntoItAlert\Api\SubitoUpdater;
 
-require_once __DIR__.'/../Api/SubitoUpdater.php';
-
 // here I'll get the subscription endpoint in the POST parameters
 // but in reality, you'll get this information in your database
 // because you already stored it (cf. push_subscription.php)
