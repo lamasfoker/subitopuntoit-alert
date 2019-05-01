@@ -20,7 +20,7 @@ $auth = array(
 $webPush = new WebPush($auth);
 $api = new SubitoUpdater();
 
-$message = $api->getAnnouncementUpdate('2019-04-23 15:08:59', 'emilia-romagna', 'reggio-emilia', 'ps4')->status;
+$message = $api->getAnnouncementUpdate('2019-04-23 15:08:59', 'emilia-romagna', 'reggio-emilia', 'ps4')['status'];
 
 $res = $webPush->sendNotification(
     $subscription,

@@ -20,23 +20,23 @@ class SubitoUpdater
         $data = $this->getJsonData($url);
 
         if (!$data) {
-            return json_decode('{"status": "url error"}');
+            return json_decode('{"status": "url error"}', true);
         }
 
-        $announcementNumber = $data->total;
+        $announcementNumber = $data['total'];
         if ($announcementNumber <= 0 ) {
-            return json_decode('{"status": "no announcement"}');
+            return json_decode('{"status": "no announcement"}', true);
         }
 
-        $lastAnnouncementTime = $data->list[0]->item->date;
+        $lastAnnouncementTime = $data['list'][0]['item']['date'];
         if (strcmp($lastAnnouncementTime, $storedAnnouncementTime) <= 0) {
-            return json_decode('{"status": "no update"}');
+            return json_decode('{"status": "no update"}', true);
         }
 
-        $announcementString = '{"status": "new announcements", "list": '.$this->extractUpdate($data->list, $storedAnnouncementTime).'}';
-        $announcementJson = json_decode($announcementString);
+        $announcementString = '{"status": "new announcements", "list": '.$this->extractUpdate($data['list'], $storedAnnouncementTime).'}';
+        $announcementJson = json_decode($announcementString, true);
         if (!$announcementJson) {
-            return json_decode('{"status": "something went wrong"}');
+            return json_decode('{"status": "something went wrong"}', true);
         }
 
         return $announcementJson;
@@ -63,18 +63,17 @@ class SubitoUpdater
     {
         $extractedUpdate = '{';
         foreach ($data as $key => $announcement) {
-            $announcement = $announcement->item;
-            $announcementTime = $announcement->date;
+            $announcement = $announcement['item'];
+            $announcementTime = $announcement['date'];
             if (strcmp($announcementTime, $storedAnnouncementTime) <= 0) {
                 break;
             }
-            $name = '/price';
-            $price = isset($announcement->features->$name)?$announcement->features->$name->values[0]->value:'undefined';
-            $town = $announcement->geo->town->value;
-            $imageUrl = isset($announcement->images[0])?$announcement->images[0]->scale[4]->secureuri:'undefined';
-            $date = $announcement->date;
-            $name = addcslashes($announcement->subject, '"\\/');
-            $url = $announcement->urls->default;
+            $price = isset($announcement['features']['/price'])?$announcement['features']['/price']['values'][0]['value']:'undefined';
+            $town = $announcement['geo']['town']['value'];
+            $imageUrl = isset($announcement['images'][0])?$announcement['images'][0]['scale'][4]['secureuri']:'undefined';
+            $date = $announcement['date'];
+            $name = addcslashes($announcement['subject'], '"\\/');
+            $url = $announcement['urls']['default'];
             $extractedUpdate .= '"'.$key.'": { "name": "'.$name.'", "price": "'.$price.'", "town": "'.$town.'", "imageUrl": "'.$imageUrl.'", "date": "'.$date.'", "url": "'.$url.'"}, ';
         }
         $extractedUpdate = substr($extractedUpdate, 0, -2);
@@ -97,7 +96,7 @@ class SubitoUpdater
         $dataStart = strpos($response->body, $firstStringDelimiter) + strlen($firstStringDelimiter);
         $dataLength = strpos($response->body, $secondStringDelimeter) - $dataStart;
         $data = substr($response->body, $dataStart, $dataLength);
-        return json_decode($data)->props->state->items;
+        return json_decode($data, true)['props']['state']['items'];
     }
 
 }
