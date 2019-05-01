@@ -25,16 +25,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    navigator.serviceWorker.register('/app/serviceWorker.js').then(
-        () => {
-            console.log('[SW] Service worker has been registered');
-            PushNotification.push_updateSubscription();
-        },
-        e => {
-            console.error('[SW] Service worker registration failed', e);
-            NotificationsButton.changePushButtonState('incompatible');
-        }
-    );
+    try {
+        await navigator.serviceWorker.register('/app/serviceWorker.js');
+        console.log('[SW] Service worker has been registered');
+        PushNotification.push_updateSubscription();
+    } catch (e) {
+        console.error('[SW] Service worker registration failed', e);
+        NotificationsButton.changePushButtonState('incompatible');
+    }
 
     /**
      * START send_push_notification
@@ -44,23 +42,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const sendPushButton = null || document.querySelector('#send-push-button');
 
-    sendPushButton.addEventListener('click', () =>
-        navigator.serviceWorker.ready
-            .then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
-            .then(subscription => {
-                if (!subscription) {
-                    alert('Please enable push notifications');
-                    return;
-                }
+    sendPushButton.addEventListener('click', async () => {
+        const serviceWorkerRegistration = await navigator.serviceWorker.ready;
+        const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
+        if (!subscription) {
+            alert('Please enable push notifications');
+            return;
+        }
+        const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
+        const jsonSubscription = subscription.toJSON();
+        fetch('/push-notification', {
+            method: 'POST',
+            body: JSON.stringify(Object.assign(jsonSubscription, {contentEncoding})),
+        });
+    });
 
-                const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
-                const jsonSubscription = subscription.toJSON();
-                fetch('/push-notification', {
-                    method: 'POST',
-                    body: JSON.stringify(Object.assign(jsonSubscription, {contentEncoding})),
-                });
-            })
-    );
     /**
      * END send_push_notification
      */
@@ -76,20 +72,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Update UI notify the user they can add to home screen
         addButton.style.display = 'block';
     });
-    addButton.addEventListener('click', (event) => {
+    addButton.addEventListener('click', async (event) => {
         // hide our user interface that shows our A2HS button
         addButton.style.display = 'none';
         // Show the prompt
         deferredPrompt.prompt();
         // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice
-            .then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the A2HS prompt');
-                } else {
-                    console.log('User dismissed the A2HS prompt');
-                }
-                deferredPrompt = null;
-            });
+        let choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the A2HS prompt');
+        } else {
+            console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
     });
 });
