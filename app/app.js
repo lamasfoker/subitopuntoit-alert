@@ -2,9 +2,19 @@
 
 import Init                         from './services/Init.js'
 import PushNotification             from './services/PushNotification.js'
-import NotificationsButton     from './views/components/NotificationsButton.js'
+import NotificationsButton          from './views/components/NotificationsButton.js'
+import HeaderBar                    from './views/components/HeaderBar.js'
+import BottomBar                    from './views/components/BottomBar.js'
+import Home                         from './views/pages/Home.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
+
+    const headerBarContainer = null || document.getElementById('headerbar-container');
+    const mainContainer = null || document.getElementById('main-container');
+    const bottomBarContainer = null || document.getElementById('bottombar-container');
+    headerBarContainer.innerHTML = await HeaderBar.render();
+    mainContainer.innerHTML = await Home.render();
+    bottomBarContainer.innerHTML = await BottomBar.render();
 
     const notificationButtonContainer = null || document.getElementById('notification-button-container');
     notificationButtonContainer.innerHTML = await NotificationsButton.render();
