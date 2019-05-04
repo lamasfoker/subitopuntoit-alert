@@ -15,6 +15,9 @@ let Home = {
             </main>
         `
     }
+
+    , after_render: async () => {
+    }
 };
 
 export default Home;

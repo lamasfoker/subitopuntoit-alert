@@ -6,7 +6,12 @@ import NotificationsButton          from './views/components/NotificationsButton
 import HeaderBar                    from './views/components/HeaderBar.js'
 import BottomBar                    from './views/components/BottomBar.js'
 import Home                         from './views/pages/Home.js'
+import Announcements                from './views/pages/Announcements.js'
+import Researches                   from './views/pages/Researches.js'
+import Settings                     from './views/pages/Settings.js'
+import Error404                     from './views/pages/Error404.js'
 
+// Listen on page load:
 document.addEventListener('DOMContentLoaded', async () => {
 
     const headerBarContainer = null || document.getElementById('headerbar-container');
@@ -97,3 +102,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         deferredPrompt = null;
     });
 });
+
+// List of supported routes. Any url other than these routes will throw a 404 error
+const routes = {
+    '/'                     : Home //TODO: makes home announcements
+    , '/announcements'      : Announcements
+    , '/researches'         : Researches
+    , '/settings'           : Settings
+};
+
+
+// The router code. Takes a URL, checks against the list of supported routes and then renders the corresponding content page.
+const router = async () => {
+
+    // Lazy load view element:
+    const content = null || document.getElementById('main-container');
+
+    // Get the parsed URl from the addressbar
+    let parsedURL = location.hash.slice(1);
+
+    // Get the page from our hash of supported routes.
+    // If the parsed URL is not in our list of supported routes, select the 404 page instead
+    let page = routes[parsedURL] ? routes[parsedURL] : Error404;
+    content.innerHTML = await page.render();
+    await page.after_render();
+
+};
+
+// Listen on hash change:
+window.addEventListener('hashchange', router);
