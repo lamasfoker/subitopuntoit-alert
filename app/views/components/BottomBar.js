@@ -3,7 +3,7 @@ let BottomBar = {
     render: async () => {
         return `
             <footer>
-                <nav class="top-nav">
+                <nav class="top-nav fixed-bottom-bar">
                     <div class="container">
                         <div class="nav-wrapper">
                             <div class="row">

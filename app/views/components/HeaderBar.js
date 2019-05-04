@@ -3,7 +3,7 @@ let HeaderBar = {
     render: async () => {
         return `
             <header>
-                <nav class="top-nav">
+                <nav class="top-nav fixed-nav-bar">
                     <div class="container">
                         <div class="nav-wrapper">
                             <div class="row">
