@@ -7,6 +7,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('PUT', '/push-subscription', 'subscription_handler');
     $r->addRoute('DELETE', '/push-subscription', 'subscription_handler');
     $r->addRoute('POST', '/push-notification', 'notification_handler');
+    $r->addRoute('POST', '/add-research', 'add_research_handler');
 //    $r->addRoute('GET', '[/]', 'homepage_handler');
 });
 
@@ -37,12 +38,17 @@ switch ($routeInfo[0]) {
 }
 
 function notification_handler(){
-    require __DIR__.'/server/notifications/send_push_notification.php';
+    require __DIR__.'/server/service/send_push_notification.php';
     return;
 }
 
 function subscription_handler(){
-    require __DIR__.'/server/notifications/push_subscription.php';
+    require __DIR__.'/server/service/push_subscription.php';
+    return;
+}
+
+function add_research_handler(){
+    require __DIR__.'/server/service/add_research.php';
     return;
 }
 
