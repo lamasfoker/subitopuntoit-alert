@@ -1,4 +1,5 @@
 let Researches = {
+
     render : async () => {
         return `
             <ul class="collection">

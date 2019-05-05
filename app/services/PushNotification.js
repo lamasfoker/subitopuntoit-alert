@@ -8,7 +8,6 @@ const PushNotification = {
     , isNotificationPossible: true
 
     , changeState: (state) => {
-        const pushButton = null || document.getElementById('push-subscription-button');
         switch (state) {
             case 'enabled':
                 PushNotification.isNotificationPossible = true;

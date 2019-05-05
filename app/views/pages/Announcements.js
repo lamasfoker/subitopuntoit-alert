@@ -1,4 +1,5 @@
 let Announcements = {
+
     render : async () => {
         return `
             <ul class="collection content">

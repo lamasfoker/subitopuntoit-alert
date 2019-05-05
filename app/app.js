@@ -1,11 +1,8 @@
 "use strict";
 
 import Init                         from './services/Init.js'
-import PushNotification             from './services/PushNotification.js'
-import NotificationsButton          from './views/components/NotificationsButton.js'
 import HeaderBar                    from './views/components/HeaderBar.js'
 import BottomBar                    from './views/components/BottomBar.js'
-import Home                         from './views/pages/Home.js'
 import Announcements                from './views/pages/Announcements.js'
 import Researches                   from './views/pages/Researches.js'
 import Settings                     from './views/pages/Settings.js'
@@ -15,14 +12,6 @@ var installEvent = null;
 
 // Listen on page load:
 document.addEventListener('DOMContentLoaded', async () => {
-
-    const headerBarContainer = null || document.getElementById('headerbar-container');
-    const mainContainer = null || document.getElementById('main-container');
-    const bottomBarContainer = null || document.getElementById('bottombar-container');
-    headerBarContainer.innerHTML = await HeaderBar.render();
-    mainContainer.innerHTML = await Home.render();
-    bottomBarContainer.innerHTML = await BottomBar.render();
-
     if (!Init.isBrowserCompatible()) {
         return;
     }
@@ -34,6 +23,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('[SW] Service worker registration failed', e);
     }
 
+    const headerBarContainer = null || document.getElementById('headerbar-container');
+    const mainContainer = null || document.getElementById('main-container');
+    const bottomBarContainer = null || document.getElementById('bottombar-container');
+
+    headerBarContainer.innerHTML = await HeaderBar.render();
+    mainContainer.innerHTML = await Announcements.render();
+    await Announcements.after_render();
+    bottomBarContainer.innerHTML = await BottomBar.render();
+
     window.addEventListener('beforeinstallprompt', (event) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt
         event.preventDefault();
@@ -44,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // List of supported routes. Any url other than these routes will throw a 404 error
 const routes = {
-    '/'                     : Home //TODO: makes home announcements
+    '/'                     : Announcements
     , '/announcements'      : Announcements
     , '/researches'         : Researches
     , '/settings'           : Settings

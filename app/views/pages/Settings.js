@@ -1,5 +1,5 @@
 import PushNotification from "../../services/PushNotification.js";
-import Init from "../../services/Init.js";
+import Init             from "../../services/Init.js";
 
 let Settings = {
 
