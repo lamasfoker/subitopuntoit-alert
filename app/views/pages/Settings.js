@@ -17,17 +17,15 @@ let Settings = {
                         </button>
                         <div id="notification-button-container"></div>
                     </li>
-                    <li class="collection-item">
-                        <button id="button" style="display: none"><i class="material-icons">flash_on</i>Install</button>
-                        <i class="material-icons">flash_off</i>I can't be installed
-                    </li>
+                    <li class="collection-item" id="install" style="display: none"><i class="material-icons">flash_on</i>Install</li>
+                    <li class="collection-item" id="impossible-install"><i class="material-icons">flash_off</i>I can't be installed or I am already installed</li>
                     <li class="collection-item"><button id="send-push-button"><i class="material-icons">notifications</i>Test Notification</button></li>
                 </ul>
             </main>
         `
     }
 
-    , after_render: async () => {
+    , after_render: async (event) => {
         const notificationButtonContainer = null || document.getElementById('notification-button-container');
         notificationButtonContainer.innerHTML = await NotificationsButton.render();
 
@@ -41,19 +39,9 @@ let Settings = {
             }
         });
 
-
         if (!Init.isBrowserCompatible()) {
             NotificationsButton.changePushButtonState('incompatible');
             return;
-        }
-
-        try {
-            await navigator.serviceWorker.register('/app/serviceWorker.js');
-            console.log('[SW] Service worker has been registered');
-            PushNotification.push_updateSubscription();
-        } catch (e) {
-            console.error('[SW] Service worker registration failed', e);
-            NotificationsButton.changePushButtonState('incompatible');
         }
 
         /**
@@ -82,31 +70,37 @@ let Settings = {
         /**
          * END send_push_notification
          */
-
-        const addButton = null || document.getElementById('button');
-        let deferredPrompt;
+        const installMessage = null || document.getElementById('install');
+        const impossibleInstallMessage = null || document.getElementById('impossible-install');
+        let installEvent = event;
 
         window.addEventListener('beforeinstallprompt', (event) => {
             // Prevent Chrome 67 and earlier from automatically showing the prompt
             event.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = event;
             // Update UI notify the user they can add to home screen
-            addButton.style.display = 'block';
+            installMessage.style.display = 'block';
+            // Stash the event so it can be triggered later.
+            installEvent = event;
         });
-        addButton.addEventListener('click', async (event) => {
-            // hide our user interface that shows our A2HS button
-            addButton.style.display = 'none';
+
+        if (installEvent){
+            installMessage.style.display = 'block';
+            impossibleInstallMessage.style.display = 'none';
+        }
+
+        installMessage.addEventListener('click', async (event) => {
             // Show the prompt
-            deferredPrompt.prompt();
+            installEvent.prompt();
             // Wait for the user to respond to the prompt
-            let choiceResult = await deferredPrompt.userChoice;
+            let choiceResult = await installEvent.userChoice;
             if (choiceResult.outcome === 'accepted') {
                 console.log('User accepted the A2HS prompt');
+                installMessage.style.display = 'none';
+                impossibleInstallMessage.style.display = 'block';
             } else {
                 console.log('User dismissed the A2HS prompt');
             }
-            deferredPrompt = null;
+            installEvent = null;
         });
     }
 };

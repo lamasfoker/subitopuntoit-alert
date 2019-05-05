@@ -11,6 +11,8 @@ import Researches                   from './views/pages/Researches.js'
 import Settings                     from './views/pages/Settings.js'
 import Error404                     from './views/pages/Error404.js'
 
+var installEvent = null;
+
 // Listen on page load:
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -76,30 +78,11 @@ document.addEventListener('DOMContentLoaded', async () => {
      * END send_push_notification
      */
 
-    const addButton = null || document.getElementById('button');
-    let deferredPrompt;
-
     window.addEventListener('beforeinstallprompt', (event) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt
         event.preventDefault();
         // Stash the event so it can be triggered later.
-        deferredPrompt = event;
-        // Update UI notify the user they can add to home screen
-        addButton.style.display = 'block';
-    });
-    addButton.addEventListener('click', async (event) => {
-        // hide our user interface that shows our A2HS button
-        addButton.style.display = 'none';
-        // Show the prompt
-        deferredPrompt.prompt();
-        // Wait for the user to respond to the prompt
-        let choiceResult = await deferredPrompt.userChoice;
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the A2HS prompt');
-        } else {
-            console.log('User dismissed the A2HS prompt');
-        }
-        deferredPrompt = null;
+        installEvent = event;
     });
 });
 
@@ -125,7 +108,8 @@ const router = async () => {
     // If the parsed URL is not in our list of supported routes, select the 404 page instead
     let page = routes[parsedURL] ? routes[parsedURL] : Error404;
     content.innerHTML = await page.render();
-    await page.after_render();
+    // InstallEvent is useful only for Settings
+    await page.after_render(installEvent);
 
 };
 
