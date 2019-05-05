@@ -1,10 +1,36 @@
-import NotificationButton       from '../views/components/NotificationsButton.js'
-
 const PushNotification = {
 
     applicationServerKey :
         'BMBlr6YznhYMX3NgcWIDRxZXs0sh7tCv7_YCsWcww0ZCv9WGg-tRCXfMEHTiBPCksSqeve1twlbmVAZFv7GSuj0'
 
+    , notificationState: 'Disable Notification'
+
+    , isNotificationPossible: true
+
+    , changeState: (state) => {
+        const pushButton = null || document.getElementById('push-subscription-button');
+        switch (state) {
+            case 'enabled':
+                PushNotification.isNotificationPossible = true;
+                break;
+            case 'disabled':
+                PushNotification.isNotificationPossible = true;
+                PushNotification.notificationState = 'Disable Notification';
+                break;
+            case 'incompatible':
+                PushNotification.isNotificationPossible = false;
+                PushNotification.notificationState = 'Push notifications are not compatible with this browser';
+                break;
+            case 'denied':
+                PushNotification.isNotificationPossible = false;
+                PushNotification.notificationState = 'You have denied notifications';
+                break;
+            default:
+                console.error('Unhandled push button state', state);
+                break;
+        }
+    }
+    
     , urlBase64ToUint8Array: (base64String) => {
         const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
         const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -40,7 +66,6 @@ const PushNotification = {
     }
 
     , push_subscribe: async () => {
-        NotificationButton.changePushButtonState('computing');
         try {
             await PushNotification.checkNotificationPermission();
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
@@ -52,7 +77,7 @@ const PushNotification = {
             // create subscription on your server
             await PushNotification.push_sendSubscriptionToServer(subscription, 'POST');
             // update your UI
-            NotificationButton.changePushButtonState('enabled');
+            PushNotification.changeState('enabled');
         } catch (e) {
             if (Notification.permission === 'denied') {
                 // The user denied the notification permission which
@@ -60,12 +85,12 @@ const PushNotification = {
                 // to manually change the notification permission to
                 // subscribe to push messages
                 console.warn('Notifications are denied by the user.');
-                NotificationButton.changePushButtonState('incompatible');
+                PushNotification.changeState('denied');
             } else {
                 // A problem occurred with the subscription; common reasons
                 // include network errors or the user skipped the permission
                 console.error('Impossible to subscribe to push notifications', e);
-                NotificationButton.changePushButtonState('disabled');
+                PushNotification.changeState('disabled');
             }
         }
     }
@@ -74,7 +99,7 @@ const PushNotification = {
         try {
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
             const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-            NotificationButton.changePushButtonState('disabled');
+            PushNotification.changeState('disabled');
             if (!subscription) {
                 // We aren't subscribed to push, so set UI to allow the user to enable push
                 return;
@@ -82,14 +107,13 @@ const PushNotification = {
             // Keep your server in sync with the latest endpoint
             await PushNotification.push_sendSubscriptionToServer(subscription, 'PUT');
             // Set your UI to show they have subscribed for push messages
-            NotificationButton.changePushButtonState('enabled')
+            PushNotification.changeState('enabled');
         } catch (e) {
             console.error('Error when updating the subscription', e);
         }
     }
 
     , push_unsubscribe: async () => {
-        NotificationButton.changePushButtonState('computing');
         try {
             // To unsubscribe from push messaging, you need to get the subscription object
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
@@ -98,21 +122,21 @@ const PushNotification = {
             if (!subscription) {
                 // No subscription object, so set the state
                 // to allow the user to subscribe to push
-                NotificationButton.changePushButtonState('disabled');
+                PushNotification.changeState('disabled');
                 return;
             }
             // We have a subscription, unsubscribe
             // Remove push subscription from server
             await PushNotification.push_sendSubscriptionToServer(subscription, 'DELETE');
             await subscription.unsubscribe();
-            NotificationButton.changePushButtonState('disabled');
+            PushNotification.changeState('disabled');
         } catch (e) {
             // We failed to unsubscribe, NotificationsButton can lead to
             // an unusual state, so  it may be best to remove
             // the users data from your data store and
             // inform the user that you have done so
             console.error('Error when unsubscribing the user', e);
-            NotificationButton.changePushButtonState('disabled');
+            PushNotification.changeState('disabled');
         }
     }
 
@@ -132,7 +156,6 @@ const PushNotification = {
         });
         return subscription;
     }
-
 };
 
 export default PushNotification;

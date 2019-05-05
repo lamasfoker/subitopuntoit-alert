@@ -14,12 +14,7 @@ const Init = {
             console.warn('Notifications are not supported by this browser');
             return false;
         }
-        // Check the current Notification permission.
-        // If its denied, the button should appears as such, until the user changes the permission manually
-        if (Notification.permission === 'denied') {
-            console.warn('Notifications are denied by the user');
-            return false;
-        }
+
         return true
     }
 };

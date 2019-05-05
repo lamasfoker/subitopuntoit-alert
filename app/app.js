@@ -23,60 +23,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     mainContainer.innerHTML = await Home.render();
     bottomBarContainer.innerHTML = await BottomBar.render();
 
-    const notificationButtonContainer = null || document.getElementById('notification-button-container');
-    notificationButtonContainer.innerHTML = await NotificationsButton.render();
-
-    const pushButton = null || document.getElementById('push-subscription-button');
-
-    pushButton.addEventListener('click', function () {
-        if (NotificationsButton.isPushEnabled) {
-            PushNotification.push_unsubscribe();
-        } else {
-            PushNotification.push_subscribe();
-        }
-    });
-
-
     if (!Init.isBrowserCompatible()) {
-        NotificationsButton.changePushButtonState('incompatible');
         return;
     }
 
     try {
         await navigator.serviceWorker.register('/app/serviceWorker.js');
         console.log('[SW] Service worker has been registered');
-        PushNotification.push_updateSubscription();
     } catch (e) {
         console.error('[SW] Service worker registration failed', e);
-        NotificationsButton.changePushButtonState('incompatible');
     }
-
-    /**
-     * START send_push_notification
-     * this part handles the button that calls the endpoint that triggers a notification
-     * in the real world, you wouldn't need this, because notifications are typically sent from backend logic
-     */
-
-    const sendPushButton = null || document.querySelector('#send-push-button');
-
-    sendPushButton.addEventListener('click', async () => {
-        const serviceWorkerRegistration = await navigator.serviceWorker.ready;
-        const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-        if (!subscription) {
-            alert('Please enable push notifications');
-            return;
-        }
-        const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
-        const jsonSubscription = subscription.toJSON();
-        fetch('/push-notification', {
-            method: 'POST',
-            body: JSON.stringify(Object.assign(jsonSubscription, {contentEncoding})),
-        });
-    });
-
-    /**
-     * END send_push_notification
-     */
 
     window.addEventListener('beforeinstallprompt', (event) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt

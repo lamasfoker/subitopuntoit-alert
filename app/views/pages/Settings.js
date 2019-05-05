@@ -1,4 +1,3 @@
-import NotificationsButton from "../components/NotificationsButton.js";
 import PushNotification from "../../services/PushNotification.js";
 import Init from "../../services/Init.js";
 
@@ -10,38 +9,53 @@ let Settings = {
                 <ul class="collection">
                     <li class="collection-item"><i class="material-icons">person</i>Alvin</li>
                     <li class="collection-item"><i class="material-icons">my_location</i>Reggio Emilia</li>
-                    <li class="collection-item">
-                        <button id="push-subscription-button">
-                            <i class="material-icons">notifications_active</i>Active Notifications
-                            <i class="material-icons">notifications_off</i>Disable Notifications
-                        </button>
-                        <div id="notification-button-container"></div>
-                    </li>
+                    <li class="collection-item" id="notification-on"><i class="material-icons">notifications_active</i>Enable Notification</li>
+                    <li class="collection-item" id="notification-off" style="display: none"><i class="material-icons">notifications_off</i><span id="notification-message"></span></li>
                     <li class="collection-item" id="install" style="display: none"><i class="material-icons">flash_on</i>Install</li>
                     <li class="collection-item" id="impossible-install"><i class="material-icons">flash_off</i>I can't be installed or I am already installed</li>
-                    <li class="collection-item"><button id="send-push-button"><i class="material-icons">notifications</i>Test Notification</button></li>
+                    <li class="collection-item" id="send-push-button"><i class="material-icons">notifications</i>Notification Test</li>
                 </ul>
             </main>
         `
     }
 
     , after_render: async (event) => {
-        const notificationButtonContainer = null || document.getElementById('notification-button-container');
-        notificationButtonContainer.innerHTML = await NotificationsButton.render();
+        const notificationOn = null || document.getElementById('notification-on');
+        const notificationOff = null || document.getElementById('notification-off');
+        const notificationMessage = null || document.getElementById('notification-message');
 
-        const pushButton = null || document.getElementById('push-subscription-button');
+        notificationOn.addEventListener('click', async function () {
+            await PushNotification.push_subscribe();
+            notificationMessage.innerHTML = PushNotification.notificationState;
+            notificationOn.style.display = 'none';
+            notificationOff.style.display = 'block';
+        });
 
-        pushButton.addEventListener('click', function () {
-            if (NotificationsButton.isPushEnabled) {
-                PushNotification.push_unsubscribe();
-            } else {
-                PushNotification.push_subscribe();
+        notificationOff.addEventListener('click', async function () {
+            if (PushNotification.isNotificationPossible) {
+                await PushNotification.push_unsubscribe();
+                notificationMessage.innerHTML = PushNotification.notificationState;
+                notificationOn.style.display = 'block';
+                notificationOff.style.display = 'none';
             }
         });
 
         if (!Init.isBrowserCompatible()) {
-            NotificationsButton.changePushButtonState('incompatible');
+            PushNotification.changeState('incompatible');
+            notificationMessage.innerHTML = PushNotification.notificationState;
+            notificationOn.style.display = 'none';
+            notificationOff.style.display = 'block';
             return;
+        }
+
+        try {
+            await navigator.serviceWorker.register('/app/serviceWorker.js');
+            PushNotification.push_updateSubscription();
+        } catch (e) {
+            PushNotification.changeState('incompatible');
+            notificationMessage.innerHTML = PushNotification.notificationState;
+            notificationOn.style.display = 'none';
+            notificationOff.style.display = 'block';
         }
 
         /**
