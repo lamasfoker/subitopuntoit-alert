@@ -3,15 +3,11 @@
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use SubitoPuntoItAlert\Api\SubitoUpdater;
-use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
-use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
 
 // here I'll get the subscription endpoint in the POST parameters
 // but in reality, you'll get this information in your database
 // because you already stored it (cf. push_subscription.php)
 $subscription = Subscription::create(json_decode(file_get_contents('php://input'), true));
-$subscriptionRepository = new SubscriptionRepository();
-$researchRepository = new ResearchRepository();
 
 $auth = array(
     'VAPID' => array(
@@ -24,13 +20,12 @@ $auth = array(
 $webPush = new WebPush($auth);
 $api = new SubitoUpdater();
 
-$message = $api->getAnnouncementUpdate('2019-04-23 15:08:59', 'emilia-romagna', 'reggio-emilia', 'ps4')['status'];
-
 $res = $webPush->sendNotification(
     $subscription,
-    $message
+    'Test Notification'
 );
 
+// TODO: deletes this code
 // handle eventual errors here, and remove the subscription from your server if it is expired
 foreach ($webPush->flush() as $report) {
     $endpoint = $report->getRequest()->getUri()->__toString();

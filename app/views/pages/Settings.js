@@ -78,7 +78,7 @@ let Settings = {
             }
             const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
             const jsonSubscription = subscription.toJSON();
-            fetch('/push-notification', {
+            fetch('/test-notification', {
                 method: 'POST',
                 body: JSON.stringify(Object.assign(jsonSubscription, {contentEncoding})),
             });
