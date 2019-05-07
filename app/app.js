@@ -4,6 +4,7 @@ import Init                         from './services/Init.js'
 import HeaderBar                    from './views/components/HeaderBar.js'
 import BottomBar                    from './views/components/BottomBar.js'
 import Announcements                from './views/pages/Announcements.js'
+import AddResearch                  from './views/pages/AddResearch.js'
 import Researches                   from './views/pages/Researches.js'
 import Settings                     from './views/pages/Settings.js'
 import Error404                     from './views/pages/Error404.js'
@@ -46,6 +47,7 @@ const routes = {
     , '/announcements'      : Announcements
     , '/researches'         : Researches
     , '/settings'           : Settings
+    , '/add-research'       : AddResearch
 };
 
 

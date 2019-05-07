@@ -16,3 +16,7 @@ $researchModel->setRegion($research['region']);
 $researchModel->setCity($research['city']);
 $researchModel->setQuery($research['query']);
 $researchRepository->save($researchModel);
+
+$data = '{"status": "ricerca salvata"}';
+header('Content-Type: application/json');
+echo json_encode($data);
