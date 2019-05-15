@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('[SW] Service worker registration failed', e);
     }
 
+    location.hash = '/';
     const headerBarContainer = null || document.getElementById('headerbar-container');
     const mainContainer = null || document.getElementById('main-container');
     const bottomBarContainer = null || document.getElementById('bottombar-container');
