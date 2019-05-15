@@ -18,7 +18,8 @@ if (count($announcements) == 0) {
 }
 $jsonAnnouncements = [];
 $jsonAnnouncements['status'] = 'announcements';
-for ($index = 0; $i < count($announcements); $i++) {
+$jsonAnnouncements['list'] = [];
+for ($i = 0; $i < count($announcements); $i++) {
     $jsonAnnouncements['list'][$i] = $announcements[$i]->getDetails();
 }
 header('Content-Type: application/json');
