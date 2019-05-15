@@ -1,0 +1,5 @@
+CREATE TABLE Announcement (
+    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    endpoint VARCHAR(500) NOT NULL,
+    details VARCHAR(1000) NOT NULL
+);

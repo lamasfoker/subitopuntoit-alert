@@ -1,10 +1,12 @@
 <?php
 
 use SubitoPuntoItAlert\Database\Model\Subscription;
+use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
 
 $researchRepository = new ResearchRepository();
+$announcementRepository = new AnnouncementRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $subscription = json_decode(file_get_contents('php://input'), true);
 
@@ -33,9 +35,13 @@ switch ($method) {
         break;
     case 'DELETE':
         // delete the subscription corresponding to the endpoint
+        // TODO: implement deleteByEndpoint x2
         $subscriptionRepository->delete($subscription['endpoint']);
         foreach ($researchRepository->getResearchesByEndpoint($subscription['endpoint']) as $research){
             $researchRepository->delete($research);
+        }
+        foreach ($announcementRepository->getAnnouncementsByEndpoint($subscription['endpoint']) as $announcement){
+            $$announcementRepository->delete($announcement);
         }
         break;
     default:

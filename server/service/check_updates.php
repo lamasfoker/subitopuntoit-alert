@@ -3,15 +3,18 @@
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use SubitoPuntoItAlert\Api\SubitoUpdater;
+use SubitoPuntoItAlert\Database\Model\Announcement;
+use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
 
+$announcementRepository = new AnnouncementRepository();
 $researchRepository = new ResearchRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $api = new SubitoUpdater();
 $researches = $researchRepository->getAllResearch();
 // TODO: gets this from DB
-$lastCheck = '2019-04-23 15:08:59';
+$lastCheck = '2019-05-09 15:08:59';
 
 foreach ($researches as $research){
     $response = $api->getAnnouncementUpdate(
@@ -23,6 +26,13 @@ foreach ($researches as $research){
 
     if (strcmp('new announcements', $response['status']) === false){
         //TODO log something
+        return;
+    }
+
+    foreach ($response['list'] as $detail) {
+        $announcement = new Announcement($research->getEndpoint());
+        $announcement->setDetails(json_encode($detail));
+        $announcementRepository->save($announcement);
     }
 
     $subscriptionModel = $subscriptionRepository->getSubscription($research->getEndpoint());
