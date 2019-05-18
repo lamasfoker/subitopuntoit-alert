@@ -7,7 +7,7 @@ let Researches = {
                     <i class="material-icons circle blue">search</i>
                     <span class="title">Title</span>
                     <p>Content</p>
-                    <a href="#/" class="secondary-content"><i class="material-icons">delete</i></a>
+                    <a class="secondary-content"><i class="material-icons">delete</i></a>
                 </li>
             </ul>
         `
@@ -41,12 +41,27 @@ let Researches = {
 
             cln.children[1].innerHTML = research.query;
             cln.children[2].innerHTML = research.city+'<br>'+research.region;
+            cln.children[3].addEventListener('click', async () => {
+                let headers = new Headers();
+                // Tell the server we want JSON back
+                headers.set('Accept', 'application/json');
+
+                //TODO: refactor the promise with await and parse the response
+
+                let response = await fetch('/delete-research', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(Object.assign(research, {endpoint}))
+                }).then((response) => response.json());
+
+                //TODO: handle the response
+
+                cln.parentNode.removeChild(cln);
+            });
 
             document.getElementById("researches-list").appendChild(cln);
             cln.style.display = 'block';
         }
-
-        //TODO: handle delete research
     }
 };
 
