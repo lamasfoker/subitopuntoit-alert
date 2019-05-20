@@ -1,3 +1,5 @@
+import ApiRequest from "../../services/ApiRequest.js";
+
 let AddResearch = {
 
     render : async () => {
@@ -38,32 +40,21 @@ let AddResearch = {
         const addResearchForm = null || document.getElementById('add-research-form');
 
         addResearchForm.addEventListener('submit', async function (event) {
-
-            let headers = new Headers();
-            // Tell the server we want JSON back
-            headers.set('Accept', 'application/json');
-
+            event.preventDefault();
             const region = null || document.getElementById('region');
             const city = null || document.getElementById('city');
             const query = null || document.getElementById('query');
-            const endpoint = subscription.toJSON().endpoint;
 
+            const endpoint = subscription.toJSON().endpoint;
             let jsonForm = {'region': region.value, 'city': city.value, 'query': query.value};
 
-            //TODO: refactor the promise with await and parse the response
-            //TODO: handle the response
+            let jsonResponse = await ApiRequest.Post(
+                '/add-research',
+                JSON.stringify(Object.assign(jsonForm, {endpoint}))
+            );
+            alert(JSON.parse(jsonResponse).status);
 
-            fetch('/add-research', {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(Object.assign(jsonForm, {endpoint})),
-            }).then(function (response) {
-                return response.json();
-            }).then(function (jsonData) {
-                alert(JSON.parse(jsonData).status);
-            });
-
-            event.preventDefault();
+            //TODO: check the jsonResponse
         });
     }
 };

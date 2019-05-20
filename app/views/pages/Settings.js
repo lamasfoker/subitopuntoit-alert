@@ -1,5 +1,6 @@
 import PushNotification from "../../services/PushNotification.js";
 import Init             from "../../services/Init.js";
+import ApiRequest       from "../../services/ApiRequest.js";
 
 let Settings = {
 
@@ -78,10 +79,11 @@ let Settings = {
             }
             const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
             const jsonSubscription = subscription.toJSON();
-            fetch('/test-notification', {
-                method: 'POST',
-                body: JSON.stringify(Object.assign(jsonSubscription, {contentEncoding})),
-            });
+            let jsonResponse = await ApiRequest.Post(
+                '/test-notification',
+                JSON.stringify(Object.assign(jsonSubscription, {contentEncoding}))
+            );
+            //TODO: check the jsonResponse
         });
     }
 

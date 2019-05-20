@@ -1,3 +1,5 @@
+import ApiRequest from "../../services/ApiRequest.js";
+
 let Announcements = {
 
     render : async () => {
@@ -7,7 +9,7 @@ let Announcements = {
                     <img src="https://tiny.cc/jyjq6y" class="circle" alt="">
                     <span class="title">Title</span>
                     <p>Content</p>
-                    <a href="#/" target="_blank" class="secondary-content"><i class="material-icons">launch</i></a>
+                    <a href="#/error" target="_blank" class="secondary-content"><i class="material-icons">launch</i></a>
                 </li>
             </ul>
         `
@@ -20,24 +22,16 @@ let Announcements = {
 
         let jsonData = {'endpoint': endpoint};
 
-        let headers = new Headers();
-        // Tell the server we want JSON back
-        headers.set('Accept', 'application/json');
-
-        //TODO: refactor the promise with await and parse the response
-
-        let response = await fetch('/get-announcements', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(jsonData)
-        }).then((response) => response.json());
-
-        //TODO: check the response
+        let jsonResponse = await ApiRequest.Post(
+            '/get-announcements',
+            JSON.stringify(jsonData)
+        );
+        //TODO: check the jsonResponse
 
         const listElement = document.getElementById("announcements-list").firstElementChild;
 
-        for (let i=0; i < response.list.length; i++ ) {
-            let announcement = JSON.parse(response.list[i]);
+        for (let i=0; i < jsonResponse.list.length; i++ ) {
+            let announcement = JSON.parse(jsonResponse.list[i]);
             let cln = listElement.cloneNode(true);
 
             cln.children[0].setAttribute('src', announcement.imageUrl);

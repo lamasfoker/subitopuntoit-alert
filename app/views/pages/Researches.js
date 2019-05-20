@@ -1,3 +1,5 @@
+import ApiRequest from "../../services/ApiRequest.js";
+
 let Researches = {
 
     render : async () => {
@@ -20,41 +22,27 @@ let Researches = {
 
         let jsonData = {'endpoint': endpoint};
 
-        let headers = new Headers();
-        // Tell the server we want JSON back
-        headers.set('Accept', 'application/json');
+        let jsonResponse = await ApiRequest.Post(
+            '/get-researches',
+            JSON.stringify(jsonData)
+        );
+        //TODO: check the jsonResponse
 
-        //TODO: refactor the promise with await and parse the response
-
-        let response = await fetch('/get-researches', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(jsonData)
-        }).then((response) => response.json());
-
-        //TODO: check the response
         const listElement = document.getElementById("researches-list").firstElementChild;
 
-        for (let i=0; i < response.list.length; i++ ) {
-            let research = response.list[i];
+        for (let i=0; i < jsonResponse.list.length; i++ ) {
+            let research = jsonResponse.list[i];
             let cln = listElement.cloneNode(true);
 
             cln.children[1].innerHTML = research.query;
             cln.children[2].innerHTML = research.city+'<br>'+research.region;
             cln.children[3].addEventListener('click', async () => {
-                let headers = new Headers();
-                // Tell the server we want JSON back
-                headers.set('Accept', 'application/json');
 
-                //TODO: refactor the promise with await and parse the response
-
-                let response = await fetch('/delete-research', {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify(Object.assign(research, {endpoint}))
-                }).then((response) => response.json());
-
-                //TODO: handle the response
+                let jsonResponse = await ApiRequest.Post(
+                    '/delete-research',
+                    JSON.stringify(Object.assign(research, {endpoint}))
+                );
+                //TODO: handle the jsonResponse
 
                 cln.parentNode.removeChild(cln);
             });
