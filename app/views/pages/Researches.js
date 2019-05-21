@@ -26,12 +26,16 @@ let Researches = {
             '/get-researches',
             JSON.stringify(jsonData)
         );
-        //TODO: check the jsonResponse
+
+        if (jsonResponse.code !== 200) {
+            M.toast({html: jsonResponse.message});
+            return;
+        }
 
         const listElement = document.getElementById("researches-list").firstElementChild;
 
-        for (let i=0; i < jsonResponse.list.length; i++ ) {
-            let research = jsonResponse.list[i];
+        for (let i=0; i < jsonResponse.data.length; i++ ) {
+            let research = jsonResponse.data[i];
             let cln = listElement.cloneNode(true);
 
             cln.children[1].innerHTML = research.query;
@@ -42,9 +46,11 @@ let Researches = {
                     '/delete-research',
                     JSON.stringify(Object.assign(research, {endpoint}))
                 );
-                //TODO: handle the jsonResponse
 
-                cln.parentNode.removeChild(cln);
+                if (jsonResponse.code === 200) {
+                    cln.parentNode.removeChild(cln);
+                }
+                M.toast({html: jsonResponse.message});
             });
 
             document.getElementById("researches-list").appendChild(cln);

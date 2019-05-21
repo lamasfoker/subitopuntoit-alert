@@ -52,7 +52,8 @@ let AddResearch = {
                 '/add-research',
                 JSON.stringify(Object.assign(jsonForm, {endpoint}))
             );
-            alert(JSON.parse(jsonResponse).status);
+
+            M.toast({html: jsonResponse.message});
 
             //TODO: check the jsonResponse
         });

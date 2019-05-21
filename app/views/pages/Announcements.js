@@ -26,12 +26,16 @@ let Announcements = {
             '/get-announcements',
             JSON.stringify(jsonData)
         );
-        //TODO: check the jsonResponse
+
+        if (jsonResponse.code !== 200) {
+            M.toast({html: jsonResponse.message});
+            return;
+        }
 
         const listElement = document.getElementById("announcements-list").firstElementChild;
 
-        for (let i=0; i < jsonResponse.list.length; i++ ) {
-            let announcement = JSON.parse(jsonResponse.list[i]);
+        for (let i=0; i < jsonResponse.data.length; i++ ) {
+            let announcement = JSON.parse(jsonResponse.data[i]);
             let cln = listElement.cloneNode(true);
 
             cln.children[0].setAttribute('src', announcement.imageUrl);
