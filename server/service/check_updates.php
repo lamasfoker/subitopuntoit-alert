@@ -69,9 +69,7 @@ foreach ($researches as $research){
         }
         if ($report->isSubscriptionExpired()) {
             $subscriptionRepository->delete($endpoint);
-            foreach ($researchRepository->getResearchesByEndpoint($subscription['endpoint']) as $research){
-                $researchRepository->delete($research);
-            }
+            $researchRepository->deleteByEndpoint($endpoint);
             echo "[x] Subscription expired";
         }
         echo "[x] Subscription not expired";

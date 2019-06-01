@@ -40,9 +40,7 @@ foreach ($webPush->flush() as $report) {
     }
     if ($report->isSubscriptionExpired()) {
         $subscriptionRepository->delete($endpoint);
-        foreach ($researchRepository->getResearchesByEndpoint($subscription['endpoint']) as $research){
-            $researchRepository->delete($research);
-        }
+        $researchRepository->deleteByEndpoint($endpoint);
         $response->setHttpCode(404);
         $response->setMessage("Subscription expired");
     }

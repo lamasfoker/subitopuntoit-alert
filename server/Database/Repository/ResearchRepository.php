@@ -76,6 +76,18 @@ class ResearchRepository
     }
 
     /**
+     * @param string $endpoint
+     */
+    public function deleteByEndpoint(string $endpoint): void
+    {
+        $stmt = $this->getDb()->prepare(
+            'DELETE FROM Research '.
+            'WHERE endpoint = ?'
+        );
+        $stmt->execute([$endpoint]);
+    }
+
+    /**
      * @return Research[]
      */
     public function getAllResearch(): array

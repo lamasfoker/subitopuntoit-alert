@@ -70,6 +70,18 @@ class AnnouncementRepository
     }
 
     /**
+     * @param string $endpoint
+     */
+    public function deleteByEndpoint(string $endpoint): void
+    {
+        $stmt = $this->getDb()->prepare(
+            'DELETE FROM Announcement '.
+            'WHERE endpoint = ?'
+        );
+        $stmt->execute([$endpoint]);
+    }
+
+    /**
      * @return PDO
      */
     private function getDb(): PDO

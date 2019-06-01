@@ -35,14 +35,9 @@ switch ($method) {
         break;
     case 'DELETE':
         // delete the subscription corresponding to the endpoint
-        // TODO: implement deleteByEndpoint x2
         $subscriptionRepository->delete($subscription['endpoint']);
-        foreach ($researchRepository->getResearchesByEndpoint($subscription['endpoint']) as $research){
-            $researchRepository->delete($research);
-        }
-        foreach ($announcementRepository->getAnnouncementsByEndpoint($subscription['endpoint']) as $announcement){
-            $announcementRepository->delete($announcement);
-        }
+        $researchRepository->deleteByEndpoint($subscription['endpoint']);
+        $announcementRepository->deleteByEndpoint($subscription['endpoint']);
         break;
     default:
         echo "Error: method not handled";
