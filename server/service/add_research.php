@@ -1,6 +1,7 @@
 <?php
 
 use SubitoPuntoItAlert\Api\Response;
+use SubitoPuntoItAlert\Api\SubitoUpdater;
 use SubitoPuntoItAlert\Database\Model\Research;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 
@@ -15,7 +16,21 @@ if (!isset($research['endpoint'])) {
     return;
 }
 
-//TODO: checks the data before import it
+$api = new SubitoUpdater();
+$apiResponse = $api->getAnnouncementUpdate(
+    date("Y-m-d H:i:s"),
+    $research['region'],
+    $research['city'],
+    $research['query']
+);
+
+if ($apiResponse->getHttpCode() >= 400){
+    $response->setHttpCode(404);
+    $response->setMessage('ERROR: Research not saved');
+    $response->send();
+    return;
+}
+
 $researchModel = new Research($research['endpoint']);
 $researchModel->setRegion($research['region']);
 $researchModel->setCity($research['city']);
