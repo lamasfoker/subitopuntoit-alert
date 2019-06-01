@@ -8,19 +8,19 @@ let AddResearch = {
                 <form class="col s12" method="POST" action="" id="add-research-form">
                     <div class="row">
                         <div class="input-field col s12">
-                            <input placeholder="Reggio Emilia" name="city" id="city" type="text" class="validate">
+                            <input name="city" id="city" type="text">
                             <label for="first_name">Provincia</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <input placeholder="Emilia Romagna" name="region" id="region" type="text" class="validate">
+                            <input name="region" id="region" type="text">
                             <label for="first_name">Regione</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <input placeholder="Macchina" name="query" id="query" type="text" class="validate">
+                            <input name="query" id="query" type="text">
                             <label for="first_name">Ricerca</label>
                         </div>
                     </div>
