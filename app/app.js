@@ -24,14 +24,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('[SW] Service worker registration failed', e);
     }
 
-    location.hash = '/';
     const headerBarContainer = null || document.getElementById('headerbar-container');
     const mainContainer = null || document.getElementById('main-container');
     const bottomBarContainer = null || document.getElementById('bottombar-container');
 
+    let Content = Settings;
+    if (Settings.isNotificationActive()) {
+        Content = Announcements;
+    }
+
     headerBarContainer.innerHTML = await HeaderBar.render();
-    mainContainer.innerHTML = await Announcements.render();
-    await Announcements.after_render();
+    mainContainer.innerHTML = await Content.render();
+    await Content.after_render();
     bottomBarContainer.innerHTML = await BottomBar.render();
 
     window.addEventListener('beforeinstallprompt', (event) => {
@@ -40,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Stash the event so it can be triggered later.
         installEvent = event;
     });
+    location.hash = '/';
 });
 
 // List of supported routes. Any url other than these routes will throw a 404 error
@@ -64,6 +69,9 @@ const router = async () => {
     // Get the page from our hash of supported routes.
     // If the parsed URL is not in our list of supported routes, select the 404 page instead
     let page = routes[parsedURL] ? routes[parsedURL] : Error404;
+    if (!Settings.isNotificationActive()) {
+        page = Settings;
+    }
     content.innerHTML = await page.render();
     // InstallEvent is useful only for Settings
     await page.after_render(installEvent);

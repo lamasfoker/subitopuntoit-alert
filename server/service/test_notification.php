@@ -2,12 +2,14 @@
 
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
+use SubitoPuntoItAlert\Api\Response;
 use SubitoPuntoItAlert\Api\SubitoUpdater;
 
 // here I'll get the subscription endpoint in the POST parameters
 // but in reality, you'll get this information in your database
 // because you already stored it (cf. push_subscription.php)
 $subscription = Subscription::create(json_decode(file_get_contents('php://input'), true));
+$response = new Response();
 
 $auth = array(
     'VAPID' => array(
@@ -24,23 +26,26 @@ $res = $webPush->sendNotification(
     $subscription,
     'Test Notification'
 );
-
 // TODO: deletes this code
 // handle eventual errors here, and remove the subscription from your server if it is expired
 foreach ($webPush->flush() as $report) {
     $endpoint = $report->getRequest()->getUri()->__toString();
 
     if ($report->isSuccess()) {
-        echo "[v] Message sent successfully for subscription {$endpoint}.";
+        $response->setHttpCode(200);
+        $response->setMessage("Message sent successfully for subscription {$endpoint}");
     } else {
-        echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+        $response->setHttpCode(500);
+        $response->setMessage("Message failed to sent for subscription {$endpoint}: {$report->getReason()}");
     }
     if ($report->isSubscriptionExpired()) {
         $subscriptionRepository->delete($endpoint);
         foreach ($researchRepository->getResearchesByEndpoint($subscription['endpoint']) as $research){
             $researchRepository->delete($research);
         }
-        echo "[x] Subscription expired";
+        $response->setHttpCode(404);
+        $response->setMessage("Subscription expired");
     }
-    echo "[x] Subscription not expired";
 }
+
+$response->send();

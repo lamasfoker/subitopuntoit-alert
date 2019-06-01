@@ -36,6 +36,7 @@ let Settings = {
             event.preventDefault();
             // Update UI notify the user they can add to home screen
             installMessage.style.display = 'block';
+            impossibleInstallMessage.style.display = 'none';
             // Stash the event so it can be triggered later.
             installEvent = event;
         });
@@ -79,52 +80,67 @@ let Settings = {
             }
             const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
             const jsonSubscription = subscription.toJSON();
-            let jsonResponse = await ApiRequest.Post(
+            await ApiRequest.Post(
                 '/test-notification',
                 JSON.stringify(Object.assign(jsonSubscription, {contentEncoding}))
             );
-            //TODO: check the jsonResponse
         });
     }
 
     , notificationSubscribeHandler: async () => {
         const notificationOn = null || document.getElementById('notification-on');
         const notificationOff = null || document.getElementById('notification-off');
-        const notificationMessage = null || document.getElementById('notification-message');
 
         notificationOn.addEventListener('click', async function () {
             await PushNotification.push_subscribe();
-            notificationMessage.innerHTML = PushNotification.notificationState;
-            notificationOn.style.display = 'none';
-            notificationOff.style.display = 'block';
+            Settings.setNotificationActive(true);
+            Settings.changeNotificationButtonState();
         });
 
         notificationOff.addEventListener('click', async function () {
             if (PushNotification.isNotificationPossible) {
                 await PushNotification.push_unsubscribe();
-                notificationMessage.innerHTML = PushNotification.notificationState;
-                notificationOn.style.display = 'block';
-                notificationOff.style.display = 'none';
+                Settings.setNotificationActive(false);
+                Settings.changeNotificationButtonState();
             }
         });
 
         if (!Init.isBrowserCompatible()) {
             PushNotification.changeState('incompatible');
-            notificationMessage.innerHTML = PushNotification.notificationState;
-            notificationOn.style.display = 'none';
-            notificationOff.style.display = 'block';
+            Settings.changeNotificationButtonState();
             return;
         }
 
         try {
             await navigator.serviceWorker.register('/app/serviceWorker.js');
-            PushNotification.push_updateSubscription();
+            await PushNotification.push_updateSubscription();
+            Settings.changeNotificationButtonState();
         } catch (e) {
             PushNotification.changeState('incompatible');
-            notificationMessage.innerHTML = PushNotification.notificationState;
+            Settings.changeNotificationButtonState();
+        }
+    }
+
+    , changeNotificationButtonState: () => {
+        const notificationOn = null || document.getElementById('notification-on');
+        const notificationOff = null || document.getElementById('notification-off');
+        const notificationMessage = null || document.getElementById('notification-message');
+        notificationMessage.innerHTML = PushNotification.notificationState;
+        if (Settings.isNotificationActive()) {
             notificationOn.style.display = 'none';
             notificationOff.style.display = 'block';
+        } else {
+            notificationOn.style.display = 'block';
+            notificationOff.style.display = 'none';
         }
+    }
+
+    , isNotificationActive: () => {
+        return localStorage.getItem('isNotificationActive') === 'true';
+    }
+
+    , setNotificationActive: (state) => {
+        localStorage.setItem('isNotificationActive', state);
     }
 };
 

@@ -98,7 +98,7 @@ const PushNotification = {
         try {
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
             const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-            PushNotification.changeState('disabled');
+            PushNotification.changeState('enabled');
             if (!subscription) {
                 // We aren't subscribed to push, so set UI to allow the user to enable push
                 return;
@@ -106,7 +106,7 @@ const PushNotification = {
             // Keep your server in sync with the latest endpoint
             await PushNotification.push_sendSubscriptionToServer(subscription, 'PUT');
             // Set your UI to show they have subscribed for push messages
-            PushNotification.changeState('enabled');
+            PushNotification.changeState('disabled');
         } catch (e) {
             console.error('Error when updating the subscription', e);
         }

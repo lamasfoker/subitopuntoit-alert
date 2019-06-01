@@ -54,8 +54,6 @@ let AddResearch = {
             );
 
             M.toast({html: jsonResponse.message});
-
-            //TODO: check the jsonResponse
         });
     }
 };
