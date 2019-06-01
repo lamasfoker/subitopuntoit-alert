@@ -13,16 +13,17 @@ $researchRepository = new ResearchRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $api = new SubitoUpdater();
 $researches = $researchRepository->getAllResearch();
-// TODO: gets this from DB
-$lastCheck = '2019-05-09 15:08:59';
 
 foreach ($researches as $research){
     $response = $api->getAnnouncementUpdate(
-        $lastCheck,
+        '2019-05-09 15:08:59',//TODO: replace with $research->getLastCheck(),
         $research->getRegion(),
         $research->getCity(),
         $research->getQuery()
     );
+
+    $research->setLastCheckNow();
+    $researchRepository->save($research);
 
     if ($response->getHttpCode() !== 200){
         //TODO log something

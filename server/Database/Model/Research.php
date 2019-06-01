@@ -25,6 +25,11 @@ class Research
     protected $query;
 
     /**
+     * @var string
+     */
+    protected $lastCheck;
+
+    /**
      * Research constructor.
      * @param string $endpoint
      */
@@ -95,5 +100,26 @@ class Research
     public function setQuery(string $query): void
     {
         $this->query = $query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastCheck(): string
+    {
+        return $this->lastCheck;
+    }
+
+    /**
+     * @param string $lastCheck
+     */
+    public function setLastCheck(string $lastCheck): void
+    {
+        $this->lastCheck = $lastCheck;
+    }
+
+    public function setLastCheckNow(): void
+    {
+        $this->lastCheck = date("Y-m-d H:i:s");
     }
 }

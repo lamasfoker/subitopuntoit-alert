@@ -35,6 +35,7 @@ class ResearchRepository
             $research->setRegion($row['region']);
             $research->setCity($row['city']);
             $research->setQuery($row['query']);
+            $research->setLastCheck($row['lastCheck']);
             $researches[] = $research;
         }
         return $researches;
@@ -47,14 +48,15 @@ class ResearchRepository
     {
         $this->delete($research);
         $stmt = $this->getDb()->prepare(
-            'INSERT INTO Research (endpoint, region, city, query) '.
-            'VALUES (?, ?, ?, ?)'
+            'INSERT INTO Research (endpoint, region, city, query, lastCheck) '.
+            'VALUES (?, ?, ?, ?, ?)'
         );
         $stmt->execute([
             $research->getEndpoint(),
             $research->getRegion(),
             $research->getCity(),
-            $research->getQuery()
+            $research->getQuery(),
+            $research->getLastCheck()
         ]);
     }
 

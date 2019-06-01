@@ -3,5 +3,6 @@ CREATE TABLE Research (
     endpoint VARCHAR(500) NOT NULL,
     region VARCHAR(500) NOT NULL,
     city VARCHAR(500) NOT NULL,
-    query VARCHAR(500) NOT NULL
+    query VARCHAR(500) NOT NULL,
+    lastCheck VARCHAR(500) NOT NULL
 );

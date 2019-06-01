@@ -35,6 +35,7 @@ $researchModel = new Research($research['endpoint']);
 $researchModel->setRegion($research['region']);
 $researchModel->setCity($research['city']);
 $researchModel->setQuery($research['query']);
+$researchModel->setLastCheckNow();
 $researchRepository->save($researchModel);
 
 $response->setHttpCode(200);
