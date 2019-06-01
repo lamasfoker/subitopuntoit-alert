@@ -1,6 +1,6 @@
 {
-  "name": "Hello World",
-  "short_name": "Hello",
+  "name": "Subito.it Alert",
+  "short_name": "Subito.it Alert",
   "icons": [{
       "src": "/app/assets/images/hello-icon-192.png",
       "sizes": "192x192",
@@ -10,9 +10,9 @@
       "sizes": "512x512",
       "type": "image/png"
     }],
-  "lang": "en-US",
+  "lang": "it-IT",
   "start_url": "/app/index.html",
   "display": "standalone",
-  "background_color": "white",
-  "theme_color": "white"
+  "background_color": "#F94139",
+  "theme_color": "#F94139"
 }
