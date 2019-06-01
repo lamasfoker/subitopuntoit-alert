@@ -21,6 +21,8 @@ let Settings = {
     }
 
     , after_render: async (event) => {
+        const headerTitle = null || document.getElementById('header-title');
+        headerTitle.innerText = 'Impostazioni';
         Settings.notificationSubscribeHandler();
         Settings.notificationTestHandler();
         Settings.installHandler(event);

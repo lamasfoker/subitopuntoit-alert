@@ -16,6 +16,9 @@ let Announcements = {
     }
 
     , after_render: async () => {
+        const headerTitle = null || document.getElementById('header-title');
+        headerTitle.innerText = 'Annunci';
+
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
         const endpoint = subscription.toJSON().endpoint;

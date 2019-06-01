@@ -38,6 +38,9 @@ let AddResearch = {
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
         const addResearchForm = null || document.getElementById('add-research-form');
+        const headerTitle = null || document.getElementById('header-title');
+
+        headerTitle.innerText = 'Aggiungi una Ricerca';
 
         addResearchForm.addEventListener('submit', async function (event) {
             event.preventDefault();

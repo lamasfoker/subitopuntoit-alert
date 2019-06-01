@@ -9,6 +9,8 @@ let Error404 = {
     }
 
     , after_render: async () => {
+        const headerTitle = null || document.getElementById('header-title');
+        headerTitle.innerText = 'Pagina non Trovata'
     }
 };
 
