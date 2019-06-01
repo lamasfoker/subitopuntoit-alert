@@ -41,7 +41,7 @@ switch ($method) {
             $researchRepository->delete($research);
         }
         foreach ($announcementRepository->getAnnouncementsByEndpoint($subscription['endpoint']) as $announcement){
-            $$announcementRepository->delete($announcement);
+            $announcementRepository->delete($announcement);
         }
         break;
     default:
