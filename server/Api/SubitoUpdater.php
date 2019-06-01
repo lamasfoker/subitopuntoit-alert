@@ -71,12 +71,12 @@ class SubitoUpdater
     {
         $extractedUpdate = [];
         foreach ($data as $key => $announcement) {
-            $extractedUpdate[$key] = [];
             $announcement = $announcement['item'];
             $announcementTime = $announcement['date'];
             if (strcmp($announcementTime, $storedAnnouncementTime) <= 0) {
                 break;
             }
+            $extractedUpdate[$key] = [];
             $extractedUpdate[$key]['price'] = isset($announcement['features']['/price'])?$announcement['features']['/price']['values'][0]['value']:'undefined';
             $extractedUpdate[$key]['town'] = $announcement['geo']['town']['value'];
             $extractedUpdate[$key]['imageUrl'] = isset($announcement['images'][0])?$announcement['images'][0]['scale'][4]['secureuri']:'undefined';
