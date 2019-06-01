@@ -7,6 +7,7 @@ let Announcements = {
             <ul id="announcements-list" class="collection content">
                 <li style="display: none;" class="collection-item avatar">
                     <img src="https://tiny.cc/jyjq6y" class="circle" alt="">
+                    <i class="material-icons circle blue" style="display: none">message</i>
                     <span class="title">Title</span>
                     <p>Content</p>
                     <a href="#/error" target="_blank" class="secondary-content"><i class="material-icons">launch</i></a>
@@ -41,10 +42,20 @@ let Announcements = {
             let announcement = JSON.parse(jsonResponse.data[i]);
             let cln = listElement.cloneNode(true);
 
-            cln.children[0].setAttribute('src', announcement.imageUrl);
-            cln.children[1].innerHTML = announcement.name;
-            cln.children[2].innerHTML = announcement.price+'<br>'+announcement.town+'<br>'+announcement.date;
-            cln.children[3].setAttribute('href', announcement.url);
+            if (announcement.price === 'undefined') {
+                announcement.price = 'Prezzo non definito';
+            }
+
+            if (announcement.imageUrl === 'undefined') {
+                cln.children[0].style.display = 'none';
+                cln.children[1].style.display = 'block';
+            } else {
+                cln.children[0].setAttribute('src', announcement.imageUrl);
+            }
+
+            cln.children[2].innerHTML = announcement.name;
+            cln.children[3].innerHTML = announcement.price+'<br>'+announcement.town+'<br>'+announcement.date;
+            cln.children[4].setAttribute('href', announcement.url);
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
