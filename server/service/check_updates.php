@@ -24,12 +24,12 @@ foreach ($researches as $research){
         $research->getQuery()
     );
 
-    if (strcmp('new announcements', $response['status']) === false){
+    if ($response->getHttpCode() !== 200){
         //TODO log something
         return;
     }
 
-    foreach ($response['list'] as $detail) {
+    foreach ($response->getData() as $detail) {
         $announcement = new Announcement($research->getEndpoint());
         $announcement->setDetails(json_encode($detail));
         $announcementRepository->save($announcement);
@@ -55,7 +55,7 @@ foreach ($researches as $research){
 
     $res = $webPush->sendNotification(
         $subscription,
-        $response['status']
+        $response->getMessage()
     );
 
     // handle eventual errors here, and remove the subscription from your server if it is expired
