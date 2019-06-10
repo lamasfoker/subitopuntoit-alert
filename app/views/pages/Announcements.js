@@ -4,15 +4,24 @@ let Announcements = {
 
     render : async () => {
         return `
-            <ul id="announcements-list" class="collection content">
-                <li style="display: none;" class="collection-item avatar">
-                    <img src="https://tiny.cc/jyjq6y" class="circle" alt="">
-                    <i class="material-icons circle blue" style="display: none">message</i>
-                    <span class="title">Title</span>
-                    <p>Content</p>
-                    <a href="#/error" target="_blank" class="secondary-content"><i class="material-icons">launch</i></a>
-                </li>
-            </ul>
+            <div class="row">
+                <div id="announcements-list" class="section">
+                    <div class="col s12 m7" style="display: none;">
+                        <div class="small card">
+                            <a href="#/error" target="_blank">
+                                <div class="card-image">
+                                    <img src="/app/assets/images/no-photo-available.png" alt="announcement-image">
+                                </div>
+                            </a>
+                            <div class="card-content">
+                                <p class="title"></p>
+                                <p class="price"></p>
+                                <p class="town"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `
     }
 
@@ -41,21 +50,19 @@ let Announcements = {
         for (let i=0; i < jsonResponse.data.length; i++ ) {
             let announcement = JSON.parse(jsonResponse.data[i]);
             let cln = listElement.cloneNode(true);
+            announcement.date = announcement.date.slice(0, -3);
 
             if (announcement.price === 'undefined') {
                 announcement.price = 'Prezzo non definito';
             }
 
-            if (announcement.imageUrl === 'undefined') {
-                cln.children[0].style.display = 'none';
-                cln.children[1].style.display = 'block';
-            } else {
-                cln.children[0].setAttribute('src', announcement.imageUrl);
+            if (announcement.imageUrl !== 'undefined') {
+                cln.getElementsByTagName('img')[0].setAttribute('src', announcement.imageUrl);
             }
-
-            cln.children[2].innerHTML = announcement.name;
-            cln.children[3].innerHTML = announcement.price+'<br>'+announcement.town+'<br>'+announcement.date;
-            cln.children[4].setAttribute('href', announcement.url);
+            cln.getElementsByTagName('a')[0].setAttribute('href', announcement.url);
+            cln.getElementsByClassName('title')[0].innerHTML = announcement.name;
+            cln.getElementsByClassName('price')[0].innerHTML = announcement.price;
+            cln.getElementsByClassName('town')[0].innerHTML = announcement.date+' - '+announcement.town;
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
