@@ -6,10 +6,9 @@ let Researches = {
         return `
             <ul id="researches-list" class="collection">
                 <li style="display: none" class="collection-item avatar">
-                    <i class="material-icons circle blue">search</i>
-                    <span class="title">Title</span>
-                    <p>Content</p>
-                    <a class="secondary-content"><i class="material-icons">delete</i></a>
+                    <a class="delete"><i class="material-icons circle blue">delete</i></a>
+                    <span class="title"></span>
+                    <p class="location"></p>
                 </li>
             </ul>
         `
@@ -41,9 +40,9 @@ let Researches = {
             let research = jsonResponse.data[i];
             let cln = listElement.cloneNode(true);
 
-            cln.children[1].innerHTML = research.query;
-            cln.children[2].innerHTML = research.city+'<br>'+research.region;
-            cln.children[3].addEventListener('click', async () => {
+            cln.getElementsByClassName('title')[0].innerHTML = research.query;
+            cln.getElementsByClassName('location')[0].innerHTML = research.city+' - '+research.region;
+            cln.getElementsByClassName('delete')[0].addEventListener('click', async () => {
 
                 let jsonResponse = await ApiRequest.Post(
                     '/delete-research',
