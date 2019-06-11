@@ -41,9 +41,9 @@ let Researches = {
             let research = jsonResponse.data[i];
             let cln = listElement.cloneNode(true);
 
-            cln.getElementsByClassName('title')[0].innerHTML = Init.ucFirst(research.query);
-            cln.getElementsByClassName('location')[0].innerHTML = Init.ucAll(research.city)+' - '+Init.ucAll(research.region);
-            cln.getElementsByClassName('delete')[0].addEventListener('click', async () => {
+            cln.querySelector('.title').innerHTML = Init.ucFirst(research.query);
+            cln.querySelector('.location').innerHTML = Init.ucAll(research.city)+' - '+Init.ucAll(research.region);
+            cln.querySelector('.delete').addEventListener('click', async () => {
 
                 let jsonResponse = await ApiRequest.Post(
                     '/delete-research',

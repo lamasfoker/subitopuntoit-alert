@@ -57,12 +57,12 @@ let Announcements = {
             }
 
             if (announcement.imageUrl !== 'undefined') {
-                cln.getElementsByTagName('img')[0].setAttribute('src', announcement.imageUrl);
+                cln.querySelector('img').setAttribute('src', announcement.imageUrl);
             }
-            cln.getElementsByTagName('a')[0].setAttribute('href', announcement.url);
-            cln.getElementsByClassName('title')[0].innerHTML = announcement.name;
-            cln.getElementsByClassName('price')[0].innerHTML = announcement.price;
-            cln.getElementsByClassName('town')[0].innerHTML = announcement.date+' - '+announcement.town;
+            cln.querySelector('a').setAttribute('href', announcement.url);
+            cln.querySelector('.title').innerHTML = announcement.name;
+            cln.querySelector('.price').innerHTML = announcement.price;
+            cln.querySelector('.town').innerHTML = announcement.date+' - '+announcement.town;
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
