@@ -17,6 +17,18 @@ const Init = {
 
         return true
     }
+
+    , ucFirst: (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    , ucAll: (phrase) => {
+        let splitStr = phrase.toLowerCase().split(' ');
+        for (let i = 0; i < splitStr.length; i++) {
+            splitStr[i] = Init.ucFirst(splitStr[i]);
+        }
+        return splitStr.join(' ');
+    }
 };
 
 export default Init;

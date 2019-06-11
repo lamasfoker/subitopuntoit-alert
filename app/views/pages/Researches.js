@@ -1,4 +1,5 @@
 import ApiRequest from "../../services/ApiRequest.js";
+import Init       from "../../services/Init.js";
 
 let Researches = {
 
@@ -40,8 +41,8 @@ let Researches = {
             let research = jsonResponse.data[i];
             let cln = listElement.cloneNode(true);
 
-            cln.getElementsByClassName('title')[0].innerHTML = research.query;
-            cln.getElementsByClassName('location')[0].innerHTML = research.city+' - '+research.region;
+            cln.getElementsByClassName('title')[0].innerHTML = Init.ucFirst(research.query);
+            cln.getElementsByClassName('location')[0].innerHTML = Init.ucAll(research.city)+' - '+Init.ucAll(research.region);
             cln.getElementsByClassName('delete')[0].addEventListener('click', async () => {
 
                 let jsonResponse = await ApiRequest.Post(
