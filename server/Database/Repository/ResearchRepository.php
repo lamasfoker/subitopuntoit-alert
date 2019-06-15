@@ -32,8 +32,9 @@ class ResearchRepository
         $researches = [];
         while ($row = $stmt->fetch()){
             $research = new Research($row['endpoint']);
-            $research->setRegion($row['region']);
-            $research->setCity($row['city']);
+            $research->setLocation($row['location']);
+            $research->setLocationParameters($row['locationParameters']);
+            $research->setOnlyInTitle($row['onlyInTitle']);
             $research->setQuery($row['query']);
             $research->setLastCheck($row['lastCheck']);
             $researches[] = $research;
@@ -48,13 +49,14 @@ class ResearchRepository
     {
         $this->delete($research);
         $stmt = $this->getDb()->prepare(
-            'INSERT INTO Research (endpoint, region, city, query, lastCheck) '.
-            'VALUES (?, ?, ?, ?, ?)'
+            'INSERT INTO Research (endpoint, location, locationParameters, onlyInTitle, query, lastCheck) '.
+            'VALUES (?, ?, ?, ?, ?, ?)'
         );
         $stmt->execute([
             $research->getEndpoint(),
-            $research->getRegion(),
-            $research->getCity(),
+            $research->getLocation(),
+            $research->getLocationParameters(),
+            $research->isOnlyInTitle(),
             $research->getQuery(),
             $research->getLastCheck()
         ]);
@@ -67,12 +69,13 @@ class ResearchRepository
     {
         $stmt = $this->getDb()->prepare(
             'DELETE FROM Research '.
-            'WHERE endpoint = ? AND region = ? AND city = ? AND query = ?'
+            'WHERE endpoint = ? AND location = ? AND locationParameters = ? AND onlyInTitle = ? AND query = ?'
         );
         $stmt->execute([
             $research->getEndpoint(),
-            $research->getRegion(),
-            $research->getCity(),
+            $research->getLocation(),
+            $research->getLocationParameters(),
+            $research->isOnlyInTitle(),
             $research->getQuery()
         ]);
     }
@@ -101,8 +104,9 @@ class ResearchRepository
         $researches = [];
         while ($row = $stmt->fetch()){
             $research = new Research($row['endpoint']);
-            $research->setRegion($row['region']);
-            $research->setCity($row['city']);
+            $research->setLocation($row['location']);
+            $research->setLocationParameters($row['locationParameters']);
+            $research->setOnlyInTitle($row['onlyInTitle']);
             $research->setQuery($row['query']);
             $researches[] = $research;
         }

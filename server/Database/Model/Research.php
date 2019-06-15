@@ -12,12 +12,17 @@ class Research
     /**
      * @var string
      */
-    protected $region;
+    protected $location;
 
     /**
      * @var string
      */
-    protected $city;
+    protected $locationParameters;
+
+    /**
+     * @var bool
+     */
+    protected $onlyInTitle;
 
     /**
      * @var string
@@ -57,33 +62,33 @@ class Research
     /**
      * @return string
      */
-    public function getRegion(): string
+    public function getLocation(): string
     {
-        return $this->region;
+        return $this->location;
     }
 
     /**
-     * @param string $region
+     * @param string $location
      */
-    public function setRegion(string $region): void
+    public function setLocation(string $location): void
     {
-        $this->region = $region;
+        $this->location = $location;
     }
 
     /**
      * @return string
      */
-    public function getCity(): string
+    public function getLocationParameters(): string
     {
-        return $this->city;
+        return $this->locationParameters;
     }
 
     /**
-     * @param string $city
+     * @param string $locationParameters
      */
-    public function setCity(string $city): void
+    public function setLocationParameters(string $locationParameters): void
     {
-        $this->city = $city;
+        $this->locationParameters = $locationParameters;
     }
 
     /**
@@ -121,5 +126,21 @@ class Research
     public function setLastCheckNow(): void
     {
         $this->lastCheck = date("Y-m-d H:i:s");
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnlyInTitle(): bool
+    {
+        return $this->onlyInTitle;
+    }
+
+    /**
+     * @param bool $onlyInTitle
+     */
+    public function setOnlyInTitle(bool $onlyInTitle): void
+    {
+        $this->onlyInTitle = $onlyInTitle;
     }
 }
