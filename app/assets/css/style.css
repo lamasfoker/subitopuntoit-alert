@@ -3,26 +3,56 @@
     top: 0;
     left: 0;
     z-index: 9999;
+    height: 54.5px;
     width: 100%;
-    height: 50px;
     background-color: #F94139;
 }
 
 .fixed-bottom-bar {
-    position: fixed;
     bottom: 0;
     left: 0;
     z-index: 9999;
     width: 100%;
-    height: 50px;
+    height: 69px;
     background-color: #F94139;
     line-height: 30px;
+    position: fixed;
 }
 
-/* The element at the top of the page right after the fixed navigation bar
-   MUST have sufficient top margin or else it will be covered by the bar */
 #main-container {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 54.5px;
+    margin-bottom: 69px;
 }
 
+ul#announcements-list.collection.content {
+    margin-bottom: 0;
+}
+
+.row.menu {
+    margin-bottom: 0;
+    height: 100%;
+}
+
+nav a {
+    float: left;
+    width: 25%;
+    max-width: 150px;
+}
+
+.title {
+    font-weight: bold;
+}
+
+p.price {
+    font-weight: bold;
+    color: #F94139;
+}
+
+p.town, p.location{
+    color: #969696;
+}
+
+li.collection-item.avatar {
+    height: 64px;
+    padding: 15px;
+}
