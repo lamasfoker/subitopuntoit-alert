@@ -12,6 +12,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/delete-research', 'delete_research_handler');
     $r->addRoute('POST', '/get-researches', 'get_researches_handler');
     $r->addRoute('GET', '/test-cron', 'test_cron_handler');
+    $r->addRoute('GET', '/get-location', 'get_location_handler');
 //    $r->addRoute('GET', '[/]', 'homepage_handler');
 });
 
@@ -73,6 +74,11 @@ function get_researches_handler(){
 
 function test_cron_handler(){
     require __DIR__.'/server/service/check_updates.php';
+    return;
+}
+
+function get_location_handler(){
+    require __DIR__.'/server/service/get_location.php';
     return;
 }
 
