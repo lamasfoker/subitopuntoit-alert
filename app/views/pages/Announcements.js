@@ -35,7 +35,7 @@ let Announcements = {
 
         let jsonData = {'endpoint': endpoint};
 
-        let jsonResponse = await ApiRequest.Post(
+        let jsonResponse = await ApiRequest.post(
             '/get-announcements',
             JSON.stringify(jsonData)
         );

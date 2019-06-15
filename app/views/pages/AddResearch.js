@@ -51,7 +51,7 @@ let AddResearch = {
             const endpoint = subscription.toJSON().endpoint;
             let jsonForm = {'region': region.value, 'city': city.value, 'query': query.value};
 
-            let jsonResponse = await ApiRequest.Post(
+            let jsonResponse = await ApiRequest.post(
                 '/add-research',
                 JSON.stringify(Object.assign(jsonForm, {endpoint}))
             );

@@ -82,7 +82,7 @@ let Settings = {
             }
             const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
             const jsonSubscription = subscription.toJSON();
-            await ApiRequest.Post(
+            await ApiRequest.post(
                 '/test-notification',
                 JSON.stringify(Object.assign(jsonSubscription, {contentEncoding}))
             );

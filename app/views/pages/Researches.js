@@ -25,7 +25,7 @@ let Researches = {
 
         let jsonData = {'endpoint': endpoint};
 
-        let jsonResponse = await ApiRequest.Post(
+        let jsonResponse = await ApiRequest.post(
             '/get-researches',
             JSON.stringify(jsonData)
         );
@@ -45,7 +45,7 @@ let Researches = {
             cln.querySelector('.location').innerHTML = Init.ucAll(research.city)+' - '+Init.ucAll(research.region);
             cln.querySelector('.delete').addEventListener('click', async () => {
 
-                let jsonResponse = await ApiRequest.Post(
+                let jsonResponse = await ApiRequest.post(
                     '/delete-research',
                     JSON.stringify(Object.assign(research, {endpoint}))
                 );
