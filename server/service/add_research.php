@@ -1,7 +1,7 @@
 <?php
 
 use SubitoPuntoItAlert\Api\Response;
-use SubitoPuntoItAlert\Api\SubitoUpdater;
+use SubitoPuntoItAlert\Api\Announcement;
 use SubitoPuntoItAlert\Database\Model\Research;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 
@@ -16,26 +16,21 @@ if (!isset($research['endpoint'])) {
     return;
 }
 
-$api = new SubitoUpdater();
-$apiResponse = $api->getAnnouncementUpdate(
-    date("Y-m-d H:i:s"),
-    $research['region'],
-    $research['city'],
-    $research['query']
-);
+$api = new Announcement();
+$researchModel = new Research($research['endpoint']);
 
-if ($apiResponse->getHttpCode() >= 400){
+$researchModel->setLocation($research['location']);
+$researchModel->setLocationParameters($research['location_parameters']);
+$researchModel->setOnlyInTitle($research['only_title']);
+$researchModel->setQuery($research['query']);
+$researchModel->setLastCheckNow();
+
+if (!$api->validate($researchModel)){
     $response->setHttpCode(404);
     $response->setMessage('ERROR: Research not saved');
     $response->send();
     return;
 }
-
-$researchModel = new Research($research['endpoint']);
-$researchModel->setRegion($research['region']);
-$researchModel->setCity($research['city']);
-$researchModel->setQuery($research['query']);
-$researchModel->setLastCheckNow();
 $researchRepository->save($researchModel);
 
 $response->setHttpCode(200);

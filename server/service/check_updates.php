@@ -2,8 +2,8 @@
 
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
-use SubitoPuntoItAlert\Api\SubitoUpdater;
-use SubitoPuntoItAlert\Database\Model\Announcement;
+use SubitoPuntoItAlert\Api\Announcement;
+use SubitoPuntoItAlert\Database\Model\Announcement as AnnouncementModel;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
@@ -11,16 +11,12 @@ use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
 $announcementRepository = new AnnouncementRepository();
 $researchRepository = new ResearchRepository();
 $subscriptionRepository = new SubscriptionRepository();
-$api = new SubitoUpdater();
+$api = new Announcement();
 $researches = $researchRepository->getAllResearch();
 
 foreach ($researches as $research){
-    $response = $api->getAnnouncementUpdate(
-        '2019-05-09 15:08:59',//TODO: replace with $research->getLastCheck(),
-        $research->getRegion(),
-        $research->getCity(),
-        $research->getQuery()
-    );
+    $research->setLastCheck('2019-06-09 15:08:59'); //TODO: delete this line
+    $response = $api->getAnnouncement($research);
 
     $research->setLastCheckNow();
     $researchRepository->save($research);
@@ -31,7 +27,7 @@ foreach ($researches as $research){
     }
 
     foreach ($response->getData() as $detail) {
-        $announcement = new Announcement($research->getEndpoint());
+        $announcement = new AnnouncementModel($research->getEndpoint());
         $announcement->setDetails(json_encode($detail));
         $announcementRepository->save($announcement);
     }
@@ -77,5 +73,3 @@ foreach ($researches as $research){
     }
 
 }
-
-$lastCheck = date("Y-m-d H:i:s");

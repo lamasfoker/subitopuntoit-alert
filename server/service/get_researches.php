@@ -25,8 +25,9 @@ if (count($researches) == 0) {
 $jsonResearches = [];
 for ($i = 0; $i < count($researches); $i++) {
     $jsonResearches[$i] = [];
-    $jsonResearches[$i]['region'] = $researches[$i]->getRegion();
-    $jsonResearches[$i]['city'] = $researches[$i]->getCity();
+    $jsonResearches[$i]['location'] = $researches[$i]->getLocation();
+    $jsonResearches[$i]['location_parameters'] = $researches[$i]->getLocationParameters();
+    $jsonResearches[$i]['is_only_in_title'] = $researches[$i]->isOnlyInTitle();
     $jsonResearches[$i]['query'] = $researches[$i]->getQuery();
 }
 $response->setHttpCode(200);

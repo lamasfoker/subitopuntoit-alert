@@ -17,8 +17,9 @@ if (!isset($post['endpoint'])) {
 
 $research = new Research($post['endpoint']);
 $research->setQuery($post['query']);
-$research->setRegion($post['region']);
-$research->setCity($post['city']);
+$research->setLocation($post['location']);
+$research->setLocationParameters($post['location_parameters']);
+$research->setOnlyInTitle($post['is_only_in_title']);
 
 $researchRepository->delete($research);
 $response->setHttpCode(200);
