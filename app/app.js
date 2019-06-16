@@ -11,7 +11,6 @@ import Error404                     from './views/pages/Error404.js'
 
 var installEvent = null;
 
-// Listen on page load:
 document.addEventListener('DOMContentLoaded', async () => {
     if (!Utils.isBrowserCompatible()) {
         return;
@@ -24,9 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('[SW] Service worker registration failed', e);
     }
 
-    const headerBarContainer = null || document.getElementById('headerbar-container');
-    const mainContainer = null || document.getElementById('main-container');
-    const bottomBarContainer = null || document.getElementById('bottombar-container');
+    const headerBarContainer = null || document.querySelector('#headerbar-container');
+    const mainContainer = null || document.querySelector('#main-container');
+    const bottomBarContainer = null || document.querySelector('#bottombar-container');
 
     let Content = Settings;
     if (Settings.isNotificationActive()) {
@@ -38,16 +37,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await Content.after_render();
     bottomBarContainer.innerHTML = await BottomBar.render();
 
-    window.addEventListener('beforeinstallprompt', (event) => {
-        // Prevent Chrome 67 and earlier from automatically showing the prompt
-        event.preventDefault();
-        // Stash the event so it can be triggered later.
-        installEvent = event;
-    });
     location.hash = '/';
+    window.onhashchange = router;
+    window.onbeforeinstallprompt = postponeInstallation;
 });
 
-// List of supported routes. Any url other than these routes will throw a 404 error
 const routes = {
     '/'                     : Announcements
     , '/announcements'      : Announcements
@@ -56,27 +50,22 @@ const routes = {
     , '/add-research'       : AddResearch
 };
 
-
-// The router code. Takes a URL, checks against the list of supported routes and then renders the corresponding content page.
 const router = async () => {
-
-    // Lazy load view element:
-    const content = null || document.getElementById('main-container');
-
-    // Get the parsed URl from the addressbar
+    const content = null || document.querySelector('#main-container');
     let parsedURL = location.hash.slice(1);
-
-    // Get the page from our hash of supported routes.
-    // If the parsed URL is not in our list of supported routes, select the 404 page instead
     let page = routes[parsedURL] ? routes[parsedURL] : Error404;
+
     if (!Settings.isNotificationActive()) {
         page = Settings;
     }
     content.innerHTML = await page.render();
     // InstallEvent is useful only for Settings
     await page.after_render(installEvent);
-
 };
 
-// Listen on hash change:
-window.addEventListener('hashchange', router);
+const postponeInstallation = (event) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    event.preventDefault();
+    // Stash the event so it can be triggered later.
+    installEvent = event;
+};
