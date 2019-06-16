@@ -56,7 +56,7 @@ class ResearchRepository
             $research->getEndpoint(),
             $research->getLocation(),
             $research->getLocationParameters(),
-            $research->isOnlyInTitle(),
+            $research->isOnlyInTitle()?1:0,
             $research->getQuery(),
             $research->getLastCheck()
         ]);
@@ -75,7 +75,7 @@ class ResearchRepository
             $research->getEndpoint(),
             $research->getLocation(),
             $research->getLocationParameters(),
-            $research->isOnlyInTitle(),
+            $research->isOnlyInTitle()?1:0,
             $research->getQuery()
         ]);
     }
