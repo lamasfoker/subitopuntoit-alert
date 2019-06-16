@@ -1,5 +1,4 @@
 import ApiRequest from "../../services/ApiRequest.js";
-import Utils      from "../../services/Utils.js";
 
 let AddResearch = {
 
@@ -48,8 +47,6 @@ let AddResearch = {
         form.onsubmit = AddResearch.sendResearch;
     }
 
-    , locations : {}
-
     , updateAutoCompleteLocation : async (event) => {
         let inputText = event.target;
         let autocomplete = M.Autocomplete.getInstance(inputText);
@@ -58,27 +55,17 @@ let AddResearch = {
             return;
         }
 
-        let dataLocation = jsonResponse.data;
         let locations = {};
-        for (let i=0; i<dataLocation.length; i++) {
-            if ('town' in dataLocation[i]) {
-                locations[dataLocation[i].town.value] = null;
-                AddResearch.locations[dataLocation[i].town.value] =
-                    dataLocation[i].region.friendly_name + ' ' +
-                    dataLocation[i].city.friendly_name + ' ' +
-                    dataLocation[i].town.friendly_name;
-                continue;
+        for (let i=0; i<jsonResponse.data.length; i++) {
+            let dataLocation = jsonResponse.data[i];
+            let label = dataLocation.region.value + ' regione';
+            if ('city' in dataLocation) {
+                label = dataLocation.city.value + ' e provincia';
             }
-            if ('city' in dataLocation[i]) {
-                locations[dataLocation[i].city.value] = null;
-                AddResearch.locations[dataLocation[i].city.value] =
-                    dataLocation[i].region.friendly_name + ' ' +
-                    dataLocation[i].city.friendly_name;
-                continue;
+            if ('town' in dataLocation) {
+                label = dataLocation.town.value + ' (' + dataLocation.city.short_name + ') comune';
             }
-            locations[dataLocation[i].region.value] = null;
-            AddResearch.locations[dataLocation[i].region.value] =
-                dataLocation[i].region.friendly_name;
+            locations[label] = null;
         }
         autocomplete.updateData(locations);
     }
@@ -91,14 +78,9 @@ let AddResearch = {
         const query = null || document.querySelector('#query');
         const checkbox = null || document.querySelector('#only-title');
         const endpoint = subscription.toJSON().endpoint;
-        let locationParameter = 'null';
-        if (AddResearch.locations[Utils.ucAll(location.value)]) {
-            locationParameter = AddResearch.locations[Utils.ucAll(location.value)];
-        }
 
         let jsonForm = {
-            'location': Utils.ucAll(location.value),
-            'location_parameters' : locationParameter,
+            'location': location.value,
             'only_title' : checkbox.checked,
             'query': query.value,
             'endpoint': endpoint
