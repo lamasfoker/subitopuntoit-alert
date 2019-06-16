@@ -1,5 +1,5 @@
 import ApiRequest from "../../services/ApiRequest.js";
-import Init       from "../../services/Init.js";
+import Utils      from "../../services/Utils.js";
 
 let AddResearch = {
 
@@ -92,12 +92,12 @@ let AddResearch = {
         const checkbox = null || document.querySelector('#only-title');
         const endpoint = subscription.toJSON().endpoint;
         let locationParameter = 'null';
-        if (AddResearch.locations[Init.ucAll(location.value)]) {
-            locationParameter = AddResearch.locations[Init.ucAll(location.value)];
+        if (AddResearch.locations[Utils.ucAll(location.value)]) {
+            locationParameter = AddResearch.locations[Utils.ucAll(location.value)];
         }
 
         let jsonForm = {
-            'location': Init.ucAll(location.value),
+            'location': Utils.ucAll(location.value),
             'location_parameters' : locationParameter,
             'only_title' : checkbox.checked,
             'query': query.value,

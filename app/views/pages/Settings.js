@@ -1,5 +1,5 @@
 import PushNotification from "../../services/PushNotification.js";
-import Init             from "../../services/Init.js";
+import Utils            from "../../services/Utils.js";
 import ApiRequest       from "../../services/ApiRequest.js";
 
 let Settings = {
@@ -107,7 +107,7 @@ let Settings = {
             }
         });
 
-        if (!Init.isBrowserCompatible()) {
+        if (!Utils.isBrowserCompatible()) {
             PushNotification.changeState('incompatible');
             Settings.changeNotificationButtonState();
             return;

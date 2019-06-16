@@ -1,5 +1,5 @@
 import ApiRequest from "../../services/ApiRequest.js";
-import Init       from "../../services/Init.js";
+import Utils      from "../../services/Utils.js";
 
 let Researches = {
 
@@ -41,8 +41,8 @@ let Researches = {
             let research = jsonResponse.data[i];
             let cln = listElement.cloneNode(true);
 
-            cln.querySelector('.title').innerHTML = Init.ucFirst(research.query);
-            cln.querySelector('.location').innerHTML = Init.ucAll(research.location);
+            cln.querySelector('.title').innerHTML = Utils.ucFirst(research.query);
+            cln.querySelector('.location').innerHTML = Utils.ucAll(research.location);
             cln.querySelector('.delete').addEventListener('click', async () => {
 
                 let jsonResponse = await ApiRequest.post(

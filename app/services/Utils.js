@@ -1,4 +1,4 @@
-const Init = {
+const Utils = {
     isBrowserCompatible: () => {
         if (!('serviceWorker' in navigator)) {
             console.warn('Service workers are not supported by this browser');
@@ -25,10 +25,10 @@ const Init = {
     , ucAll: (phrase) => {
         let splitStr = phrase.toLowerCase().split(' ');
         for (let i = 0; i < splitStr.length; i++) {
-            splitStr[i] = Init.ucFirst(splitStr[i]);
+            splitStr[i] = Utils.ucFirst(splitStr[i]);
         }
         return splitStr.join(' ');
     }
 };
 
-export default Init;
+export default Utils;

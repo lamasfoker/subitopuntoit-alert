@@ -1,6 +1,6 @@
 "use strict";
 
-import Init                         from './services/Init.js'
+import Utils                        from './services/Utils.js'
 import HeaderBar                    from './views/components/HeaderBar.js'
 import BottomBar                    from './views/components/BottomBar.js'
 import Announcements                from './views/pages/Announcements.js'
@@ -13,7 +13,7 @@ var installEvent = null;
 
 // Listen on page load:
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!Init.isBrowserCompatible()) {
+    if (!Utils.isBrowserCompatible()) {
         return;
     }
 
