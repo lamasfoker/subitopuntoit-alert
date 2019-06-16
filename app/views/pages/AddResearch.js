@@ -91,10 +91,14 @@ let AddResearch = {
         const query = null || document.querySelector('#query');
         const checkbox = null || document.querySelector('#only-title');
         const endpoint = subscription.toJSON().endpoint;
+        let locationParameter = 'null';
+        if (AddResearch.locations[Init.ucAll(location.value)]) {
+            locationParameter = AddResearch.locations[Init.ucAll(location.value)];
+        }
 
         let jsonForm = {
             'location': Init.ucAll(location.value),
-            'location_parameters' : AddResearch.locations[Init.ucAll(location.value)],
+            'location_parameters' : locationParameter,
             'only_title' : checkbox.checked,
             'query': query.value,
             'endpoint': endpoint

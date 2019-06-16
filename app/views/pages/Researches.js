@@ -42,7 +42,7 @@ let Researches = {
             let cln = listElement.cloneNode(true);
 
             cln.querySelector('.title').innerHTML = Init.ucFirst(research.query);
-            cln.querySelector('.location').innerHTML = Init.ucAll(research.city)+' - '+Init.ucAll(research.region);
+            cln.querySelector('.location').innerHTML = Init.ucAll(research.location);
             cln.querySelector('.delete').addEventListener('click', async () => {
 
                 let jsonResponse = await ApiRequest.post(
