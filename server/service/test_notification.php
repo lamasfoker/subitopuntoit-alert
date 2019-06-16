@@ -3,7 +3,6 @@
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use SubitoPuntoItAlert\Api\Response;
-use SubitoPuntoItAlert\Api\SubitoUpdater;
 
 // here I'll get the subscription endpoint in the POST parameters
 // but in reality, you'll get this information in your database
@@ -20,7 +19,6 @@ $auth = array(
 );
 
 $webPush = new WebPush($auth);
-$api = new SubitoUpdater();
 
 $res = $webPush->sendNotification(
     $subscription,
