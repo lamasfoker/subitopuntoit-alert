@@ -56,3 +56,7 @@ li.collection-item.avatar {
     height: 64px;
     padding: 15px;
 }
+
+#toast-container {
+    top: 54.5px;
+}
