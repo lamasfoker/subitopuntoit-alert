@@ -25,7 +25,7 @@ class Response
      * @param array $data
      * @param string $message
      */
-    public function __construct(int $httpCode = 500, array $data = null, string $message = 'Just Created')
+    public function __construct(int $httpCode = 200, array $data = null, string $message = 'Ok')
     {
         $this->httpCode = $httpCode;
         $this->data = $data;
