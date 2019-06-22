@@ -13,7 +13,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/get-researches', 'get_researches_handler');
     $r->addRoute('GET', '/test-cron', 'test_cron_handler');
     $r->addRoute('GET', '/get-location', 'get_location_handler');
-//    $r->addRoute('GET', '[/]', 'homepage_handler');
 });
 
 // Fetch method and URI from somewhere
@@ -79,10 +78,5 @@ function test_cron_handler(){
 
 function get_location_handler(){
     require __DIR__.'/server/service/get_location.php';
-    return;
-}
-
-function homepage_handler(){
-    require __DIR__.'/app/index.html';
     return;
 }
