@@ -15,9 +15,14 @@ $researchRepository = new ResearchRepository();
 $response = new Response();
 $research = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($research['endpoint'])) {
-    $response->setHttpCode(401);
-    $response->setMessage('ERROR: subscription not present');
+if (
+    !array_key_exists('endpoint', $research) ||
+    !array_key_exists('location', $research) ||
+    !array_key_exists('only_title', $research) ||
+    !array_key_exists('query', $research)
+) {
+    $response->setHttpCode(404);
+    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
     $response->send();
     return;
 }
@@ -28,7 +33,7 @@ $locationInfo = parse_location($research['location']);
 $locationResponse = $locationApi->getLocation($locationInfo['name']);
 if ($locationResponse->getHttpCode() > 200) {
     $response->setHttpCode(404);
-    $response->setMessage('ERROR: location not found');
+    $response->setMessage('ERRORE: luogo non trovato');
     $response->send();
     return;
 }
@@ -46,14 +51,13 @@ $researchModel->setLastCheckNow();
 
 if (!$announcementApi->validate($researchModel)){
     $response->setHttpCode(404);
-    $response->setMessage('ERROR: research not saved');
+    $response->setMessage('ERRORE: ricerca non salvata');
     $response->send();
     return;
 }
 $researchRepository->save($researchModel);
 
-$response->setHttpCode(200);
-$response->setMessage('Research saved');
+$response->setMessage('Ricerca salvata');
 $response->send();
 
 /**

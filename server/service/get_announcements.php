@@ -7,9 +7,9 @@ $announcementRepository = new AnnouncementRepository();
 $response = new Response();
 $post = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($post['endpoint'])) {
+if (!array_key_exists('endpoint', $post)) {
     $response->setHttpCode(401);
-    $response->setMessage('Error: not a subscription');
+    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
     $response->send();
     return;
 }
@@ -17,7 +17,7 @@ if (!isset($post['endpoint'])) {
 $announcements = $announcementRepository->getAnnouncementsByEndpoint($post['endpoint']);
 if (count($announcements) == 0) {
     $response->setHttpCode(404);
-    $response->setMessage('Announcements not found');
+    $response->setMessage('Non hai annunci salvati');
     $response->send();
     return;
 }
@@ -26,7 +26,5 @@ $jsonAnnouncements = [];
 for ($i = 0; $i < count($announcements); $i++) {
     $jsonAnnouncements[$i] = $announcements[$i]->getDetails();
 }
-$response->setHttpCode(200);
-$response->setMessage('Announcements found');
 $response->setData($jsonAnnouncements);
 $response->send();

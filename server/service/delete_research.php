@@ -8,9 +8,15 @@ $researchRepository = new ResearchRepository();
 $response = new Response();
 $post = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($post['endpoint'])) {
-    $response->setHttpCode(401);
-    $response->setMessage('Error: not a subscription');
+if (
+    !array_key_exists('endpoint', $post) ||
+    !array_key_exists('query', $post) ||
+    !array_key_exists('location', $post) ||
+    !array_key_exists('location_parameters', $post) ||
+    !array_key_exists('is_only_in_title', $post)
+) {
+    $response->setHttpCode(404);
+    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
     $response->send();
     return;
 }
@@ -22,6 +28,5 @@ $research->setLocationParameters($post['location_parameters']);
 $research->setOnlyInTitle($post['is_only_in_title']);
 
 $researchRepository->delete($research);
-$response->setHttpCode(200);
-$response->setMessage('Announcement deleted');
+$response->setMessage('Ricerca eliminata');
 $response->send();

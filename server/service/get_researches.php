@@ -7,9 +7,9 @@ $researchRepository = new ResearchRepository();
 $response = new Response();
 $post = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($post['endpoint'])) {
+if (!array_key_exists('endpoint', $post)) {
     $response->setHttpCode(401);
-    $response->setMessage('Error: not a subscription');
+    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
     $response->send();
     return;
 }
@@ -17,7 +17,7 @@ if (!isset($post['endpoint'])) {
 $researches = $researchRepository->getResearchesByEndpoint($post['endpoint']);
 if (count($researches) == 0) {
     $response->setHttpCode(404);
-    $response->setMessage('Researches not found');
+    $response->setMessage('Non hai ricerche salvate');
     $response->send();
     return;
 }
@@ -30,7 +30,5 @@ for ($i = 0; $i < count($researches); $i++) {
     $jsonResearches[$i]['is_only_in_title'] = $researches[$i]->isOnlyInTitle();
     $jsonResearches[$i]['query'] = $researches[$i]->getQuery();
 }
-$response->setHttpCode(200);
-$response->setMessage('Researches found');
 $response->setData($jsonResearches);
 $response->send();
