@@ -9,8 +9,6 @@ import Researches                   from './views/pages/Researches.js'
 import Settings                     from './views/pages/Settings.js'
 import Error404                     from './views/pages/Error404.js'
 
-var installEvent = null;
-
 document.addEventListener('DOMContentLoaded', async () => {
     if (!Utils.isBrowserCompatible()) {
         return;
@@ -39,7 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     location.hash = '/';
     window.onhashchange = router;
-    window.onbeforeinstallprompt = postponeInstallation;
 });
 
 const routes = {
@@ -59,13 +56,5 @@ const router = async () => {
         page = Settings;
     }
     content.innerHTML = await page.render();
-    // InstallEvent is useful only for Settings
-    await page.after_render(installEvent);
-};
-
-const postponeInstallation = (event) => {
-    // Prevent Chrome 67 and earlier from automatically showing the prompt
-    event.preventDefault();
-    // Stash the event so it can be triggered later.
-    installEvent = event;
+    await page.after_render();
 };

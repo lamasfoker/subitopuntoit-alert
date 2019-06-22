@@ -12,8 +12,6 @@ let Settings = {
                     <li class="collection-item"><i class="material-icons">my_location</i>Reggio Emilia</li>
                     <li class="collection-item" id="notification-on"><i class="material-icons">notifications_active</i>Enable Notification</li>
                     <li class="collection-item" id="notification-off" style="display: none"><i class="material-icons">notifications_off</i><span id="notification-message"></span></li>
-                    <li class="collection-item" id="install" style="display: none"><i class="material-icons">flash_on</i>Install</li>
-                    <li class="collection-item" id="impossible-install"><i class="material-icons">flash_off</i>I can't be installed or I am already installed</li>
                     <li class="collection-item" id="send-push-button"><i class="material-icons">notifications</i>Notification Test</li>
                 </ul>
             </main>
@@ -25,43 +23,6 @@ let Settings = {
         headerTitle.innerText = 'Impostazioni';
         Settings.notificationSubscribeHandler();
         Settings.notificationTestHandler();
-        Settings.installHandler(event);
-    }
-
-    , installHandler: (event) => {
-        const installMessage = null || document.getElementById('install');
-        const impossibleInstallMessage = null || document.getElementById('impossible-install');
-        let installEvent = event;
-
-        window.addEventListener('beforeinstallprompt', (event) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            event.preventDefault();
-            // Update UI notify the user they can add to home screen
-            installMessage.style.display = 'block';
-            impossibleInstallMessage.style.display = 'none';
-            // Stash the event so it can be triggered later.
-            installEvent = event;
-        });
-
-        if (installEvent){
-            installMessage.style.display = 'block';
-            impossibleInstallMessage.style.display = 'none';
-        }
-
-        installMessage.addEventListener('click', async (event) => {
-            // Show the prompt
-            installEvent.prompt();
-            // Wait for the user to respond to the prompt
-            let choiceResult = await installEvent.userChoice;
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the A2HS prompt');
-                installMessage.style.display = 'none';
-                impossibleInstallMessage.style.display = 'block';
-            } else {
-                console.log('User dismissed the A2HS prompt');
-            }
-            installEvent = null;
-        });
     }
 
     , notificationTestHandler: () => {
