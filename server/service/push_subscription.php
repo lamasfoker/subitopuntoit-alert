@@ -1,6 +1,5 @@
 <?php
 
-use SubitoPuntoItAlert\Api\Response;
 use SubitoPuntoItAlert\Database\Model\Subscription;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
@@ -11,7 +10,6 @@ $announcementRepository = new AnnouncementRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $subscription = json_decode(file_get_contents('php://input'), true);
 $method = $_SERVER['REQUEST_METHOD'];
-$response = new Response();
 
 if (
     !array_key_exists('endpoint', $subscription) ||
@@ -19,9 +17,7 @@ if (
     !array_key_exists('authToken', $subscription) ||
     ($method === 'POST' && !array_key_exists('contentEncoding', $subscription))
 ) {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
-    $response->send();
+    echo 'Error: not a subscription';
     return;
 }
 
@@ -48,10 +44,6 @@ switch ($method) {
         $announcementRepository->deleteByEndpoint($subscription['endpoint']);
         break;
     default:
-        $response->setHttpCode(405);
-        $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
-        $response->send();
+        echo "Error: method not handled";
         return;
 }
-
-$response->send();
