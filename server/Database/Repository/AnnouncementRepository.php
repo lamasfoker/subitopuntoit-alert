@@ -26,7 +26,8 @@ class AnnouncementRepository
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Announcement '.
-            'WHERE endpoint = ?'
+            'WHERE endpoint = ?'.
+            'ORDER BY id'
         );
         $stmt->execute([$endpoint]);
         $announcements = [];
