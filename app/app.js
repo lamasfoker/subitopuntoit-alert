@@ -1,12 +1,13 @@
 "use strict";
 
 import Utils                        from './services/Utils.js'
+import PushNotification             from './services/PushNotification.js'
 import HeaderBar                    from './views/components/HeaderBar.js'
 import BottomBar                    from './views/components/BottomBar.js'
 import Announcements                from './views/pages/Announcements.js'
 import AddResearch                  from './views/pages/AddResearch.js'
 import Researches                   from './views/pages/Researches.js'
-import Settings                     from './views/pages/Settings.js'
+import TestNotification             from './views/pages/TestNotification.js'
 import Error404                     from './views/pages/Error404.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -25,9 +26,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mainContainer = null || document.querySelector('#main-container');
     const bottomBarContainer = null || document.querySelector('#bottombar-container');
 
-    let Content = Settings;
-    if (Settings.isNotificationActive()) {
-        Content = Announcements;
+    let Content = Announcements;
+    if (!PushNotification.isNotificationActive()) {
+        await PushNotification.push_subscribe();
+        PushNotification.setNotificationActive(true);
+        Content = AddResearch;
+    } else {
+        await PushNotification.push_updateSubscription();
     }
 
     headerBarContainer.innerHTML = await HeaderBar.render();
@@ -43,7 +48,7 @@ const routes = {
     '/'                     : Announcements
     , '/announcements'      : Announcements
     , '/researches'         : Researches
-    , '/settings'           : Settings
+    , '/test-notification'  : TestNotification
     , '/add-research'       : AddResearch
 };
 
@@ -51,10 +56,6 @@ const router = async () => {
     const content = null || document.querySelector('#main-container');
     let parsedURL = location.hash.slice(1);
     let page = routes[parsedURL] ? routes[parsedURL] : Error404;
-
-    if (!Settings.isNotificationActive()) {
-        page = Settings;
-    }
     content.innerHTML = await page.render();
     await page.after_render();
 };
