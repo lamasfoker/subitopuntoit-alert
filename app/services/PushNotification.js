@@ -98,7 +98,7 @@ const PushNotification = {
         const token = subscription.getKey('auth');
         const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
 
-        await fetch('/push-subscription', {
+        let response = await fetch('/push-subscription', {
             method,
             body: JSON.stringify({
                 endpoint: subscription.endpoint,
@@ -107,6 +107,11 @@ const PushNotification = {
                 contentEncoding,
             }),
         });
+
+        if (response.json().code !== 200) {
+            throw 'Server respond with error'
+        }
+
         return subscription;
     }
 };
