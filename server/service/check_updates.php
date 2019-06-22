@@ -17,7 +17,6 @@ $researches = $researchRepository->getAllResearch();
 foreach ($researches as $research){
     $research->setLastCheck('2019-06-09 15:08:59'); //TODO: delete this line
     $response = $api->getAnnouncement($research);
-
     $research->setLastCheckNow();
     $researchRepository->save($research);
 
@@ -40,36 +39,30 @@ foreach ($researches as $research){
         $subscriptionModel->getContentEncoding()
     );
 
-    $auth = array(
-        'VAPID' => array(
-            'subject' => 'https://github.com/Minishlink/web-push-php-example/',
-            'publicKey' => file_get_contents('keys/public_key.txt'), // don't forget that your public key also lives in app.js
-            'privateKey' => file_get_contents('keys/private_key.txt'), // in the real world, this would be in a secret file
-        ),
-    );
+    //TODO: move private key in a secret file
+    $auth = [
+        'VAPID' => [
+            'subject' => 'mailto:giacomomoscardini@gmail.com',
+            'publicKey' => file_get_contents('keys/public_key.txt'),
+            'privateKey' => file_get_contents('keys/private_key.txt'),
+        ],
+    ];
 
     $webPush = new WebPush($auth);
-
     $res = $webPush->sendNotification(
         $subscription,
         $response->getMessage()
     );
 
-    // handle eventual errors here, and remove the subscription from your server if it is expired
     foreach ($webPush->flush() as $report) {
         $endpoint = $report->getRequest()->getUri()->__toString();
 
-        if ($report->isSuccess()) {
-            echo "[v] Message sent successfully for subscription {$endpoint}.";
-        } else {
-            echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+        if (!$report->isSuccess()) {
+            //TODO: log "Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
         }
         if ($report->isSubscriptionExpired()) {
             $subscriptionRepository->delete($endpoint);
             $researchRepository->deleteByEndpoint($endpoint);
-            echo "[x] Subscription expired";
         }
-        echo "[x] Subscription not expired";
     }
-
 }
