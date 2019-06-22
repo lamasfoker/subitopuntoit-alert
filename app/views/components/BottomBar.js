@@ -11,7 +11,6 @@ let BottomBar = {
                                     <a class="btn-flat" href="#/researches"><i class="material-icons">search</i></a>
                                     <a class="btn-flat" href="#/announcements"><i class="material-icons">message</i></a>
                                     <a class="btn-flat" href="#/add-research"><i class="material-icons">add_box</i></a>
-                                    <a class="btn-flat" href="#/settings"><i class="material-icons">person</i></a>
                                 </div>
                             </div>
                         </div>

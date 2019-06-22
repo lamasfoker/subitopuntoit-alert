@@ -3,31 +3,12 @@ const PushNotification = {
     applicationServerKey :
         'BMBlr6YznhYMX3NgcWIDRxZXs0sh7tCv7_YCsWcww0ZCv9WGg-tRCXfMEHTiBPCksSqeve1twlbmVAZFv7GSuj0'
 
-    , notificationState: 'Disable Notification'
+    , isNotificationActive: () => {
+        return localStorage.getItem('isNotificationActive') === 'true';
+    }
 
-    , isNotificationPossible: true
-
-    , changeState: (state) => {
-        switch (state) {
-            case 'enabled':
-                PushNotification.isNotificationPossible = true;
-                break;
-            case 'disabled':
-                PushNotification.isNotificationPossible = true;
-                PushNotification.notificationState = 'Disable Notification';
-                break;
-            case 'incompatible':
-                PushNotification.isNotificationPossible = false;
-                PushNotification.notificationState = 'Push notifications are not compatible with this browser';
-                break;
-            case 'denied':
-                PushNotification.isNotificationPossible = false;
-                PushNotification.notificationState = 'You have denied notifications';
-                break;
-            default:
-                console.error('Unhandled push button state', state);
-                break;
-        }
+    , setNotificationActive: (state) => {
+        localStorage.setItem('isNotificationActive', state);
     }
     
     , urlBase64ToUint8Array: (base64String) => {
@@ -76,7 +57,7 @@ const PushNotification = {
             // create subscription on your server
             await PushNotification.push_sendSubscriptionToServer(subscription, 'POST');
             // update your UI
-            PushNotification.changeState('enabled');
+            M.toast({html: 'Inscrizione alle notifiche avvenuta con successo'});
         } catch (e) {
             if (Notification.permission === 'denied') {
                 // The user denied the notification permission which
@@ -84,12 +65,12 @@ const PushNotification = {
                 // to manually change the notification permission to
                 // subscribe to push messages
                 console.warn('Notifications are denied by the user.');
-                PushNotification.changeState('denied');
+                M.toast({html: 'Inscrizione alle notifiche non permessa'});
             } else {
                 // A problem occurred with the subscription; common reasons
                 // include network errors or the user skipped the permission
                 console.error('Impossible to subscribe to push notifications', e);
-                PushNotification.changeState('disabled');
+                M.toast({html: 'Inscrizione alle notifiche impossibile da effettuare'});
             }
         }
     }
@@ -98,44 +79,17 @@ const PushNotification = {
         try {
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
             const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-            PushNotification.changeState('enabled');
             if (!subscription) {
                 // We aren't subscribed to push, so set UI to allow the user to enable push
+                await PushNotification.push_subscribe();
                 return;
             }
             // Keep your server in sync with the latest endpoint
             await PushNotification.push_sendSubscriptionToServer(subscription, 'PUT');
             // Set your UI to show they have subscribed for push messages
-            PushNotification.changeState('disabled');
         } catch (e) {
             console.error('Error when updating the subscription', e);
-        }
-    }
-
-    , push_unsubscribe: async () => {
-        try {
-            // To unsubscribe from push messaging, you need to get the subscription object
-            const serviceWorkerRegistration = await navigator.serviceWorker.ready;
-            const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-            // Check that we have a subscription to unsubscribe
-            if (!subscription) {
-                // No subscription object, so set the state
-                // to allow the user to subscribe to push
-                PushNotification.changeState('disabled');
-                return;
-            }
-            // We have a subscription, unsubscribe
-            // Remove push subscription from server
-            await PushNotification.push_sendSubscriptionToServer(subscription, 'DELETE');
-            await subscription.unsubscribe();
-            PushNotification.changeState('disabled');
-        } catch (e) {
-            // We failed to unsubscribe, NotificationsButton can lead to
-            // an unusual state, so  it may be best to remove
-            // the users data from your data store and
-            // inform the user that you have done so
-            console.error('Error when unsubscribing the user', e);
-            PushNotification.changeState('disabled');
+            M.toast({html: 'Errore: non è possibile ricevere notifiche'});
         }
     }
 
