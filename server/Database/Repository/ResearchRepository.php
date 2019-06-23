@@ -107,6 +107,7 @@ class ResearchRepository
             $research->setLocation($row['location']);
             $research->setLocationParameters($row['locationParameters']);
             $research->setOnlyInTitle($row['onlyInTitle']);
+            $research->setLastCheck($row['lastCheck']);
             $research->setQuery($row['query']);
             $researches[] = $research;
         }
