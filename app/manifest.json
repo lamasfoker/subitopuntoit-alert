@@ -21,6 +21,6 @@
   "lang": "it-IT",
   "start_url": "/app/index.html",
   "display": "standalone",
-  "background_color": "#F94139",
+  "background_color": "#FFFFFF",
   "theme_color": "#F94139"
 }
