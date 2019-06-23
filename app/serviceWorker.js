@@ -1,10 +1,10 @@
-var cacheName = 'hello-pwa';
+var cacheName = 'subitopuntoitalert';
 var filesToCache = [
     '/app/offline.html',
     '/app/manifest.json',
     '/app/favicon.ico',
-    '/app/assets/images/hello-icon-152.png',
-    '/app/assets/images/hello-icon-192.png'
+    '/app/assets/images/apple-touch-icon.png',
+    '/app/assets/images/icon-192.png'
 ];
 
 /* Start the service worker and cache all of the app's content */
