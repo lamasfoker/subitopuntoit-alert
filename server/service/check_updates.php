@@ -15,9 +15,8 @@ $api = new Announcement();
 $researches = $researchRepository->getAllResearch();
 
 foreach ($researches as $research){
-    $research->setLastCheck('2019-06-09 15:08:59'); //TODO: delete this line
     $response = $api->getAnnouncement($research);
-    $research->setLastCheckNow();
+    $research->setLastCheckToday();
     $researchRepository->save($research);
 
     if ($response->getHttpCode() !== 200){

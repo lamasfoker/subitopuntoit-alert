@@ -47,7 +47,7 @@ $researchModel->setLocation($dataLocation['name']);
 $researchModel->setLocationParameters($dataLocation['parameters']);
 $researchModel->setOnlyInTitle($research['only_title']);
 $researchModel->setQuery($research['query']);
-$researchModel->setLastCheckNow();
+$researchModel->setLastCheckYesterday();
 
 if (!$announcementApi->validate($researchModel)){
     $response->setHttpCode(404);

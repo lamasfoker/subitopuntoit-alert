@@ -123,9 +123,14 @@ class Research
         $this->lastCheck = $lastCheck;
     }
 
-    public function setLastCheckNow(): void
+    public function setLastCheckToday(): void
     {
         $this->lastCheck = date("Y-m-d H:i:s");
+    }
+
+    public function setLastCheckYesterday(): void
+    {
+        $this->lastCheck = date("Y-m-d H:i:s",strtotime("-1 days"));
     }
 
     /**
