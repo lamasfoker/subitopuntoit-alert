@@ -71,14 +71,20 @@ function get_location_data(array $data, int $locationType): array
         $location = $data[0];
     } else {
         foreach ($data as $location) {
-            if (array_key_exists('region', $location) && $locationType === REGION) {
+            if (array_key_exists('town', $location) && $locationType === TOWN) {
                 break;
+            } elseif (array_key_exists('town', $location)) {
+                continue;
             }
             if (array_key_exists('city', $location) && $locationType === CITY) {
                 break;
+            } elseif (array_key_exists('city', $location)) {
+                continue;
             }
-            if (array_key_exists('town', $location) && $locationType === TOWN) {
+            if (array_key_exists('region', $location) && $locationType === REGION) {
                 break;
+            } elseif (array_key_exists('region', $location)) {
+                continue;
             }
         }
     }
