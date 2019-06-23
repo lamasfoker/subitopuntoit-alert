@@ -8,13 +8,13 @@ let AddResearch = {
                 <form class="col s12" method="POST" action="" id="add-research-form">
                     <div class="row">
                         <div class="input-field col s12">
-                            <input name="location" id="location" type="text" class="autocomplete">
+                            <input name="location" id="location" type="text" class="autocomplete" autocomplete="off">
                             <label for="first_name">Dove</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <input name="query" id="query" type="text">
+                            <input name="query" id="query" type="text" autocomplete="off">
                             <label for="first_name">Ricerca</label>
                         </div>
                     </div>
