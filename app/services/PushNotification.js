@@ -57,7 +57,6 @@ const PushNotification = {
             // create subscription on your server
             await PushNotification.push_sendSubscriptionToServer(subscription, 'POST');
             // update your UI
-            M.toast({html: 'Inscrizione alle notifiche avvenuta con successo'});
         } catch (e) {
             if (Notification.permission === 'denied') {
                 // The user denied the notification permission which
