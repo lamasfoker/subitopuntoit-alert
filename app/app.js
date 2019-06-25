@@ -23,25 +23,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const headerBarContainer = null || document.querySelector('#headerbar-container');
-    const mainContainer = null || document.querySelector('#main-container');
     const bottomBarContainer = null || document.querySelector('#bottombar-container');
 
-    let Content = Announcements;
+    headerBarContainer.innerHTML = await HeaderBar.render();
+    bottomBarContainer.innerHTML = await BottomBar.render();
+    window.onhashchange = router;
+
     if (!PushNotification.isNotificationActive()) {
+        const mainContainer = null || document.querySelector('#main-container');
         await PushNotification.push_subscribe();
         PushNotification.setNotificationActive(true);
-        Content = AddResearch;
+        mainContainer.innerHTML = await AddResearch.render();
+        await AddResearch.after_render();
     } else {
         await PushNotification.push_updateSubscription();
+        if (location.hash === '#/') {
+            window.dispatchEvent(new HashChangeEvent("hashchange"));
+        } else {
+            location.hash = '#/';
+        }
     }
-
-    headerBarContainer.innerHTML = await HeaderBar.render();
-    mainContainer.innerHTML = await Content.render();
-    await Content.after_render();
-    bottomBarContainer.innerHTML = await BottomBar.render();
-
-    location.hash = '/';
-    window.onhashchange = router;
 });
 
 const routes = {
