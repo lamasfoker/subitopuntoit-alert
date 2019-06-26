@@ -6,29 +6,37 @@ let AddResearch = {
         return `
             <div class="row">
                 <form class="col s12" method="POST" action="" id="add-research-form">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input name="location" id="location" type="text" class="autocomplete" autocomplete="off">
-                            <label for="first_name">Dove</label>
+                    <div class="row label">
+                        <div class="col s12">
+                            <h6 class="label-inner">Luogo</h6>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col s12">
-                            <input name="query" id="query" type="text" autocomplete="off">
-                            <label for="first_name">Ricerca</label>
+                        <div class="input-field col s12 text">
+                            <input name="location" id="location" type="text" class="browser-default autocomplete" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row label">
+                        <div class="col s12">
+                            <h6 class="label-inner">Termine di Ricerca</h6>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col s12">
+                        <div class="input-field col s12 text">
+                            <input name="query" id="query" type="text" autocomplete="off" class="browser-default">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col s12">
                             <label>
                                 <input type="checkbox" class="filled-in" id="only-title"/>
-                                <span>Cerca solo nel Titolo</span>
+                                <span class="label-inner">Cerca solo nel Titolo</span>
                             </label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <button type="submit">Invia</button>
+                            <button class="blue-button" type="submit">Salva</button>
                         </div>
                     </div>
                 </form>

@@ -60,3 +60,39 @@ li.collection-item.avatar {
 #toast-container {
     top: 54.5px;
 }
+
+input {
+    height: 46px;
+    border-radius: 3px;
+    width: calc(100% - 20px);
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 10px;
+}
+
+.label.row {
+    margin-bottom: 0;
+}
+
+.label-inner {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.15rem !important;
+    color: #969696;
+}
+
+form#add-research-form.col.s12 {
+    padding: 1.5rem;
+}
+
+.blue-button {
+    background: #0097A6;
+    color: #ffffff;
+    padding: 10px calc((100% - 62px)/2);
+    text-transform: uppercase;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+div.input-field.col.s12.text {
+    margin-top: 0;
+}
