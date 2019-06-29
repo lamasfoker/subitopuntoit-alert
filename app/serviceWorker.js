@@ -1,5 +1,6 @@
 var cacheName = 'subitopuntoitalert';
 var filesToCache = [
+    '/app/assets/images/offline.png',
     '/app/offline.html',
     '/app/manifest.json',
     '/app/favicon.ico',

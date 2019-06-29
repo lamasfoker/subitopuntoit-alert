@@ -13,11 +13,51 @@
     <meta name="apple-mobile-web-app-title" content="SubitoPuntoItAlert">
     <meta name="msapplication-TileImage" content="images/hello-icon-144.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
+    <style type="text/css">
+        body {
+            margin: 0;
+            background: #1d1a19;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1 {
+            margin: 0;
+            margin-bottom: 15px;
+            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 22px;
+            line-height: 1.2;
+        }
+        p {
+            margin: 0;
+        }
+        .page {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .content {
+            padding: 15px;
+            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 15px;
+            color: #ffffff;
+            line-height: 1.4;
+            text-align: center;
+        }
+    </style>
 </head>
 <body class="fullscreen">
-<div class="container">
-    <h1 class="title">You are Offline!</h1>
-    <p>If you are newly online click <a href="/app/index.html">here</a></p>
+<div class="page">
+    <div id="content" class="content">
+        <img src="/app/assets/images/offline.png" alt="you are offline">
+        <h1 id="title">Impossibile connettersi al server</h1>
+        <p id="paragraph">Controlla lo stato della tua connessione</p>
+    </div>
 </div>
 </body>
 </html>
