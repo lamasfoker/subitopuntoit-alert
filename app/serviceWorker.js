@@ -5,7 +5,7 @@ var filesToCache = [
     '/app/manifest.json',
     '/app/favicon.ico',
     '/app/assets/images/apple-touch-icon.png',
-    '/app/assets/images/icon-192.png'
+    '/app/assets/images/icon-144.png'
 ];
 
 /* Start the service worker and cache all of the app's content */
