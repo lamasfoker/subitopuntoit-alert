@@ -16,6 +16,18 @@ let Researches = {
         `
     }
 
+    , empty_render: async () => {
+        return `
+            <div class="no-elements">
+                <img src="/app/assets/images/no-elements.svg" alt="no researches saved">
+                <h5>Ops...</h5>
+                <div>
+                    <p>non hai ancora salvato nessuno ricerca.</p>
+                </div>
+            </div>
+        `
+    }
+
     , after_render: async () => {
         const headerTitle = null || document.getElementById('header-title');
         headerTitle.innerText = 'Ricerche Salvate';
@@ -31,6 +43,11 @@ let Researches = {
             JSON.stringify(jsonData)
         );
 
+        if (jsonResponse.code === 404) {
+            const content = null || document.querySelector('#main-container');
+            content.innerHTML = await Researches.empty_render();
+            return;
+        }
         if (jsonResponse.code !== 200) {
             M.toast({html: jsonResponse.message});
             return;

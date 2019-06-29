@@ -96,3 +96,16 @@ form#add-research-form.col.s12 {
 div.input-field.col.s12.text {
     margin-top: 0;
 }
+
+.no-elements {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+}
+
+.no-elements h5 {
+    margin-top: 0;
+}
