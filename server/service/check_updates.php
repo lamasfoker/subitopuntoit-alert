@@ -13,6 +13,7 @@ $researchRepository = new ResearchRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $api = new Announcement();
 $researches = $researchRepository->getAllResearch();
+$subscribtions = [];
 
 foreach ($researches as $research){
     $response = $api->getAnnouncement($research);
@@ -21,7 +22,7 @@ foreach ($researches as $research){
 
     if ($response->getHttpCode() !== 200){
         //TODO log something
-        return;
+        continue;
     }
 
     foreach ($response->getData() as $detail) {
@@ -31,37 +32,39 @@ foreach ($researches as $research){
     }
 
     $subscriptionModel = $subscriptionRepository->getSubscription($research->getEndpoint());
-    $subscription = new Subscription(
+    $subscriptions[$subscriptionModel->getEndpoint()] = new Subscription(
         $subscriptionModel->getEndpoint(),
         $subscriptionModel->getPublicKey(),
         $subscriptionModel->getAuthToken(),
         $subscriptionModel->getContentEncoding()
     );
+}
 
-    //TODO: move private key in a secret file
-    $auth = [
-        'VAPID' => [
-            'subject' => 'mailto:giacomomoscardini@gmail.com',
-            'publicKey' => file_get_contents('keys/public_key.txt'),
-            'privateKey' => file_get_contents('keys/private_key.txt'),
-        ],
-    ];
+//TODO: move private key in a secret file
+$auth = [
+    'VAPID' => [
+        'subject' => 'mailto:giacomomoscardini@gmail.com',
+        'publicKey' => file_get_contents('keys/public_key.txt'),
+        'privateKey' => file_get_contents('keys/private_key.txt'),
+    ],
+];
 
+foreach ($subscribtions as $subscribtion) {
     $webPush = new WebPush($auth);
     $res = $webPush->sendNotification(
         $subscription,
-        $response->getMessage()
+        'Hai dei nuovi annunci!'
     );
+}
 
-    foreach ($webPush->flush() as $report) {
-        $endpoint = $report->getRequest()->getUri()->__toString();
+foreach ($webPush->flush() as $report) {
+    $endpoint = $report->getRequest()->getUri()->__toString();
 
-        if (!$report->isSuccess()) {
-            //TODO: log "Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
-        }
-        if ($report->isSubscriptionExpired()) {
-            $subscriptionRepository->delete($endpoint);
-            $researchRepository->deleteByEndpoint($endpoint);
-        }
+    if (!$report->isSuccess()) {
+        //TODO: log "Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+    }
+    if ($report->isSubscriptionExpired()) {
+        $subscriptionRepository->delete($endpoint);
+        $researchRepository->deleteByEndpoint($endpoint);
     }
 }
