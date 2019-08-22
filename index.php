@@ -11,7 +11,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/get-announcements', 'get_announcements_handler');
     $r->addRoute('POST', '/delete-research', 'delete_research_handler');
     $r->addRoute('POST', '/get-researches', 'get_researches_handler');
-    $r->addRoute('GET', '/test-cron', 'test_cron_handler');
     $r->addRoute('GET', '/get-location', 'get_location_handler');
 });
 
