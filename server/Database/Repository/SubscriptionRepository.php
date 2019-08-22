@@ -5,6 +5,7 @@ namespace SubitoPuntoItAlert\Database\Repository;
 use PDO;
 use SubitoPuntoItAlert\Database\Configuration;
 use SubitoPuntoItAlert\Database\Model\Subscription;
+use SubitoPuntoItAlert\Exception\MissingSubscriptionException;
 
 class SubscriptionRepository
 {
@@ -21,6 +22,7 @@ class SubscriptionRepository
     /**
      * @param string $endpoint
      * @return Subscription
+     * @throws MissingSubscriptionException
      */
     public function getSubscription(string $endpoint): Subscription
     {
@@ -36,7 +38,7 @@ class SubscriptionRepository
             $subscription->setContentEncoding($row['contentEncoding']);
             $subscription->setPublicKey($row['publicKey']);
         } else {
-            //TODO: there isn't any subscription
+            throw new MissingSubscriptionException();
         }
         return $subscription;
     }
