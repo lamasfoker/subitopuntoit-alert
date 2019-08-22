@@ -49,7 +49,7 @@ let AddResearch = {
         const headerTitle = null || document.querySelector('#header-title');
         const autoCompleteLocation = null || document.querySelector('.autocomplete');
 
-        M.Autocomplete.init(autoCompleteLocation);
+        M.Autocomplete.init(autoCompleteLocation, {limit: 7});
         headerTitle.innerText = 'Aggiungi una Ricerca';
         autoCompleteLocation.oninput = AddResearch.updateAutoCompleteLocation;
         form.onsubmit = AddResearch.sendResearch;
