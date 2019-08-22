@@ -118,8 +118,8 @@ class Announcement
      */
     private function getJsonData(string $url):? array
     {
-        $firstStringDelimiter = '__NEXT_DATA__ = ';
-        $secondStringDelimiter = ';__NEXT_LOADED_PAGES__';
+        $firstStringDelimiter = '<script id="__NEXT_DATA__" type="application/json">';
+        $secondStringDelimiter = '</script><script async="" id="__NEXT_PAGE__/listing"';
         $response = Requests::get($url);
         if ($response->status_code !== 200) {
             return null;
