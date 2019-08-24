@@ -83,7 +83,62 @@ let Announcements = {
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
+            Announcements.addDeleteBehaviour(cln);
         }
+    }
+
+    , addDeleteBehaviour: (card) => {
+        let movement = {};
+
+        card.addEventListener('touchstart', function(event) {
+            movement.x1 = event.changedTouches[0].screenX;
+            movement.y1 = event.changedTouches[0].screenY;
+        }, false);
+
+        card.addEventListener('touchend', function(event) {
+            movement.x2 = event.changedTouches[0].screenX;
+            movement.y2 = event.changedTouches[0].screenY;
+            Announcements.swipeAnimation(event.target.closest('.small.card'), movement);
+        }, false);
+    }
+
+    , swipeAnimation: async (card, movement) => {
+        if (
+            Math.abs(movement.x2 - movement.x1) < 150 ||
+            Math.abs(movement.y2 - movement.y1) > 50
+        ) {
+            return;
+        }
+
+        let initialFrame = {
+            transform: 'translateX(0)',
+            transformOrigin: '50% 50%',
+            filter: 'blur(0)',
+            opacity: 1
+        };
+
+        let finalFrame = {
+            transform: '',
+            transformOrigin: '50% 0',
+            filter: 'blur(40px)',
+            opacity: 0
+        };
+
+        if (movement.x2 > movement.x1) {
+            //move card to the right
+            finalFrame.transform = 'translateX(1000px)';
+        } else {
+            //move card to the left
+            finalFrame.transform = 'translateX(-1000px)';
+        }
+
+        await card.animate([initialFrame, finalFrame], 700);
+        Announcements.deleteAnnouncement(card);
+    }
+
+    , deleteAnnouncement: (card) => {
+        card.remove();
+        //TODO: delete from server
     }
 };
 
