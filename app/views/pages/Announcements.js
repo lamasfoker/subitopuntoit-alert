@@ -10,7 +10,7 @@ let Announcements = {
                         <div class="small card">
                             <a href="#/error" target="_blank">
                                 <div class="card-image">
-                                    <img src="/app/assets/images/no-photo-available.png" alt="announcement-image">
+                                    <img src="/app/assets/images/no-photo-available.svg" alt="announcement-image">
                                 </div>
                             </a>
                             <div class="card-content">
@@ -67,14 +67,15 @@ let Announcements = {
         for (let i=0; i < jsonResponse.data.length; i++ ) {
             let announcement = JSON.parse(jsonResponse.data[i]);
             let cln = listElement.cloneNode(true);
+            let clnImage = cln.querySelector('img');
             announcement.date = announcement.date.slice(0, -3);
 
-            if (announcement.price === 'undefined') {
-                announcement.price = 'Prezzo non definito';
-            }
-
-            if (announcement.imageUrl !== 'undefined') {
-                cln.querySelector('img').setAttribute('src', announcement.imageUrl);
+            if (announcement.imageUrl !== null) {
+                clnImage.setAttribute('src', announcement.imageUrl);
+            } else {
+                clnImage.style.height = '100%';
+                clnImage.style.transform = 'translate(50%)';
+                clnImage.style.width = '50%';
             }
             cln.querySelector('a').setAttribute('href', announcement.url);
             cln.querySelector('.title').innerHTML = announcement.name;
