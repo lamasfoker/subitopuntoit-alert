@@ -83,31 +83,33 @@ let Announcements = {
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
-            Announcements.addDeleteBehaviour(cln);
+            Announcements.addDeleteBehaviour(cln, jsonResponse.data[i]);
         }
     }
 
-    , addDeleteBehaviour: (card) => {
+    , addDeleteBehaviour: (card, announcementData) => {
         let movement = {};
 
-        card.addEventListener('touchstart', function(event) {
+        card.addEventListener('touchstart', (event) => {
             movement.x1 = event.changedTouches[0].screenX;
             movement.y1 = event.changedTouches[0].screenY;
         }, false);
 
-        card.addEventListener('touchend', function(event) {
+        card.addEventListener('touchend', async (event) => {
             movement.x2 = event.changedTouches[0].screenX;
             movement.y2 = event.changedTouches[0].screenY;
-            Announcements.swipeAnimation(event.target.closest('.small.card'), movement);
+            await Announcements.swipeAnimation(card, movement);
+            card.remove();
+            Announcements.deleteAnnouncement(announcementData);
         }, false);
     }
 
-    , swipeAnimation: async (card, movement) => {
+    , swipeAnimation: (card, movement) => {
         if (
             Math.abs(movement.x2 - movement.x1) < 150 ||
             Math.abs(movement.y2 - movement.y1) > 50
         ) {
-            return;
+            throw 'doesn\'t swipe, too short or wrong movement';
         }
 
         let initialFrame = {
@@ -132,13 +134,31 @@ let Announcements = {
             finalFrame.transform = 'translateX(-1000px)';
         }
 
-        await card.animate([initialFrame, finalFrame], 700);
-        Announcements.deleteAnnouncement(card);
+        let cardAnimation = card.animate([initialFrame, finalFrame], 600);
+        //TODO: use 'await cardAnimation.finished;' when browser support it
+        //      see https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished
+        return new Promise( (resolve) => {
+            cardAnimation.addEventListener('finish', resolve);
+        });
     }
 
-    , deleteAnnouncement: (card) => {
-        card.remove();
-        //TODO: delete from server
+    , deleteAnnouncement: async (announcementData) => {
+        const serviceWorkerRegistration = await navigator.serviceWorker.ready;
+        const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
+        const endpoint = subscription.toJSON().endpoint;
+
+        let jsonBody = {
+            'endpoint': endpoint,
+            'details': announcementData
+        };
+
+        let jsonResponse = await ApiRequest.post(
+            '/delete-announcement',
+            JSON.stringify(jsonBody)
+        );
+        if (jsonResponse.code !== 200) {
+            M.toast({html: jsonResponse.message});
+        }
     }
 };
 

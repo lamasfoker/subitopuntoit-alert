@@ -10,6 +10,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/add-research', 'add_research_handler');
     $r->addRoute('POST', '/get-announcements', 'get_announcements_handler');
     $r->addRoute('POST', '/delete-research', 'delete_research_handler');
+    $r->addRoute('POST', '/delete-announcement', 'delete_announcement_handler');
     $r->addRoute('POST', '/get-researches', 'get_researches_handler');
     $r->addRoute('GET', '/get-location', 'get_location_handler');
 });
@@ -62,6 +63,11 @@ function get_announcements_handler(){
 
 function delete_research_handler(){
     require __DIR__.'/server/service/delete_research.php';
+    return;
+}
+
+function delete_announcement_handler(){
+    require __DIR__.'/server/service/delete_announcement.php';
     return;
 }
 
