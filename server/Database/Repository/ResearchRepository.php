@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
@@ -34,7 +35,7 @@ class ResearchRepository
             $research = new Research($row['endpoint']);
             $research->setLocation($row['location']);
             $research->setLocationParameters($row['locationParameters']);
-            $research->setOnlyInTitle($row['onlyInTitle']);
+            $research->setOnlyInTitle($row['onlyInTitle']==='1');
             $research->setQuery($row['query']);
             $research->setLastCheck($row['lastCheck']);
             $researches[] = $research;
@@ -106,7 +107,7 @@ class ResearchRepository
             $research = new Research($row['endpoint']);
             $research->setLocation($row['location']);
             $research->setLocationParameters($row['locationParameters']);
-            $research->setOnlyInTitle($row['onlyInTitle']);
+            $research->setOnlyInTitle($row['onlyInTitle']==='1');
             $research->setLastCheck($row['lastCheck']);
             $research->setQuery($row['query']);
             $researches[] = $research;

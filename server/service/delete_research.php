@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use SubitoPuntoItAlert\Api\Response;
 use SubitoPuntoItAlert\Database\Model\Research;

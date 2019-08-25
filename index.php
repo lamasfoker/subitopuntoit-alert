@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {

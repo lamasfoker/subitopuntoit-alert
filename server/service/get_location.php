@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use SubitoPuntoItAlert\Api\Location;
 use SubitoPuntoItAlert\Api\Response;

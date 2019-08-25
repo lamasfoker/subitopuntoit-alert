@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use SubitoPuntoItAlert\Database\Model\Subscription;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
