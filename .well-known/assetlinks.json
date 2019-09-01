@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.lamasfoker.alert",
+    "sha256_cert_fingerprints":
+    ["27:3A:10:00:BD:3F:67:C7:D2:D3:AD:E4:77:35:9D:F8:28:9C:C5:29:A6:E0:53:19:E8:20:05:DF:6E:97:F2:70"]
+  }
+}]
