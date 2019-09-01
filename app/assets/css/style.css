@@ -81,7 +81,7 @@ input {
 }
 
 form#add-research-form.col.s12 {
-    padding: 1.5rem;
+    padding: 1.4rem;
 }
 
 .blue-button {
@@ -107,4 +107,8 @@ div.input-field.col.s12.text {
 
 .no-elements h5 {
     margin-top: 0;
+}
+
+.btn-flat:focus {
+     background-color: #F94139 !important;
 }
