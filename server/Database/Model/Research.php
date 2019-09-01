@@ -126,11 +126,13 @@ class Research
 
     public function setLastCheckToday(): void
     {
+        date_default_timezone_set('Europe/Rome');
         $this->lastCheck = date("Y-m-d H:i:s");
     }
 
     public function setLastCheckYesterday(): void
     {
+        date_default_timezone_set('Europe/Rome');
         $this->lastCheck = date("Y-m-d H:i:s",strtotime("-1 days"));
     }
 
