@@ -22,6 +22,7 @@ foreach ($researches as $research){
     $response = $api->getAnnouncement($research);
     $research->setLastCheckToday();
     $researchRepository->save($research);
+    $endpoint = $research->getEndpoint();
 
     if ($response->getHttpCode() !== 200){
         //TODO log something
@@ -29,18 +30,18 @@ foreach ($researches as $research){
     }
 
     foreach ($response->getData() as $detail) {
-        $announcement = new AnnouncementModel($research->getEndpoint());
+        $announcement = new AnnouncementModel($endpoint);
         $announcement->setDetails(json_encode($detail));
         $announcementRepository->save($announcement);
     }
 
     try {
-        $subscriptionModel = $subscriptionRepository->getSubscription($research->getEndpoint());
+        $subscriptionModel = $subscriptionRepository->getSubscription($endpoint);
     } catch (MissingSubscriptionException $e) {
-        $researchRepository->delete($research);
+        $researchRepository->deleteByEndpoint($endpoint);
+        $announcementRepository->deleteByEndpoint($endpoint);
         continue;
     }
-    $endpoint = $subscriptionModel->getEndpoint();
     if (!array_key_exists($endpoint, $subscriptions)) {
         $subscriptions[$endpoint] = new Subscription(
             $endpoint,
@@ -75,6 +76,7 @@ foreach ($subscriptions as $subscription) {
         if ($report->isSubscriptionExpired()) {
             $subscriptionRepository->delete($endpoint);
             $researchRepository->deleteByEndpoint($endpoint);
+            $announcementRepository->deleteByEndpoint($endpoint);
         }
     }
 }
