@@ -5,6 +5,7 @@ use SubitoPuntoItAlert\Database\Model\Subscription;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
+use SubitoPuntoItAlert\Exception\MissingSubscriptionException;
 
 $researchRepository = new ResearchRepository();
 $announcementRepository = new AnnouncementRepository();
@@ -33,10 +34,15 @@ switch ($method) {
         break;
     case 'PUT':
         // update the key and token of subscription corresponding to the endpoint
-        $subscriptionModel = $subscriptionRepository->getSubscription($subscription['endpoint']);
-        $subscriptionModel->setPublicKey($subscription['publicKey']);
-        $subscriptionModel->setAuthToken($subscription['authToken']);
-        $subscriptionRepository->save($subscriptionModel);
+        try {
+            $subscriptionModel = $subscriptionRepository->getSubscription($subscription['endpoint']);
+            $subscriptionModel->setPublicKey($subscription['publicKey']);
+            $subscriptionModel->setAuthToken($subscription['authToken']);
+            $subscriptionRepository->save($subscriptionModel);
+        } catch (MissingSubscriptionException $e) {
+            $researchRepository->deleteByEndpoint($subscription['endpoint']);
+            $announcementRepository->deleteByEndpoint($subscription['endpoint']);
+        }
         break;
     case 'DELETE':
         // delete the subscription corresponding to the endpoint
