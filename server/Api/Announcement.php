@@ -76,7 +76,7 @@ class Announcement
         }
         $isOnlyInTitle = $research->isOnlyInTitle() ? 'true' : 'false';
         $query = urlencode($research->getQuery());
-        return 'https://www.subito.it/annunci-' . $region . '/vendita/usato' . $city . $town . '/?qso=.' . $isOnlyInTitle . '&q=' . $query;
+        return 'https://www.subito.it/annunci-' . $region . '/vendita/usato' . $city . $town . '/?qso=' . $isOnlyInTitle . '&q=' . $query;
     }
 
     /**
