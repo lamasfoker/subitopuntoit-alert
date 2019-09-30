@@ -28,6 +28,14 @@ if (
     return;
 }
 
+$query = $research['query'];
+if ($query === '') {
+    $response->setHttpCode(404);
+    $response->setMessage('ERRORE: inserisci un termine di ricerca');
+    $response->send();
+    return;
+}
+
 $locationApi = new Location();
 $locationInfo = parse_location($research['location']);
 
@@ -47,7 +55,7 @@ $researchModel = new Research($research['endpoint']);
 $researchModel->setLocation($dataLocation['name']);
 $researchModel->setLocationParameters($dataLocation['parameters']);
 $researchModel->setOnlyInTitle($research['only_title']);
-$researchModel->setQuery($research['query']);
+$researchModel->setQuery($query);
 $researchModel->setLastCheckYesterday();
 
 if (!$announcementApi->validate($researchModel)){
