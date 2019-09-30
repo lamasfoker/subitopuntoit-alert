@@ -41,6 +41,24 @@ class AnnouncementRepository
     }
 
     /**
+     * @return array
+     */
+    public function getAllAnnouncements(): array
+    {
+        $stmt = $this->getDb()->prepare(
+            'SELECT * FROM Announcement'
+        );
+        $stmt->execute();
+        $announcements = [];
+        while ($row = $stmt->fetch()){
+            $announcement = new Announcement($row['endpoint']);
+            $announcement->setDetails($row['details']);
+            $announcements[] = $announcement;
+        }
+        return $announcements;
+    }
+
+    /**
      * @param Announcement $announcement
      */
     public function delete(Announcement $announcement): void
