@@ -45,9 +45,9 @@ let AddResearch = {
     }
 
     , after_render: async () => {
-        const form = null || document.querySelector('#add-research-form');
-        const headerTitle = null || document.querySelector('#header-title');
-        const autoCompleteLocation = null || document.querySelector('.autocomplete');
+        const form = document.querySelector('#add-research-form');
+        const headerTitle = document.querySelector('#header-title');
+        const autoCompleteLocation = document.querySelector('.autocomplete');
 
         M.Autocomplete.init(autoCompleteLocation, {limit: 7});
         headerTitle.innerText = 'Aggiungi una Ricerca';
@@ -82,9 +82,9 @@ let AddResearch = {
         event.preventDefault();
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
-        const location = null || document.querySelector('#location');
-        const query = null || document.querySelector('#query');
-        const checkbox = null || document.querySelector('#only-title');
+        const location = document.querySelector('#location');
+        const query = document.querySelector('#query');
+        const checkbox = document.querySelector('#only-title');
         const endpoint = subscription.toJSON().endpoint;
 
         let jsonForm = {

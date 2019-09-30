@@ -7,7 +7,7 @@ let TestNotification = {
     }
 
     , after_render: async (event) => {
-        const headerTitle = null || document.getElementById('header-title');
+        const headerTitle = document.getElementById('header-title');
         headerTitle.innerText = 'Notifica di Test';
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();

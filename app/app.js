@@ -22,15 +22,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('[SW] Service worker registration failed', e);
     }
 
-    const headerBarContainer = null || document.querySelector('#headerbar-container');
-    const bottomBarContainer = null || document.querySelector('#bottombar-container');
+    const headerBarContainer = document.querySelector('#headerbar-container');
+    const bottomBarContainer = document.querySelector('#bottombar-container');
 
     headerBarContainer.innerHTML = await HeaderBar.render();
     bottomBarContainer.innerHTML = await BottomBar.render();
     window.onhashchange = router;
 
     if (!PushNotification.isNotificationActive()) {
-        const mainContainer = null || document.querySelector('#main-container');
+        const mainContainer = document.querySelector('#main-container');
         await PushNotification.push_subscribe();
         PushNotification.setNotificationActive(true);
         mainContainer.innerHTML = await AddResearch.render();
@@ -54,7 +54,7 @@ const routes = {
 };
 
 const router = async () => {
-    const content = null || document.querySelector('#main-container');
+    const content = document.querySelector('#main-container');
     let parsedURL = location.hash.slice(1);
     let page = routes[parsedURL] ? routes[parsedURL] : Error404;
     content.innerHTML = await page.render();

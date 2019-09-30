@@ -38,7 +38,7 @@ let Announcements = {
     }
 
     , after_render: async () => {
-        const headerTitle = null || document.getElementById('header-title');
+        const headerTitle = document.getElementById('header-title');
         headerTitle.innerText = 'Annunci';
 
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
@@ -53,7 +53,7 @@ let Announcements = {
         );
 
         if (jsonResponse.code === 404) {
-            const content = null || document.querySelector('#main-container');
+            const content = document.querySelector('#main-container');
             content.innerHTML = await Announcements.empty_render();
             return;
         }
