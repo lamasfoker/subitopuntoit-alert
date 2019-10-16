@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Api;
 
+use KubAT\PhpSimple\HtmlDomParser;
 use Requests;
 use SubitoPuntoItAlert\Database\Model\Research;
 
@@ -119,15 +120,12 @@ class Announcement
      */
     private function getJsonData(string $url):? array
     {
-        $firstStringDelimiter = '<script id="__NEXT_DATA__" type="application/json">';
-        $secondStringDelimiter = '</script><script async="" id="__NEXT_PAGE__/listing"';
         $response = Requests::get($url);
         if ($response->status_code !== 200) {
             return null;
         }
-        $dataStart = strpos($response->body, $firstStringDelimiter) + strlen($firstStringDelimiter);
-        $dataLength = strpos($response->body, $secondStringDelimiter) - $dataStart;
-        $data = substr($response->body, $dataStart, $dataLength);
+        $page = HtmlDomParser::str_get_html($response->body);
+        $data = $page->find('script#__NEXT_DATA__')[0]->innertext();
         return json_decode($data, true)['props']['state']['items'];
     }
 
