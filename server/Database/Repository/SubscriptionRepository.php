@@ -45,6 +45,26 @@ class SubscriptionRepository
     }
 
     /**
+     * @return Subscription[]
+     */
+    public function getSubscriptions(): array
+    {
+        $stmt = $this->getDb()->prepare(
+            'SELECT * FROM Subscription '
+        );
+        $stmt->execute();
+        $subscriptions = [];
+        while ($row = $stmt->fetch()){
+            $subscription = new Subscription($row['endpoint']);
+            $subscription->setAuthToken($row['authToken']);
+            $subscription->setContentEncoding($row['contentEncoding']);
+            $subscription->setPublicKey($row['publicKey']);
+            $subscriptions[] = $subscription;
+        }
+        return $subscriptions;
+    }
+
+    /**
      * @param Subscription $subscription
      */
     public function save(Subscription $subscription): void
