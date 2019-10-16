@@ -15,7 +15,7 @@ $announcementRepository = new AnnouncementRepository();
 $researchRepository = new ResearchRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $api = new Announcement();
-$researches = $researchRepository->getAllResearch();
+$researches = $researchRepository->getResearches();
 $subscriptions = [];
 
 foreach ($researches as $research){

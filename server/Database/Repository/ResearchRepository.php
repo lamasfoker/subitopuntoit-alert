@@ -96,7 +96,7 @@ class ResearchRepository
     /**
      * @return Research[]
      */
-    public function getAllResearch(): array
+    public function getResearches(): array
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Research'
