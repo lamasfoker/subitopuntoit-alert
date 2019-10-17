@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Api;
 
-use Requests;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 class Location
 {
@@ -17,12 +18,6 @@ class Location
         $data = $this->getJsonData($url);
 
         $response = new Response();
-
-        if (is_null($data)) {
-            $response->setHttpCode(400);
-            $response->setMessage('url error');
-            return $response;
-        }
 
         if ($data === []) {
             $response->setHttpCode(204);
@@ -49,14 +44,16 @@ class Location
 
     /**
      * @param string $url
-     * @return array|null
+     * @return array
      */
-    private function getJsonData(string $url):? array
+    private function getJsonData(string $url): array
     {
-        $response = Requests::get($url);
-        if ($response->status_code !== 200) {
-            return null;
+        $client = HttpClient::create();
+        try {
+            $response = $response = $client->request('GET', $url);
+            return $response->toArray()['data'];
+        } catch (ExceptionInterface $e) {
+            return [];
         }
-        return json_decode($response->body, true)['data'];
     }
 }

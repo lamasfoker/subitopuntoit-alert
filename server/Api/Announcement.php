@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Api;
 
-use KubAT\PhpSimple\HtmlDomParser;
-use Requests;
 use SubitoPuntoItAlert\Database\Model\Research;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 class Announcement
 {
@@ -20,7 +21,7 @@ class Announcement
         $response = new Response();
         $lastCheck = $research->getLastCheck();
 
-        if (!$data) {
+        if (empty($data)) {
             $response->setHttpCode(400);
             $response->setMessage('url error');
             return $response;
@@ -55,7 +56,7 @@ class Announcement
     public function validate(Research $research): bool
     {
         $url = $this->getUrl($research);
-        return is_array($this->getJsonData($url));
+        return !empty($this->getJsonData($url));
     }
 
 
@@ -116,17 +117,18 @@ class Announcement
 
     /**
      * @param string $url
-     * @return array|null
+     * @return array
      */
-    private function getJsonData(string $url):? array
+    private function getJsonData(string $url): array
     {
-        $response = Requests::get($url);
-        if ($response->status_code !== 200) {
-            return null;
+        try {
+            $client = HttpClient::create();
+            $response = $client->request('GET', $url);
+            $crawler = new Crawler($response->getContent());
+            $data = $crawler->filter('script#__NEXT_DATA__')->text();
+            return json_decode($data, true)['props']['state']['items'];
+        } catch (ExceptionInterface $e) {
+            return [];
         }
-        $page = HtmlDomParser::str_get_html($response->body);
-        $data = $page->find('script#__NEXT_DATA__')[0]->innertext();
-        return json_decode($data, true)['props']['state']['items'];
     }
-
 }
