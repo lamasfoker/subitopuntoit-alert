@@ -15,7 +15,7 @@ foreach ($announcements as $announcement) {
     if (array_key_exists('url', $jsonDetails)) {
         $url = $jsonDetails['url'];
 
-        $response = $client->request('GET', $url);
+        $response = $client->request('HEAD', $url);
         if ($response->getStatusCode() !== 410) {
             continue;
         }
