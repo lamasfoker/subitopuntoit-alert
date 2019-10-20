@@ -14,7 +14,7 @@ class Announcement
      * @param Research $research
      * @return Response
      */
-    public function getAnnouncement(Research $research): Response
+    public function getAnnouncements(Research $research): Response
     {
         $url = $this->getUrl($research);
         $data = $this->getJsonData($url);

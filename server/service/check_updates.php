@@ -19,7 +19,7 @@ $researches = $researchRepository->getResearches();
 $subscriptions = [];
 
 foreach ($researches as $research){
-    $response = $api->getAnnouncement($research);
+    $response = $api->getAnnouncements($research);
     $research->setLastCheckToday();
     $researchRepository->save($research);
     $endpoint = $research->getEndpoint();
