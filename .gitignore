@@ -1,3 +1,2 @@
 /vendor/
-/.idea/
-keys/private_key.txt
+env.php

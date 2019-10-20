@@ -12,9 +12,9 @@ class Configuration
      */
     static function getDB(): PDO
     {
-        $dsn = 'mysql:dbname=subitopuntoitalert;host=127.0.0.1';
-        $user = 'root';
-        $password = '';
+        $dsn = 'mysql:dbname=' . getenv('DB_NAME') . ';host=' . getenv('DB_HOST');
+        $user = getenv('DB_USER');
+        $password = getenv('DB_PASSWORD');
         //TODO: handle the Exception
         return new PDO($dsn, $user, $password, array(PDO::ATTR_PERSISTENT => true));
     }

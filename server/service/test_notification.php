@@ -13,9 +13,9 @@ $response = new Response();
 
 $auth = array(
     'VAPID' => array(
-        'subject' => 'https://github.com/Minishlink/web-push-php-example/',
-        'publicKey' => file_get_contents('keys/public_key.txt'), // don't forget that your public key also lives in app.js
-        'privateKey' => file_get_contents('keys/private_key.txt'), // in the real world, this would be in a secret file
+        'subject' => 'https://github.com/lamasfoker/subitopuntoitalert',
+        'publicKey' => getenv('PUBLIC_KEY'),
+        'privateKey' => getenv('PRIVATE_KEY'),
     ),
 );
 

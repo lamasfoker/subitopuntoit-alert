@@ -55,9 +55,9 @@ foreach ($researches as $research){
 //TODO: move private key in a secret file
 $auth = [
     'VAPID' => [
-        'subject' => 'mailto:giacomomoscardini@gmail.com',
-        'publicKey' => file_get_contents(__DIR__ . '/../../keys/public_key.txt'),
-        'privateKey' => file_get_contents(__DIR__ . '/../../keys/private_key.txt'),
+        'subject' => 'https://github.com/lamasfoker/subitopuntoitalert',
+        'publicKey' => getenv('PUBLIC_KEY'),
+        'privateKey' => getenv('PRIVATE_KEY'),
     ],
 ];
 
