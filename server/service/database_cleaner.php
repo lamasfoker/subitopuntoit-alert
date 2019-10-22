@@ -7,7 +7,7 @@ use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use Symfony\Component\HttpClient\HttpClient;
 
 $announcementRepository = new AnnouncementRepository();
-$announcements = $announcementRepository->getAllAnnouncements();
+$announcements = $announcementRepository->getAnnouncements();
 $client = HttpClient::create();
 
 foreach ($announcements as $announcement) {

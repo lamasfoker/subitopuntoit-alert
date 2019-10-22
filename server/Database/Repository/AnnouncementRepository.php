@@ -43,7 +43,7 @@ class AnnouncementRepository
     /**
      * @return array
      */
-    public function getAllAnnouncements(): array
+    public function getAnnouncements(): array
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Announcement'
