@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
+use Generator;
 use PDO;
 use SubitoPuntoItAlert\Database\Configuration;
 use SubitoPuntoItAlert\Database\Model\Subscription;
@@ -45,23 +46,21 @@ class SubscriptionRepository
     }
 
     /**
-     * @return Subscription[]
+     * @return Generator
      */
-    public function getSubscriptions(): array
+    public function getSubscriptions(): Generator
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Subscription '
         );
         $stmt->execute();
-        $subscriptions = [];
         while ($row = $stmt->fetch()){
             $subscription = new Subscription($row['endpoint']);
             $subscription->setAuthToken($row['authToken']);
             $subscription->setContentEncoding($row['contentEncoding']);
             $subscription->setPublicKey($row['publicKey']);
-            $subscriptions[] = $subscription;
+            yield $subscription;
         }
-        return $subscriptions;
     }
 
     /**

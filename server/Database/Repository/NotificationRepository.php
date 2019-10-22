@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
+use Generator;
 use PDO;
 use SubitoPuntoItAlert\Database\Configuration;
 use SubitoPuntoItAlert\Database\Model\Notification;
@@ -20,21 +21,19 @@ class NotificationRepository
     }
 
     /**
-     * @return array
+     * @return Generator
      */
-    public function getNotifications(): array
+    public function getNotifications(): Generator
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Notification'
         );
         $stmt->execute();
-        $notifications = [];
         while ($row = $stmt->fetch()){
             $notification = new Notification($row['endpoint']);
             $notification->setMessage($row['message']);
-            $notifications[] = $notification;
+            yield $notification;
         }
-        return $notifications;
     }
 
     public function deleteAll(): void

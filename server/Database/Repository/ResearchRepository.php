@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
+use Generator;
 use PDO;
 use SubitoPuntoItAlert\Database\Configuration;
 use SubitoPuntoItAlert\Database\Model\Research;
@@ -94,15 +95,14 @@ class ResearchRepository
     }
 
     /**
-     * @return Research[]
+     * @return Generator
      */
-    public function getResearches(): array
+    public function getResearches(): Generator
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Research'
         );
         $stmt->execute();
-        $researches = [];
         while ($row = $stmt->fetch()){
             $research = new Research($row['endpoint']);
             $research->setLocation($row['location']);
@@ -110,9 +110,8 @@ class ResearchRepository
             $research->setOnlyInTitle($row['onlyInTitle']==='1');
             $research->setLastCheck($row['lastCheck']);
             $research->setQuery($row['query']);
-            $researches[] = $research;
+            yield $research;
         }
-        return $researches;
     }
 
     /**

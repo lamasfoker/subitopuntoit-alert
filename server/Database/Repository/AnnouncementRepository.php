@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
+use Generator;
 use PDO;
 use SubitoPuntoItAlert\Database\Configuration;
 use SubitoPuntoItAlert\Database\Model\Announcement;
@@ -41,21 +42,19 @@ class AnnouncementRepository
     }
 
     /**
-     * @return array
+     * @return Generator
      */
-    public function getAnnouncements(): array
+    public function getAnnouncements(): Generator
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Announcement'
         );
         $stmt->execute();
-        $announcements = [];
         while ($row = $stmt->fetch()){
             $announcement = new Announcement($row['endpoint']);
             $announcement->setDetails($row['details']);
-            $announcements[] = $announcement;
+            yield $announcement;
         }
-        return $announcements;
     }
 
     /**
