@@ -1,48 +1,29 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/../../vendor/autoload.php';
+set_time_limit(3600);
 
-use Minishlink\WebPush\Subscription;
-use Minishlink\WebPush\WebPush;
-use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
-use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
+use SubitoPuntoItAlert\Database\Model\Notification;
+use SubitoPuntoItAlert\Database\Repository\NotificationRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
+use SubitoPuntoItAlert\Notification\Sender;
 
+$notificationRepository = new NotificationRepository();
 $subscriptionRepository = new SubscriptionRepository();
-$announcementRepository = new AnnouncementRepository();
-$researchRepository = new ResearchRepository();
+$sender = new Sender();
 
 foreach ($subscriptionRepository->getSubscriptions() as $subscriptionModel){
-    $subscription = new Subscription(
-        $subscriptionModel->getEndpoint(),
-        $subscriptionModel->getPublicKey(),
-        $subscriptionModel->getAuthToken(),
-        $subscriptionModel->getContentEncoding()
-    );
+    $notification = new Notification($subscriptionModel->getEndpoint());
+    $notificationRepository->save($notification);
+}
 
-    $auth = [
-        'VAPID' => [
-            'subject' => 'https://github.com/lamasfoker/subitopuntoitalert',
-            'publicKey' => getenv('PUBLIC_KEY'),
-            'privateKey' => getenv('PRIVATE_KEY'),
-        ],
-    ];
-
-    $webPush = new WebPush($auth);
-    $res = $webPush->sendNotification(
-        $subscription,
-        'Ci scusiamo se ieri hai riscontrato malfunzionamenti'
-    );
-    foreach ($webPush->flush() as $report) {
-        $endpoint = $report->getRequest()->getUri()->__toString();
-
-        if (!$report->isSuccess()) {
-            //TODO: log "Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
-        }
-        if ($report->isSubscriptionExpired()) {
-            $subscriptionRepository->delete($endpoint);
-            $researchRepository->deleteByEndpoint($endpoint);
-            $announcementRepository->deleteByEndpoint($endpoint);
-        }
+try {
+    foreach ($notificationRepository->getNotifications() as $notification) {
+        $notification->setMessage("Ci scusiamo se ieri hai riscontrato malfunzionamenti");
+        $sender->send($notification);
+        $notificationRepository->delete($notification);
     }
+    $sender->flushReports();
+} catch (ErrorException $e) {
+    $notificationRepository->deleteAll();
 }
