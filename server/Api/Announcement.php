@@ -102,7 +102,11 @@ class Announcement
             } else {
                 $extractedUpdate[$key]['price'] = null;
             }
-            $extractedUpdate[$key]['town'] = $announcement['geo']['town']['value'];
+            if (array_key_exists('town', $announcement['geo'])) {
+                $extractedUpdate[$key]['town'] = $announcement['geo']['town']['value'];
+            } else {
+                $extractedUpdate[$key]['town'] = null;
+            }
             if (count($announcement['images']) > 0) {
                 $extractedUpdate[$key]['imageUrl'] = $announcement['images'][0]['scale'][4]['secureuri'];
             } else {

@@ -80,6 +80,9 @@ let Announcements = {
             cln.querySelector('a').setAttribute('href', announcement.url);
             cln.querySelector('.title').innerHTML = announcement.name;
             cln.querySelector('.price').innerHTML = announcement.price;
+            if (announcement.town === null) {
+                announcement.town = 'Italia';
+            }
             cln.querySelector('.town').innerHTML = announcement.date+' - '+announcement.town;
 
             document.getElementById("announcements-list").appendChild(cln);
