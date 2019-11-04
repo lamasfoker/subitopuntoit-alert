@@ -1,8 +1,10 @@
+"use strict";
+
 import ApiRequest from "../../services/ApiRequest.js";
 
 let AddResearch = {
 
-    render : async () => {
+    render: () => {
         return `
             <div class="row">
                 <form class="col s12" method="POST" action="" id="add-research-form">
@@ -55,7 +57,7 @@ let AddResearch = {
         form.onsubmit = AddResearch.sendResearch;
     }
 
-    , updateAutoCompleteLocation : async (event) => {
+    , updateAutoCompleteLocation: async (event) => {
         let inputText = event.target;
         let autocomplete = M.Autocomplete.getInstance(inputText);
         let jsonResponse = await ApiRequest.get('/get-location?q=' + inputText.value);
@@ -64,7 +66,7 @@ let AddResearch = {
         }
 
         let locations = {};
-        for (let i=0; i<jsonResponse.data.length; i++) {
+        for (let i = 0; i < jsonResponse.data.length; i++) {
             let dataLocation = jsonResponse.data[i];
             let label = dataLocation.region.value + ' regione';
             if ('city' in dataLocation) {
@@ -78,7 +80,7 @@ let AddResearch = {
         autocomplete.updateData(locations);
     }
 
-    , sendResearch : async (event) => {
+    , sendResearch: async (event) => {
         event.preventDefault();
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
@@ -89,7 +91,7 @@ let AddResearch = {
 
         let jsonForm = {
             'location': location.value,
-            'only_title' : checkbox.checked,
+            'only_title': checkbox.checked,
             'query': query.value,
             'endpoint': endpoint
         };

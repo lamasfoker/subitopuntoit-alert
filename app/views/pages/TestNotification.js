@@ -1,8 +1,10 @@
-import ApiRequest       from "../../services/ApiRequest.js";
+"use strict";
+
+import ApiRequest from "../../services/ApiRequest.js";
 
 let TestNotification = {
 
-    render: async () => {
+    render: () => {
         return /*html*/ ``
     }
 

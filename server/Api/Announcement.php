@@ -28,7 +28,7 @@ class Announcement
         }
 
         $announcementNumber = $data['total'];
-        if ($announcementNumber <= 0 ) {
+        if ($announcementNumber <= 0) {
             $response->setHttpCode(204);
             $response->setMessage('no announcement');
             return $response;
@@ -59,7 +59,6 @@ class Announcement
         return !empty($this->getJsonData($url));
     }
 
-
     /**
      * @param Research $research
      * @return string
@@ -74,7 +73,7 @@ class Announcement
             $city = '/' . $locationParameters[1];
         }
         if (count($locationParameters) === 3) {
-            $town = '/'. $locationParameters[2];
+            $town = '/' . $locationParameters[2];
         }
         $isOnlyInTitle = $research->isOnlyInTitle() ? 'true' : 'false';
         $query = urlencode($research->getQuery());

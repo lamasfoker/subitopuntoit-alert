@@ -9,9 +9,9 @@ var filesToCache = [
 ];
 
 /* Start the service worker and cache all of the app's content */
-self.addEventListener('install', function(e) {
+self.addEventListener('install', function (e) {
     e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
+        caches.open(cacheName).then(function (cache) {
             return cache.addAll(filesToCache);
         })
     );
@@ -27,8 +27,7 @@ self.addEventListener('fetch', event => {
                 return caches.match('/app/offline.html');
             })
         );
-    }
-    else{
+    } else {
         // Respond with everything else if we can
         event.respondWith(caches.match(event.request)
             .then(function (response) {
@@ -58,11 +57,11 @@ self.addEventListener('push', function (event) {
     }
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
     event.notification.close();
     event.waitUntil(clients.matchAll({
         type: "window"
-    }).then(function(clientList) {
+    }).then(function (clientList) {
         for (var i = 0; i < clientList.length; i++) {
             var client = clientList[i];
             if (client.url === '/app/index.html' && 'focus' in client)

@@ -1,3 +1,5 @@
+"use strict";
+
 import PushNotification from "../../services/PushNotification.js";
 
 let AskPermission = {

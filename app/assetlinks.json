@@ -1,9 +1,14 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.lamasfoker.alert",
-    "sha256_cert_fingerprints":
-    ["7D:C5:E0:75:1E:01:6A:FC:9C:CB:8F:62:D8:EA:80:27:B7:45:41:FB:B3:3B:90:AA:BA:4E:0C:02:EB:95:5C:6E"]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.lamasfoker.alert",
+      "sha256_cert_fingerprints": [
+        "7D:C5:E0:75:1E:01:6A:FC:9C:CB:8F:62:D8:EA:80:27:B7:45:41:FB:B3:3B:90:AA:BA:4E:0C:02:EB:95:5C:6E"
+      ]
+    }
   }
-}]
+]

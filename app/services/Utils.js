@@ -1,3 +1,5 @@
+"use strict";
+
 const Utils = {
     isBrowserCompatible: () => {
         if (!('serviceWorker' in navigator)) {

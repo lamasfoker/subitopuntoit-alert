@@ -1,6 +1,8 @@
+"use strict";
+
 const PushNotification = {
 
-    applicationServerKey :
+    applicationServerKey:
         'BJYxEPF0eVawhwlkHyiueIZodXUtwM0bZXi6ybU9TTCsQj-8-Yc7qg9VxqWPw1uMxmyhArnC7cSkskKzs4n_E7U'
 
     , isNotificationActive: () => {
@@ -10,7 +12,7 @@ const PushNotification = {
     , setNotificationActive: (state) => {
         localStorage.setItem('isNotificationActive', state);
     }
-    
+
     , urlBase64ToUint8Array: (base64String) => {
         const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
         const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');

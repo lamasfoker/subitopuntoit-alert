@@ -1,9 +1,11 @@
+"use strict";
+
 import ApiRequest from "../../services/ApiRequest.js";
-import Utils      from "../../services/Utils.js";
+import Utils from "../../services/Utils.js";
 
 let Researches = {
 
-    render : async () => {
+    render: () => {
         return `
             <ul id="researches-list" class="collection">
                 <li style="display: none" class="collection-item avatar">
@@ -55,13 +57,13 @@ let Researches = {
 
         const listElement = document.getElementById("researches-list").firstElementChild;
 
-        for (let i=0; i < jsonResponse.data.length; i++ ) {
+        for (let i = 0; i < jsonResponse.data.length; i++) {
             let research = jsonResponse.data[i];
             let locationInfo = Researches.getLocationInfo(research.location_parameters.split(' ').length);
             let cln = listElement.cloneNode(true);
 
             cln.querySelector('.title').innerHTML = Utils.ucFirst(research.query);
-            cln.querySelector('.location').innerHTML = locationInfo+research.location;
+            cln.querySelector('.location').innerHTML = locationInfo + research.location;
             if (research.is_only_in_title === false) {
                 cln.querySelector('.is-in-title').style.display = 'none';
             }
@@ -74,7 +76,7 @@ let Researches = {
         }
     }
 
-    , getLocationInfo : (parametersNumber) => {
+    , getLocationInfo: (parametersNumber) => {
         if (parametersNumber === 2) {
             return 'Provincia di '
         }
@@ -84,7 +86,7 @@ let Researches = {
         return 'Regione ';
     }
 
-    , deleteResearch : async (jsonBody, element) => {
+    , deleteResearch: async (jsonBody, element) => {
         let jsonResponse = await ApiRequest.post(
             '/delete-research',
             JSON.stringify(jsonBody)

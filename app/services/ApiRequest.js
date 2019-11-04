@@ -1,3 +1,5 @@
+"use strict";
+
 const ApiRequest = {
     post: async (url, body) => {
         let headers = new Headers();

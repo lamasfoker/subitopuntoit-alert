@@ -1,6 +1,8 @@
+"use strict";
+
 let HeaderBar = {
 
-    render: async () => {
+    render: () => {
         return `
             <header>
                 <nav class="top-nav fixed-nav-bar">

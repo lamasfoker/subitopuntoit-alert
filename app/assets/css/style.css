@@ -48,7 +48,7 @@ p.price {
     color: #F94139;
 }
 
-p.town, p.location{
+p.town, p.location {
     color: #969696;
 }
 
@@ -65,7 +65,7 @@ input {
     height: 46px;
     border-radius: 3px;
     width: calc(100% - 20px);
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 10px;
 }
 
@@ -87,7 +87,7 @@ form#add-research-form.col.s12 {
 .blue-button {
     background: #0097A6;
     color: #ffffff;
-    padding: 10px calc((100% - 62px)/2);
+    padding: 10px calc((100% - 62px) / 2);
     text-transform: uppercase;
     border-radius: 6px;
     font-weight: bold;
@@ -110,5 +110,5 @@ div.input-field.col.s12.text {
 }
 
 .btn-flat:focus {
-     background-color: #F94139 !important;
+    background-color: #F94139 !important;
 }

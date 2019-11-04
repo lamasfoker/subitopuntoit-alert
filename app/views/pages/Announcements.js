@@ -1,8 +1,10 @@
+"use strict";
+
 import ApiRequest from "../../services/ApiRequest.js";
 
 let Announcements = {
 
-    render : async () => {
+    render: () => {
         return `
             <div class="row">
                 <div id="announcements-list" class="section">
@@ -64,7 +66,7 @@ let Announcements = {
 
         const listElement = document.getElementById("announcements-list").firstElementChild;
 
-        for (let i=0; i < jsonResponse.data.length; i++ ) {
+        for (let i = 0; i < jsonResponse.data.length; i++) {
             let announcement = JSON.parse(jsonResponse.data[i]);
             let cln = listElement.cloneNode(true);
             let clnImage = cln.querySelector('img');
@@ -79,7 +81,7 @@ let Announcements = {
             if (announcement.town === null) {
                 announcement.town = 'Italia';
             }
-            cln.querySelector('.town').innerHTML = announcement.date+' - '+announcement.town;
+            cln.querySelector('.town').innerHTML = announcement.date + ' - ' + announcement.town;
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
@@ -137,7 +139,7 @@ let Announcements = {
         let cardAnimation = card.animate([initialFrame, finalFrame], 600);
         //TODO: use 'await cardAnimation.finished;' when browser support it
         //      see https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished
-        return new Promise( (resolve) => {
+        return new Promise((resolve) => {
             cardAnimation.addEventListener('finish', resolve);
         });
     }

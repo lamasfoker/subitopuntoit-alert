@@ -1,6 +1,8 @@
+"use strict";
+
 let BottomBar = {
 
-    render: async () => {
+    render: () => {
         return `
             <footer>
                 <nav class="top-nav fixed-bottom-bar">

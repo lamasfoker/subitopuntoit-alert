@@ -55,6 +55,6 @@ const router = async () => {
     const content = document.querySelector('#main-container');
     let parsedURL = location.hash.slice(1);
     let page = routes[parsedURL] ? routes[parsedURL] : Announcements;
-    content.innerHTML = await page.render();
+    content.innerHTML = page.render();
     await page.after_render();
 };
