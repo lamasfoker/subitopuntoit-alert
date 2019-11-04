@@ -72,10 +72,6 @@ let Announcements = {
 
             if (announcement.imageUrl !== null) {
                 clnImage.setAttribute('src', announcement.imageUrl);
-            } else {
-                clnImage.style.height = '100%';
-                clnImage.style.transform = 'translate(50%)';
-                clnImage.style.width = '50%';
             }
             cln.querySelector('a').setAttribute('href', announcement.url);
             cln.querySelector('.title').innerHTML = announcement.name;

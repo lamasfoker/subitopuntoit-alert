@@ -1,1 +1,21 @@
-<svg width="96" height="96" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M48 67c-7.178 0-13-5.821-13-12.998C35 46.822 40.82 41 47.999 41 55.178 41 61 46.819 61 53.999c0 7.178-5.82 13-13 13.001z" stroke="#AEB9C6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M77 42.983a4 4 0 1 1-8 0 4 4 0 0 1 8 0" fill="#AEB9C6"/><path stroke="#AEB9C6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" d="M13 75V31h70v44zM23 26.984h6-6zM23 39h8-8zM55 31V21h22v10z"/></g></svg>
+<svg width="259" height="306" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="308" width="261" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="1" x="1" height="480" width="640"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_3">
+   <g stroke="null" transform="matrix(1.9290121985070527,0,0,1.9290121985070527,0,0) " id="svg_4" fill-rule="evenodd" fill="none">
+    <path stroke="#AEB9C6" id="svg_5" stroke-linejoin="round" stroke-linecap="round" stroke-width="6" d="m67.699202,52.739198c-7.178,0 -13,-5.821 -13,-12.998c0,-7.18 5.82,-13.002 12.999,-13.002c7.179,0 13.001,5.819 13.001,12.999c0,7.178 -5.82,13 -13,13.001z"/>
+    <path stroke="null" id="svg_6" fill="#AEB9C6" d="m96.699202,28.722198a4,4 0 1 1 -8,0a4,4 0 0 1 8,0"/>
+    <path stroke="#AEB9C6" id="svg_7" d="m32.699202,60.739198l0,-44l70,0l0,44l-70,0zm10,-48.016l6,0l-6,0zm0,12.016l8,0l-8,0zm32,-8l0,-10l22,0l0,10l-22,0z" stroke-linejoin="round" stroke-linecap="round" stroke-width="6"/>
+   </g>
+  </g>
+ </g>
+</svg>
