@@ -15,7 +15,7 @@ let AddResearch = {
                     </div>
                     <div class="row">
                         <div class="input-field col s12 text">
-                            <input name="location" id="location" type="text" class="browser-default autocomplete" autocomplete="off">
+                            <input name="location" id="location" type="text" class="browser-default autocomplete" autocomplete="off" value="Tutta Italia">
                         </div>
                     </div>
                     <div class="row label">
@@ -50,7 +50,12 @@ let AddResearch = {
         const form = document.querySelector('#add-research-form');
         const headerTitle = document.querySelector('#header-title');
         const autoCompleteLocation = document.querySelector('.autocomplete');
+        const location = document.querySelector('#location');
 
+        location.onfocus = () => {
+            location.value = "";
+            location.onfocus = null;
+        };
         M.Autocomplete.init(autoCompleteLocation, {limit: 7});
         headerTitle.innerText = 'Aggiungi una Ricerca';
         autoCompleteLocation.oninput = AddResearch.updateAutoCompleteLocation;

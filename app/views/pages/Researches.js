@@ -59,7 +59,7 @@ let Researches = {
 
         for (let i = 0; i < jsonResponse.data.length; i++) {
             let research = jsonResponse.data[i];
-            let locationInfo = Researches.getLocationInfo(research.location_parameters.split(' ').length);
+            let locationInfo = Researches.getLocationInfo(research.location_parameters.split(' '));
             let cln = listElement.cloneNode(true);
 
             cln.querySelector('.title').innerHTML = Utils.ucFirst(research.query);
@@ -76,12 +76,15 @@ let Researches = {
         }
     }
 
-    , getLocationInfo: (parametersNumber) => {
-        if (parametersNumber === 2) {
+    , getLocationInfo: (parameters) => {
+        if (parameters.length === 2) {
             return 'Provincia di '
         }
-        if (parametersNumber === 3) {
+        if (parameters.length === 3) {
             return 'Comune di '
+        }
+        if (parameters[0] === 'italia') {
+            return 'Tutta '
         }
         return 'Regione ';
     }

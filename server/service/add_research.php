@@ -11,6 +11,7 @@ const NONE = 0;
 const REGION = 1;
 const CITY = 2;
 const TOWN = 3;
+const STATE = 4;
 
 $researchRepository = new ResearchRepository();
 $response = new Response();
@@ -36,29 +37,24 @@ if ($query === '') {
     return;
 }
 
-$locationApi = new Location();
-$locationInfo = parse_location($research['location']);
-
-$locationResponse = $locationApi->getLocation($locationInfo['name']);
-if ($locationResponse->getHttpCode() > 200) {
+$location = get_location_data($research['location']);
+if (empty($location)) {
     $response->setHttpCode(404);
     $response->setMessage('ERRORE: luogo non trovato');
     $response->send();
     return;
 }
 
-$dataLocation = get_location_data($locationResponse->getData(), $locationInfo['type']);
-
 $announcementApi = new Announcement();
 $researchModel = new Research($research['endpoint']);
 
-$researchModel->setLocation($dataLocation['name']);
-$researchModel->setLocationParameters($dataLocation['parameters']);
+$researchModel->setLocation($location['name']);
+$researchModel->setLocationParameters($location['parameters']);
 $researchModel->setOnlyInTitle($research['only_title']);
 $researchModel->setQuery($query);
 $researchModel->setLastCheckYesterday();
 
-if (!$announcementApi->validate($researchModel)){
+if (!$announcementApi->validate($researchModel)) {
     $response->setHttpCode(404);
     $response->setMessage('ERRORE: ricerca non salvata');
     $response->send();
@@ -70,27 +66,36 @@ $response->setMessage('Ricerca salvata');
 $response->send();
 
 /**
- * @param array $data
- * @param int $locationType
+ * @param string $location
  * @return array
  */
-function get_location_data(array $data, int $locationType): array
+function get_location_data(string $location): array
 {
-    if ($locationType === NONE) {
+    $parsedLocation = parse_location($location);
+    if ($parsedLocation['type'] === STATE) {
+        return ['name' => 'Italia', 'parameters' => $parsedLocation['name']];
+    }
+    $locationApi = new Location();
+    $response = $locationApi->getLocation($parsedLocation['name']);
+    if ($response->getHttpCode() > 200) {
+        return [];
+    }
+    $data = $response->getData();
+    if ($parsedLocation['type'] === NONE) {
         $location = $data[0];
     } else {
         foreach ($data as $location) {
-            if (array_key_exists('town', $location) && $locationType === TOWN) {
+            if (array_key_exists('town', $location) && $parsedLocation['type'] === TOWN) {
                 break;
             } elseif (array_key_exists('town', $location)) {
                 continue;
             }
-            if (array_key_exists('city', $location) && $locationType === CITY) {
+            if (array_key_exists('city', $location) && $parsedLocation['type'] === CITY) {
                 break;
             } elseif (array_key_exists('city', $location)) {
                 continue;
             }
-            if (array_key_exists('region', $location) && $locationType === REGION) {
+            if (array_key_exists('region', $location) && $parsedLocation['type'] === REGION) {
                 break;
             } elseif (array_key_exists('region', $location)) {
                 continue;
@@ -104,7 +109,7 @@ function get_location_data(array $data, int $locationType): array
         $locationData['parameters'] .= ' ' . $location['city']['friendly_name'];
         $locationData['name'] = $location['city']['value'];
     }
-    if (array_key_exists('town',$location)) {
+    if (array_key_exists('town', $location)) {
         $locationData['parameters'] .= ' ' . $location['town']['friendly_name'];
         $locationData['name'] = $location['town']['value'];
     }
@@ -118,25 +123,25 @@ function get_location_data(array $data, int $locationType): array
  */
 function parse_location(string $location): array
 {
-    if (strpos($location, 'regione') !== false) {
-        $last_space_position = strrpos($location, ' ');
-        $location = substr($location, 0, $last_space_position);
+    $location = strtolower($location);
+    if ($location === 'italia' || $location === 'tutta italia') {
+        $location = 'italia';
+        $locationType = STATE;
+    } elseif (strpos($location, 'regione') !== false) {
+        $lastSpacePosition = strrpos($location, ' ');
+        $location = substr($location, 0, $lastSpacePosition);
         $locationType = REGION;
-    } elseif (
-        strpos($location, ') comune') !== false
-    ) {
-        $last_space_position = strrpos($location, ' ');
-        $location = substr($location, 0, $last_space_position);
-        $last_space_position = strrpos($location, ' ');
-        $location = substr($location, 0, $last_space_position);
+    } elseif (strpos($location, ') comune') !== false) {
+        $lastSpacePosition = strrpos($location, ' ');
+        $location = substr($location, 0, $lastSpacePosition);
+        $lastSpacePosition = strrpos($location, ' ');
+        $location = substr($location, 0, $lastSpacePosition);
         $locationType = TOWN;
-    } elseif (
-        strpos($location, 'e provincia') !== false
-    ) {
-        $last_space_position = strrpos($location, ' ');
-        $location = substr($location, 0, $last_space_position);
-        $last_space_position = strrpos($location, ' ');
-        $location = substr($location, 0, $last_space_position);
+    } elseif (strpos($location, 'e provincia') !== false) {
+        $lastSpacePosition = strrpos($location, ' ');
+        $location = substr($location, 0, $lastSpacePosition);
+        $lastSpacePosition = strrpos($location, ' ');
+        $location = substr($location, 0, $lastSpacePosition);
         $locationType = CITY;
     } else {
         $locationType = NONE;
