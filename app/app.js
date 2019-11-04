@@ -1,13 +1,14 @@
 "use strict";
 
-import Utils                        from './services/Utils.js'
-import PushNotification             from './services/PushNotification.js'
-import HeaderBar                    from './views/components/HeaderBar.js'
-import BottomBar                    from './views/components/BottomBar.js'
-import Announcements                from './views/pages/Announcements.js'
-import AddResearch                  from './views/pages/AddResearch.js'
-import Researches                   from './views/pages/Researches.js'
-import TestNotification             from './views/pages/TestNotification.js'
+import Utils from './services/Utils.js'
+import PushNotification from './services/PushNotification.js'
+import HeaderBar from './views/components/HeaderBar.js'
+import BottomBar from './views/components/BottomBar.js'
+import Announcements from './views/pages/Announcements.js'
+import AddResearch from './views/pages/AddResearch.js'
+import Researches from './views/pages/Researches.js'
+import TestNotification from './views/pages/TestNotification.js'
+import AskPermission from "./views/pages/AskPermission.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!Utils.isBrowserCompatible()) {
@@ -30,10 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!PushNotification.isNotificationActive()) {
         const mainContainer = document.querySelector('#main-container');
-        await PushNotification.push_subscribe();
-        PushNotification.setNotificationActive(true);
-        mainContainer.innerHTML = await AddResearch.render();
-        await AddResearch.after_render();
+        mainContainer.innerHTML = AskPermission.render();
+        AskPermission.after_render();
     } else {
         await PushNotification.push_updateSubscription();
         if (location.hash === '#/') {
@@ -45,11 +44,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 const routes = {
-    '/'                     : Announcements
-    , '/announcements'      : Announcements
-    , '/researches'         : Researches
-    , '/test-notification'  : TestNotification
-    , '/add-research'       : AddResearch
+    '/': Announcements
+    , '/announcements': Announcements
+    , '/researches': Researches
+    , '/test-notification': TestNotification
+    , '/add-research': AddResearch
 };
 
 const router = async () => {
