@@ -8,7 +8,6 @@ import Announcements                from './views/pages/Announcements.js'
 import AddResearch                  from './views/pages/AddResearch.js'
 import Researches                   from './views/pages/Researches.js'
 import TestNotification             from './views/pages/TestNotification.js'
-import Error404                     from './views/pages/Error404.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!Utils.isBrowserCompatible()) {
@@ -56,7 +55,7 @@ const routes = {
 const router = async () => {
     const content = document.querySelector('#main-container');
     let parsedURL = location.hash.slice(1);
-    let page = routes[parsedURL] ? routes[parsedURL] : Error404;
+    let page = routes[parsedURL] ? routes[parsedURL] : Announcements;
     content.innerHTML = await page.render();
     await page.after_render();
 };
