@@ -22,7 +22,7 @@ foreach ($announcementRepository->getAnnouncements() as $announcement) {
     }
     if (array_key_exists('url', $jsonDetails)) {
         $url = $jsonDetails['url'];
-        $response = $client->request('HEAD', $url);
+        $response = $client->request('HEAD', $url, ['buffer' => false]);
         if ($response->getStatusCode() !== 410) {
             continue;
         }
