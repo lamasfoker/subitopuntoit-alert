@@ -4,9 +4,12 @@ require __DIR__ . '/../../vendor/autoload.php';
 set_time_limit(10800);
 
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
-use Symfony\Component\HttpClient\HttpClient;
+use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
+
+const NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP = 50;
 
 $announcementRepository = new AnnouncementRepository();
+$subscriptionRepository = new SubscriptionRepository();
 date_default_timezone_set('Europe/Rome');
 $oneMonthAgo = date("Y-m-d H:i:s",strtotime("-1 months"));;
 
@@ -16,6 +19,16 @@ foreach ($announcementRepository->getAnnouncements() as $announcement) {
         $date = $jsonDetails['date'];
         if (strcmp($date, $oneMonthAgo) <= 0) {
             $announcementRepository->delete($announcement);
+        }
+    }
+}
+
+foreach ($subscriptionRepository->getSubscriptions() as $subscription) {
+    $userAnnouncements = $announcementRepository->getAnnouncementsByEndpoint($subscription->getEndpoint());
+    $numberOfUserAnnouncementsToDelete = count($userAnnouncements) - NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP;
+    if ($numberOfUserAnnouncementsToDelete > 0) {
+        for ($index = 0; $index < $numberOfUserAnnouncementsToDelete; $index++) {
+            $announcementRepository->delete($userAnnouncements[$index]);
         }
     }
 }
