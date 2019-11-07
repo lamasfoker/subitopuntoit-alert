@@ -15,6 +15,7 @@ if (!array_key_exists('endpoint', $post)) {
     return;
 }
 
+$announcementRepository->setOrder('DESC');
 $announcements = $announcementRepository->getAnnouncementsByEndpoint($post['endpoint']);
 if (count($announcements) == 0) {
     $response->setHttpCode(404);

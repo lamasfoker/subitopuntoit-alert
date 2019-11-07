@@ -15,6 +15,11 @@ class AnnouncementRepository
      */
     private $db;
 
+    /**
+     * @var string
+     */
+    private $order = 'ASC';
+
     public function __construct()
     {
         $this->db = Configuration::getDB();
@@ -29,7 +34,7 @@ class AnnouncementRepository
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM Announcement '.
             'WHERE endpoint = ?'.
-            'ORDER BY id DESC'
+            'ORDER BY id ' . $this->getOrder()
         );
         $stmt->execute([$endpoint]);
         $announcements = [];
@@ -47,7 +52,8 @@ class AnnouncementRepository
     public function getAnnouncements(): Generator
     {
         $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Announcement'
+            'SELECT * FROM Announcement'.
+            'ORDER BY id ' . $this->getOrder()
         );
         $stmt->execute();
         while ($row = $stmt->fetch()){
@@ -98,6 +104,22 @@ class AnnouncementRepository
             'WHERE endpoint = ?'
         );
         $stmt->execute([$endpoint]);
+    }
+
+    /**
+     * @param string $order
+     */
+    public function setOrder(string $order): void
+    {
+        $this->order = $order;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrder(): string
+    {
+        return $this->order;
     }
 
     /**
