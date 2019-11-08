@@ -35,6 +35,12 @@ foreach ($researchRepository->getResearches() as $research){
 
     $notification = new Notification($endpoint);
     $notificationRepository->save($notification);
+
+    $userAnnouncements = $announcementRepository->getAnnouncementsByEndpoint($endpoint);
+    $numberOfUserAnnouncementsToDelete = count($userAnnouncements) - NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP;
+    for ($index = 0; $index < $numberOfUserAnnouncementsToDelete; $index++) {
+        $announcementRepository->delete($userAnnouncements[$index]);
+    }
 }
 
 try {
