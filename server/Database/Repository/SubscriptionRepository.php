@@ -3,102 +3,41 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
-use Generator;
-use PDO;
-use SubitoPuntoItAlert\Database\Configuration;
+use SubitoPuntoItAlert\Database\AbstractRepository;
+use SubitoPuntoItAlert\Database\AbstractModel;
 use SubitoPuntoItAlert\Database\Model\Subscription;
-use SubitoPuntoItAlert\Exception\MissingSubscriptionException;
 
-class SubscriptionRepository
+class SubscriptionRepository extends AbstractRepository
 {
-    /**
-     * @var PDO
-     */
-    private $db;
-
-    public function __construct()
-    {
-        $this->db = Configuration::getDB();
-    }
+    const TABLE_NAME = 'Subscription';
+    const ID_NAME = 'endpoint';
+    const COLUMNS_NAME = ['endpoint', 'contentEncoding', 'authToken', 'publicKey'];
 
     /**
-     * @param string $endpoint
-     * @return Subscription
-     * @throws MissingSubscriptionException
+     * @param $data
+     * @return AbstractModel
      */
-    public function getSubscription(string $endpoint): Subscription
+    protected function hydrateModel($data): AbstractModel
     {
-        $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Subscription '.
-            'WHERE endpoint = ? LIMIT 1'
-        );
-        $stmt->execute([$endpoint]);
-        $subscription = new Subscription($endpoint);
-        $row = $stmt->fetch();
-        if ($row){
-            $subscription->setAuthToken($row['authToken']);
-            $subscription->setContentEncoding($row['contentEncoding']);
-            $subscription->setPublicKey($row['publicKey']);
-        } else {
-            throw new MissingSubscriptionException();
-        }
+        $subscription = new Subscription($data[static::ID_NAME]);
+        $subscription->setContentEncoding($data['contentEncoding'])
+            ->setAuthToken($data['authToken'])
+            ->setPublicKey($data['publicKey']);
         return $subscription;
     }
 
     /**
-     * @return Generator
+     * @param AbstractModel $model
+     * @return array
      */
-    public function getSubscriptions(): Generator
+    protected function dryModel(AbstractModel $model): array
     {
-        $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Subscription '
-        );
-        $stmt->execute();
-        while ($row = $stmt->fetch()){
-            $subscription = new Subscription($row['endpoint']);
-            $subscription->setAuthToken($row['authToken']);
-            $subscription->setContentEncoding($row['contentEncoding']);
-            $subscription->setPublicKey($row['publicKey']);
-            yield $subscription;
-        }
-    }
-
-    /**
-     * @param Subscription $subscription
-     */
-    public function save(Subscription $subscription): void
-    {
-        //TODO: if a getter is void what's appened?
-        //TODO: use commit instead of execute
-        $this->delete($subscription->getEndpoint());
-        $stmt = $this->getDb()->prepare(
-            'INSERT INTO Subscription (endpoint, contentEncoding, authToken, publicKey) '.
-            'VALUES (?, ?, ?, ?)'
-        );
-        $stmt->execute([
-            $subscription->getEndpoint(),
-            $subscription->getContentEncoding(),
-            $subscription->getAuthToken(),
-            $subscription->getPublicKey()
-        ]);
-    }
-
-    /**
-     * @param string $endpoint
-     */
-    public function delete(string $endpoint): void
-    {
-        $stmt = $this->getDb()->prepare(
-            'DELETE FROM Subscription WHERE endpoint = ?'
-        );
-        $stmt->execute([$endpoint]);
-    }
-
-    /**
-     * @return PDO
-     */
-    private function getDb(): PDO
-    {
-        return $this->db;
+        /** @var Subscription $model */
+        return [
+            $model->getEndpoint(),
+            $model->getContentEncoding(),
+            $model->getAuthToken(),
+            $model->getPublicKey()
+        ];
     }
 }

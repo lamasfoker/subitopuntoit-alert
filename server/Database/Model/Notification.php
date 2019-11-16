@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Model;
 
-class Notification
+use SubitoPuntoItAlert\Database\AbstractModel;
+
+class Notification extends AbstractModel
 {
     /**
      * @var string
@@ -11,24 +13,13 @@ class Notification
     private $message = '';
 
     /**
-     * @var string
-     */
-    private $endpoint;
-
-    /**
-     * @param string $endpoint
-     */
-    public function __construct(string $endpoint)
-    {
-        $this->setEndpoint($endpoint);
-    }
-
-    /**
      * @param string $message
+     * @return Notification
      */
-    public function setMessage(string $message): void
+    public function setMessage(string $message): Notification
     {
         $this->message = $message;
+        return $this;
     }
 
     /**
@@ -40,18 +31,20 @@ class Notification
     }
 
     /**
+     * @param string $endpoint
+     * @return Notification
+     */
+    public function setEndpoint(string $endpoint): Notification
+    {
+        $this->setId($endpoint);
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getEndpoint(): string
     {
-        return $this->endpoint;
-    }
-
-    /**
-     * @param string $endpoint
-     */
-    private function setEndpoint(string $endpoint): void
-    {
-        $this->endpoint = $endpoint;
+        return $this->getId();
     }
 }

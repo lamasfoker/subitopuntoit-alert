@@ -33,7 +33,7 @@ class Response
         $this->message = $message;
     }
 
-    public function send()
+    public function send(): void
     {
         header('Content-Type: application/json');
         echo json_encode(array('code' => $this->httpCode, 'message' => $this->message, 'data' => $this->data));
@@ -49,10 +49,12 @@ class Response
 
     /**
      * @param int $httpCode
+     * @return Response
      */
-    public function setHttpCode(int $httpCode): void
+    public function setHttpCode(int $httpCode): Response
     {
         $this->httpCode = $httpCode;
+        return $this;
     }
 
     /**
@@ -65,10 +67,12 @@ class Response
 
     /**
      * @param array $data
+     * @return Response
      */
-    public function setData(array $data): void
+    public function setData(array $data): Response
     {
         $this->data = $data;
+        return $this;
     }
 
     /**
@@ -81,10 +85,12 @@ class Response
 
     /**
      * @param string $message
+     * @return Response
      */
-    public function setMessage(string $message): void
+    public function setMessage(string $message): Response
     {
         $this->message = $message;
+        return $this;
     }
 
 }

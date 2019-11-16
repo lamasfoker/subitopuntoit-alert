@@ -20,16 +20,13 @@ class Location
         $response = new Response();
 
         if ($data === []) {
-            $response->setHttpCode(204);
-            $response->setMessage('no location found');
-            return $response;
+            return $response->setHttpCode(204)
+                ->setMessage('no location found');
         }
 
-        $response->setHttpCode(200);
-        $response->setMessage('locations found');
-        $response->setData($data);
-
-        return $response;
+        return $response->setHttpCode(200)
+            ->setMessage('locations found')
+            ->setData($data);
     }
 
     /**

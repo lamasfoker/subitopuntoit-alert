@@ -6,9 +6,9 @@ use SubitoPuntoItAlert\Api\Response;
 
 if (!array_key_exists('q', $_GET)) {
     $response = new Response();
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
-    $response->send();
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
     return;
 }
 

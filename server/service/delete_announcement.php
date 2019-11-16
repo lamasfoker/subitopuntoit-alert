@@ -10,18 +10,24 @@ $response = new Response();
 $post = json_decode(file_get_contents('php://input'), true);
 
 if (
-    !array_key_exists('endpoint', $post) ||
-    !array_key_exists('details', $post)
+    !array_key_exists('id', $post) ||
+    !array_key_exists('endpoint', $post)
 ) {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
-    $response->send();
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
     return;
 }
 
-$announcement = new Announcement($post['endpoint']);
-$announcement->setDetails($post['details']);
+/** @var Announcement $announcement */
+$announcement = $announcementRepository->getById($post['id']);
+if ($announcement->getEndpoint() !== $post['endpoint']) {
+    $response->setHttpCode(401)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
+    return;
+}
 
-$announcementRepository->delete($announcement);
-$response->setMessage('Announcio eliminato');
-$response->send();
+$announcementRepository->deleteById($post['id']);
+$response->setMessage('Announcio eliminato')
+    ->send();

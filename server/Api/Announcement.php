@@ -22,31 +22,25 @@ class Announcement
         $lastCheck = $research->getLastCheck();
 
         if (empty($data)) {
-            $response->setHttpCode(400);
-            $response->setMessage('url error');
-            return $response;
+            return $response->setHttpCode(400)
+                ->setMessage('url error');
         }
 
         $announcementNumber = $data['total'];
         if ($announcementNumber <= 0) {
-            $response->setHttpCode(204);
-            $response->setMessage('no announcement');
-            return $response;
+            return $response->setHttpCode(204)
+                ->setMessage('no announcement');
         }
 
         $lastAnnouncementTime = $data['list'][0]['item']['date'];
         if (strcmp($lastAnnouncementTime, $lastCheck) <= 0) {
-            $response->setHttpCode(204);
-            $response->setMessage('no update');
-            return $response;
+            return $response->setHttpCode(204)
+                ->setMessage('no update');
         }
 
-        $response->setHttpCode(200);
-        $response->setMessage('new announcements');
-        $data = $this->extractUpdate($data['list'], $lastCheck);
-        $response->setData($data);
-
-        return $response;
+        return $response->setHttpCode(200)
+            ->setMessage('new announcements')
+            ->setData($this->extractUpdate($data['list'], $lastCheck));
     }
 
     /**

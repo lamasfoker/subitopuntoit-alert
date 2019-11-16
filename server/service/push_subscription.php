@@ -5,50 +5,56 @@ use SubitoPuntoItAlert\Database\Model\Subscription;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
-use SubitoPuntoItAlert\Exception\MissingSubscriptionException;
+use SubitoPuntoItAlert\Database\SearchCriteria;
+use SubitoPuntoItAlert\Exception\NoSuchEntityException;
 
 $researchRepository = new ResearchRepository();
 $announcementRepository = new AnnouncementRepository();
 $subscriptionRepository = new SubscriptionRepository();
-$subscription = json_decode(file_get_contents('php://input'), true);
+$searchCriteria = new SearchCriteria();
+$post = json_decode(file_get_contents('php://input'), true);
 $method = $_SERVER['REQUEST_METHOD'];
 
 if (
-    !array_key_exists('endpoint', $subscription) ||
-    !array_key_exists('publicKey', $subscription) ||
-    !array_key_exists('authToken', $subscription) ||
-    ($method === 'POST' && !array_key_exists('contentEncoding', $subscription))
+    !array_key_exists('endpoint', $post) ||
+    !array_key_exists('publicKey', $post) ||
+    !array_key_exists('authToken', $post) ||
+    ($method === 'POST' && !array_key_exists('contentEncoding', $post))
 ) {
     echo 'Error: not a subscription';
     return;
 }
 
+$searchCriteria->setParameterName('endpoint')
+    ->setCondition('eq')
+    ->setParameterValue($post['endpoint']);
+
 switch ($method) {
     case 'POST':
         // create a new subscription entry in your database (endpoint is unique)
-        $subscriptionModel = new Subscription($subscription['endpoint']);
-        $subscriptionModel->setPublicKey($subscription['publicKey']);
-        $subscriptionModel->setContentEncoding($subscription['contentEncoding']);
-        $subscriptionModel->setAuthToken($subscription['authToken']);
-        $subscriptionRepository->save($subscriptionModel);
+        $subscription = new Subscription($post['endpoint']);
+        $subscription->setPublicKey($post['publicKey'])
+            ->setContentEncoding($post['contentEncoding'])
+            ->setAuthToken($post['authToken']);
+        $subscriptionRepository->save($subscription);
         break;
     case 'PUT':
         // update the key and token of subscription corresponding to the endpoint
         try {
-            $subscriptionModel = $subscriptionRepository->getSubscription($subscription['endpoint']);
-            $subscriptionModel->setPublicKey($subscription['publicKey']);
-            $subscriptionModel->setAuthToken($subscription['authToken']);
-            $subscriptionRepository->save($subscriptionModel);
-        } catch (MissingSubscriptionException $e) {
-            $researchRepository->deleteByEndpoint($subscription['endpoint']);
-            $announcementRepository->deleteByEndpoint($subscription['endpoint']);
+            $subscription = $subscriptionRepository->getById($post['endpoint']);
+            $subscription->setPublicKey($post['publicKey'])
+                ->setAuthToken($post['authToken']);
+            $subscriptionRepository->save($subscription);
+        } catch (NoSuchEntityException $e) {
+            $researchRepository->delete($searchCriteria);
+            $announcementRepository->delete($searchCriteria);
         }
         break;
     case 'DELETE':
         // delete the subscription corresponding to the endpoint
-        $subscriptionRepository->delete($subscription['endpoint']);
-        $researchRepository->deleteByEndpoint($subscription['endpoint']);
-        $announcementRepository->deleteByEndpoint($subscription['endpoint']);
+        $subscriptionRepository->deleteById($post['endpoint']);
+        $researchRepository->delete($searchCriteria);
+        $announcementRepository->delete($searchCriteria);
         break;
     default:
         echo "Error: method not handled";

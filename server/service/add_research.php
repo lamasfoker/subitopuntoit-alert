@@ -11,59 +11,61 @@ const NONE = 0;
 const REGION = 1;
 const CITY = 2;
 const TOWN = 3;
-const STATE = 4;
+const ITALY = 4;
 
 $researchRepository = new ResearchRepository();
 $response = new Response();
-$research = json_decode(file_get_contents('php://input'), true);
+$request = json_decode(file_get_contents('php://input'), true);
 
 if (
-    !array_key_exists('endpoint', $research) ||
-    !array_key_exists('location', $research) ||
-    !array_key_exists('only_title', $research) ||
-    !array_key_exists('query', $research)
+    !array_key_exists('endpoint', $request) ||
+    !array_key_exists('location', $request) ||
+    !array_key_exists('only_title', $request) ||
+    !array_key_exists('query', $request)
 ) {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
-    $response->send();
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
     return;
 }
 
-$query = $research['query'];
+$query = $request['query'];
 if ($query === '') {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: inserisci un termine di ricerca');
-    $response->send();
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: inserisci un termine di ricerca')
+        ->send();
     return;
 }
 
-$location = get_location_data($research['location']);
+$location = get_location_data($request['location']);
 if (empty($location)) {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: luogo non trovato');
-    $response->send();
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: luogo non trovato')
+        ->send();
     return;
 }
 
 $announcementApi = new Announcement();
-$researchModel = new Research($research['endpoint']);
+$research = new Research($request['endpoint']);
+date_default_timezone_set('Europe/Rome');
+$yesterday = date("Y-m-d H:i:s",strtotime("-1 days"));
 
-$researchModel->setLocation($location['name']);
-$researchModel->setLocationParameters($location['parameters']);
-$researchModel->setOnlyInTitle($research['only_title']);
-$researchModel->setQuery($query);
-$researchModel->setLastCheckYesterday();
+$research->setLocation($location['name'])
+    ->setLocationParameters($location['parameters'])
+    ->setOnlyInTitle($request['only_title'])
+    ->setQuery($query)
+    ->setLastCheck($yesterday);
 
-if (!$announcementApi->validate($researchModel)) {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: ricerca non salvata');
-    $response->send();
+if (!$announcementApi->validate($research)) {
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: ricerca non salvata')
+        ->send();
     return;
 }
-$researchRepository->save($researchModel);
+$researchRepository->save($research);
 
-$response->setMessage('Ricerca salvata');
-$response->send();
+$response->setMessage('Ricerca salvata')
+    ->send();
 
 /**
  * @param string $location
@@ -72,7 +74,7 @@ $response->send();
 function get_location_data(string $location): array
 {
     $parsedLocation = parse_location($location);
-    if ($parsedLocation['type'] === STATE) {
+    if ($parsedLocation['type'] === ITALY) {
         return ['name' => 'Italia', 'parameters' => $parsedLocation['name']];
     }
     $locationApi = new Location();
@@ -126,7 +128,7 @@ function parse_location(string $location): array
     $location = strtolower($location);
     if ($location === 'italia' || $location === 'tutta italia') {
         $location = 'italia';
-        $locationType = STATE;
+        $locationType = ITALY;
     } elseif (strpos($location, 'regione') !== false) {
         $lastSpacePosition = strrpos($location, ' ');
         $location = substr($location, 0, $lastSpacePosition);

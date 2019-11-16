@@ -11,23 +11,23 @@ $post = json_decode(file_get_contents('php://input'), true);
 
 if (
     !array_key_exists('endpoint', $post) ||
-    !array_key_exists('query', $post) ||
-    !array_key_exists('location', $post) ||
-    !array_key_exists('location_parameters', $post) ||
-    !array_key_exists('is_only_in_title', $post)
+    !array_key_exists('id', $post)
 ) {
-    $response->setHttpCode(404);
-    $response->setMessage('ERRORE: qualcosa è andato storto nella richiesta');
-    $response->send();
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
     return;
 }
 
-$research = new Research($post['endpoint']);
-$research->setQuery($post['query']);
-$research->setLocation($post['location']);
-$research->setLocationParameters($post['location_parameters']);
-$research->setOnlyInTitle($post['is_only_in_title']);
+/** @var Research $research */
+$research = $researchRepository->getById($post['id']);
+if ($research->getEndpoint() !== $post['endpoint']) {
+    $response->setHttpCode(401)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
+    return;
+}
 
-$researchRepository->delete($research);
-$response->setMessage('Ricerca eliminata');
-$response->send();
+$researchRepository->deleteById($post['id']);
+$response->setMessage('Ricerca eliminata')
+    ->send();

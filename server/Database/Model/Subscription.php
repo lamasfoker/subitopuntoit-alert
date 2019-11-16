@@ -3,51 +3,31 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Model;
 
-class Subscription
+use SubitoPuntoItAlert\Database\AbstractModel;
+
+class Subscription extends AbstractModel
 {
     /**
      * @var string
      */
-    protected $endpoint;
+    private $publicKey;
 
     /**
      * @var string
      */
-    protected $publicKey;
+    private $contentEncoding;
 
     /**
      * @var string
      */
-    protected $contentEncoding;
-
-    /**
-     * @var string
-     */
-    protected $authToken;
-
-    /**
-     * Subscription constructor.
-     * @param string $endpoint
-     */
-    public function __construct(string $endpoint)
-    {
-        $this->setEndpoint($endpoint);
-    }
+    private $authToken;
 
     /**
      * @return string
      */
     public function getEndpoint(): string
     {
-        return $this->endpoint;
-    }
-
-    /**
-     * @param string $endpoint
-     */
-    private function setEndpoint(string $endpoint): void
-    {
-        $this->endpoint = $endpoint;
+        return $this->getId();
     }
 
     /**
@@ -60,10 +40,12 @@ class Subscription
 
     /**
      * @param string $publicKey
+     * @return Subscription
      */
-    public function setPublicKey(string $publicKey): void
+    public function setPublicKey(string $publicKey): Subscription
     {
         $this->publicKey = $publicKey;
+        return $this;
     }
 
     /**
@@ -76,10 +58,12 @@ class Subscription
 
     /**
      * @param string $contentEncoding
+     * @return Subscription
      */
-    public function setContentEncoding(string $contentEncoding): void
+    public function setContentEncoding(string $contentEncoding): Subscription
     {
         $this->contentEncoding = $contentEncoding;
+        return $this;
     }
 
     /**
@@ -92,9 +76,11 @@ class Subscription
 
     /**
      * @param string $authToken
+     * @return Subscription
      */
-    public function setAuthToken(string $authToken): void
+    public function setAuthToken(string $authToken): Subscription
     {
         $this->authToken = $authToken;
+        return $this;
     }
 }

@@ -3,122 +3,47 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
-use Generator;
-use PDO;
-use SubitoPuntoItAlert\Database\Configuration;
+use SubitoPuntoItAlert\Database\AbstractRepository;
+use SubitoPuntoItAlert\Database\AbstractModel;
 use SubitoPuntoItAlert\Database\Model\Research;
 
-class ResearchRepository
+class ResearchRepository extends AbstractRepository
 {
-    /**
-     * @var PDO
-     */
-    private $db;
+    const TABLE_NAME = 'Research';
+    const ID_NAME = 'id';
+    const COLUMNS_NAME = ['id', 'endpoint', 'location', 'locationParameters', 'onlyInTitle', 'query', 'lastCheck'];
 
-    public function __construct()
+    /**
+     * @param $data
+     * @return AbstractModel
+     */
+    protected function hydrateModel($data): AbstractModel
     {
-        $this->db = Configuration::getDB();
+        $research = new Research($data[static::ID_NAME]);
+        $research->setEndpoint($data['endpoint'])
+            ->setLocation($data['location'])
+            ->setLocationParameters($data['locationParameters'])
+            ->setOnlyInTitle($data['onlyInTitle']===1)
+            ->setQuery($data['query'])
+            ->setLastCheck($data['lastCheck']);
+        return $research;
     }
 
     /**
-     * @param string $endpoint
-     * @return Research[]
+     * @param AbstractModel $model
+     * @return array
      */
-    public function getResearchesByEndpoint(string $endpoint): array
+    protected function dryModel(AbstractModel $model): array
     {
-        $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Research '.
-            'WHERE endpoint = ?'
-        );
-        $stmt->execute([$endpoint]);
-        $researches = [];
-        while ($row = $stmt->fetch()){
-            $research = new Research($row['endpoint']);
-            $research->setLocation($row['location']);
-            $research->setLocationParameters($row['locationParameters']);
-            $research->setOnlyInTitle($row['onlyInTitle']==='1');
-            $research->setQuery($row['query']);
-            $research->setLastCheck($row['lastCheck']);
-            $researches[] = $research;
-        }
-        return $researches;
-    }
-
-    /**
-     * @param Research $research
-     */
-    public function save(Research $research): void
-    {
-        $this->delete($research);
-        $stmt = $this->getDb()->prepare(
-            'INSERT INTO Research (endpoint, location, locationParameters, onlyInTitle, query, lastCheck) '.
-            'VALUES (?, ?, ?, ?, ?, ?)'
-        );
-        $stmt->execute([
-            $research->getEndpoint(),
-            $research->getLocation(),
-            $research->getLocationParameters(),
-            $research->isOnlyInTitle()?1:0,
-            $research->getQuery(),
-            $research->getLastCheck()
-        ]);
-    }
-
-    /**
-     * @param Research $research
-     */
-    public function delete(Research $research): void
-    {
-        $stmt = $this->getDb()->prepare(
-            'DELETE FROM Research '.
-            'WHERE endpoint = ? AND location = ? AND locationParameters = ? AND onlyInTitle = ? AND query = ?'
-        );
-        $stmt->execute([
-            $research->getEndpoint(),
-            $research->getLocation(),
-            $research->getLocationParameters(),
-            $research->isOnlyInTitle()?1:0,
-            $research->getQuery()
-        ]);
-    }
-
-    /**
-     * @param string $endpoint
-     */
-    public function deleteByEndpoint(string $endpoint): void
-    {
-        $stmt = $this->getDb()->prepare(
-            'DELETE FROM Research '.
-            'WHERE endpoint = ?'
-        );
-        $stmt->execute([$endpoint]);
-    }
-
-    /**
-     * @return Generator
-     */
-    public function getResearches(): Generator
-    {
-        $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Research'
-        );
-        $stmt->execute();
-        while ($row = $stmt->fetch()){
-            $research = new Research($row['endpoint']);
-            $research->setLocation($row['location']);
-            $research->setLocationParameters($row['locationParameters']);
-            $research->setOnlyInTitle($row['onlyInTitle']==='1');
-            $research->setLastCheck($row['lastCheck']);
-            $research->setQuery($row['query']);
-            yield $research;
-        }
-    }
-
-    /**
-     * @return PDO
-     */
-    private function getDb(): PDO
-    {
-        return $this->db;
+        /** @var Research $model */
+        return [
+            $model->getId(),
+            $model->getEndpoint(),
+            $model->getLocation(),
+            $model->getLocationParameters(),
+            $model->isOnlyInTitle()?1:0,
+            $model->getQuery(),
+            $model->getLastCheck()
+        ];
     }
 }

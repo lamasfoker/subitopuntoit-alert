@@ -12,18 +12,18 @@ $notificationRepository = new NotificationRepository();
 $subscriptionRepository = new SubscriptionRepository();
 $sender = new Sender();
 
-foreach ($subscriptionRepository->getSubscriptions() as $subscriptionModel){
-    $notification = new Notification($subscriptionModel->getEndpoint());
-    $notificationRepository->save($notification);
+foreach ($subscriptionRepository->get() as $subscription){
+    $notificationRepository->save(new Notification($subscription->getEndpoint()));
 }
 
 try {
-    foreach ($notificationRepository->getNotifications() as $notification) {
+    /** @var Notification $notification */
+    foreach ($notificationRepository->get() as $notification) {
         $notification->setMessage("Ci scusiamo se ieri hai riscontrato malfunzionamenti");
         $sender->send($notification);
-        $notificationRepository->delete($notification);
+        $notificationRepository->deleteById($notification->getId());
     }
     $sender->flushReports();
 } catch (ErrorException $e) {
-    $notificationRepository->deleteAll();
+    $notificationRepository->delete();
 }

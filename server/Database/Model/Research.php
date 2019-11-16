@@ -3,61 +3,51 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Model;
 
-class Research
+use SubitoPuntoItAlert\Database\AbstractModel;
+
+class Research extends AbstractModel
 {
     /**
      * @var string
      */
-    protected $endpoint;
+    private $location;
 
     /**
      * @var string
      */
-    protected $location;
-
-    /**
-     * @var string
-     */
-    protected $locationParameters;
+    private $locationParameters;
 
     /**
      * @var bool
      */
-    protected $onlyInTitle;
+    private $onlyInTitle;
 
     /**
      * @var string
      */
-    protected $query;
+    private $query;
 
     /**
      * @var string
      */
-    protected $lastCheck;
-
-    /**
-     * Research constructor.
-     * @param string $endpoint
-     */
-    public function __construct(string $endpoint)
-    {
-        $this->setEndpoint($endpoint);
-    }
+    private $lastCheck;
 
     /**
      * @return string
      */
     public function getEndpoint(): string
     {
-        return $this->endpoint;
+        return $this->getId();
     }
 
     /**
      * @param string $endpoint
+     * @return Research
      */
-    private function setEndpoint(string $endpoint): void
+    public function setEndpoint(string $endpoint): Research
     {
-        $this->endpoint = $endpoint;
+        $this->setId($endpoint);
+        return $this;
     }
 
     /**
@@ -70,10 +60,12 @@ class Research
 
     /**
      * @param string $location
+     * @return Research
      */
-    public function setLocation(string $location): void
+    public function setLocation(string $location): Research
     {
         $this->location = $location;
+        return $this;
     }
 
     /**
@@ -86,10 +78,12 @@ class Research
 
     /**
      * @param string $locationParameters
+     * @return Research
      */
-    public function setLocationParameters(string $locationParameters): void
+    public function setLocationParameters(string $locationParameters): Research
     {
         $this->locationParameters = $locationParameters;
+        return $this;
     }
 
     /**
@@ -102,10 +96,12 @@ class Research
 
     /**
      * @param string $query
+     * @return Research
      */
-    public function setQuery(string $query): void
+    public function setQuery(string $query): Research
     {
         $this->query = $query;
+        return $this;
     }
 
     /**
@@ -118,22 +114,12 @@ class Research
 
     /**
      * @param string $lastCheck
+     * @return Research
      */
-    public function setLastCheck(string $lastCheck): void
+    public function setLastCheck(string $lastCheck): Research
     {
         $this->lastCheck = $lastCheck;
-    }
-
-    public function setLastCheckToday(): void
-    {
-        date_default_timezone_set('Europe/Rome');
-        $this->lastCheck = date("Y-m-d H:i:s");
-    }
-
-    public function setLastCheckYesterday(): void
-    {
-        date_default_timezone_set('Europe/Rome');
-        $this->lastCheck = date("Y-m-d H:i:s",strtotime("-1 days"));
+        return $this;
     }
 
     /**
@@ -146,9 +132,11 @@ class Research
 
     /**
      * @param bool $onlyInTitle
+     * @return Research
      */
-    public function setOnlyInTitle(bool $onlyInTitle): void
+    public function setOnlyInTitle(bool $onlyInTitle): Research
     {
         $this->onlyInTitle = $onlyInTitle;
+        return $this;
     }
 }

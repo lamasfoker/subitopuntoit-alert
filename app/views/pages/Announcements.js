@@ -67,7 +67,7 @@ let Announcements = {
         const listElement = document.getElementById("announcements-list").firstElementChild;
 
         for (let i = 0; i < jsonResponse.data.length; i++) {
-            let announcement = JSON.parse(jsonResponse.data[i]);
+            let announcement = JSON.parse(jsonResponse.data[i].details);
             let cln = listElement.cloneNode(true);
             let clnImage = cln.querySelector('img');
             announcement.date = announcement.date.slice(0, -3);
@@ -85,11 +85,11 @@ let Announcements = {
 
             document.getElementById("announcements-list").appendChild(cln);
             cln.style.display = 'block';
-            Announcements.addDeleteBehaviour(cln, jsonResponse.data[i]);
+            Announcements.addDeleteBehaviour(cln, jsonResponse.data[i].id);
         }
     }
 
-    , addDeleteBehaviour: (card, announcementData) => {
+    , addDeleteBehaviour: (card, announcementId) => {
         let movement = {};
 
         card.addEventListener('touchstart', (event) => {
@@ -102,7 +102,7 @@ let Announcements = {
             movement.y2 = event.changedTouches[0].screenY;
             await Announcements.swipeAnimation(card, movement);
             card.remove();
-            Announcements.deleteAnnouncement(announcementData);
+            await Announcements.deleteAnnouncement(announcementId);
         }, false);
     }
 
@@ -144,14 +144,14 @@ let Announcements = {
         });
     }
 
-    , deleteAnnouncement: async (announcementData) => {
+    , deleteAnnouncement: async (announcementId) => {
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
         const endpoint = subscription.toJSON().endpoint;
 
         let jsonBody = {
-            'endpoint': endpoint,
-            'details': announcementData
+            'id': announcementId,
+            'endpoint': endpoint
         };
 
         let jsonResponse = await ApiRequest.post(

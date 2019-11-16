@@ -27,17 +27,15 @@ foreach ($webPush->flush() as $report) {
     $endpoint = $report->getRequest()->getUri()->__toString();
 
     if (!$report->isSuccess()) {
-        $response->setHttpCode(500);
-        $response->setMessage("Message failed to sent for subscription {$endpoint}: {$report->getReason()}");
+        $response->setHttpCode(500)
+            ->setMessage("Message failed to sent for subscription {$endpoint}: {$report->getReason()}");
     }
     if ($report->isSubscriptionExpired()) {
-        $subscriptionRepository->delete($endpoint);
-        $researchRepository->deleteByEndpoint($endpoint);
-        $response->setHttpCode(404);
-        $response->setMessage("Subscription expired");
+        $response->setHttpCode(404)
+            ->setMessage("Subscription expired");
     }
-    $response->setHttpCode(200);
-    $response->setMessage("Message sent successfully for subscription {$endpoint}");
+    $response->setHttpCode(200)
+        ->setMessage("Message sent successfully for subscription {$endpoint}");
 }
 
 $response->send();

@@ -3,79 +3,37 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Repository;
 
-use Generator;
-use PDO;
-use SubitoPuntoItAlert\Database\Configuration;
+use SubitoPuntoItAlert\Database\AbstractRepository;
+use SubitoPuntoItAlert\Database\AbstractModel;
 use SubitoPuntoItAlert\Database\Model\Notification;
 
-class NotificationRepository
+class NotificationRepository extends AbstractRepository
 {
-    /**
-     * @var PDO
-     */
-    private $db;
+    const TABLE_NAME = 'Notification';
+    const ID_NAME = 'endpoint';
+    const COLUMNS_NAME = ['endpoint', 'message'];
 
-    public function __construct()
+    /**
+     * @param $data
+     * @return AbstractModel
+     */
+    protected function hydrateModel($data): AbstractModel
     {
-        $this->db = Configuration::getDB();
+        $notification = new Notification($data[static::ID_NAME]);
+        $notification->setMessage($data['message']);
+        return $notification;
     }
 
     /**
-     * @return Generator
+     * @param AbstractModel $model
+     * @return array
      */
-    public function getNotifications(): Generator
+    protected function dryModel(AbstractModel $model): array
     {
-        $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Notification'
-        );
-        $stmt->execute();
-        while ($row = $stmt->fetch()){
-            $notification = new Notification($row['endpoint']);
-            $notification->setMessage($row['message']);
-            yield $notification;
-        }
-    }
-
-    public function deleteAll(): void
-    {
-        $this->getDb()->exec('TRUNCATE TABLE Notification ');
-    }
-
-    /**
-     * @param Notification $notification
-     */
-    public function delete(Notification $notification): void
-    {
-        $stmt = $this->getDb()->prepare(
-            'DELETE FROM Notification '.
-            'WHERE endpoint = ?'
-        );
-        $stmt->execute([
-            $notification->getEndpoint()
-        ]);
-    }
-
-    /**
-     * @param Notification $notification
-     */
-    public function save(Notification $notification): void
-    {
-        $this->delete($notification);
-        $stmt = $this->getDb()->prepare(
-            'INSERT INTO Notification (endpoint, message) '.
-            'VALUES (?, ?)'
-        );
-        $stmt->execute([
-            $notification->getEndpoint(),
-            $notification->getMessage()
-        ]);
-    }
-
-    /**
-     * @return PDO
-     */
-    private function getDb(): PDO
-    {
-        return $this->db;
+        /** @var Notification $model */
+        return [
+            $model->getEndpoint(),
+            $model->getMessage()
+        ];
     }
 }

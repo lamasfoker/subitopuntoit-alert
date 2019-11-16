@@ -6,11 +6,14 @@ namespace SubitoPuntoItAlert\Notification;
 use ErrorException;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
+use SubitoPuntoItAlert\Database\SearchCriteria;
 use SubitoPuntoItAlert\Database\Model\Notification;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
-use SubitoPuntoItAlert\Exception\MissingSubscriptionException;
+use SubitoPuntoItAlert\Exception\InvalidFilterConditionException;
+use SubitoPuntoItAlert\Exception\InvalidFilterParameterException;
+use SubitoPuntoItAlert\Exception\NoSuchEntityException;
 
 class Sender
 {
@@ -48,12 +51,14 @@ class Sender
     /**
      * @param Notification $notification
      * @throws ErrorException
+     * @throws InvalidFilterConditionException
+     * @throws InvalidFilterParameterException
      */
     public function send(Notification $notification): void
     {
         $endpoint = $notification->getEndpoint();
         try {
-            $subscriptionModel = $this->subscriptionRepository->getSubscription($endpoint);
+            $subscriptionModel = $this->subscriptionRepository->getById($endpoint);
             $subscription = new Subscription(
                 $endpoint,
                 $subscriptionModel->getPublicKey(),
@@ -64,23 +69,33 @@ class Sender
                 $subscription,
                 $notification->getMessage()
             );
-        } catch (MissingSubscriptionException $e) {
-            $this->researchRepository->deleteByEndpoint($endpoint);
-            $this->announcementRepository->deleteByEndpoint($endpoint);
+        } catch (NoSuchEntityException $e) {
+            $searchCriteria = new SearchCriteria();
+            $searchCriteria->setParameterName('endpoint')
+                ->setCondition('eq')
+                ->setParameterValue($endpoint);
+            $this->researchRepository->delete($searchCriteria);
+            $this->announcementRepository->delete($searchCriteria);
         }
     }
 
     /**
      * @throws ErrorException
+     * @throws InvalidFilterConditionException
+     * @throws InvalidFilterParameterException
      */
     public function flushReports(): void
     {
         foreach ($this->webPush->flush() as $report) {
             $endpoint = $report->getRequest()->getUri()->__toString();
             if ($report->isSubscriptionExpired()) {
-                $this->subscriptionRepository->delete($endpoint);
-                $this->researchRepository->deleteByEndpoint($endpoint);
-                $this->announcementRepository->deleteByEndpoint($endpoint);
+                $searchCriteria = new SearchCriteria();
+                $searchCriteria->setParameterName('endpoint')
+                    ->setCondition('eq')
+                    ->setParameterValue($endpoint);
+                $this->subscriptionRepository->deleteById($endpoint);
+                $this->researchRepository->delete($searchCriteria);
+                $this->announcementRepository->delete($searchCriteria);
             }
         }
     }

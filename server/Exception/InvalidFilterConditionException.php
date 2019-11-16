@@ -5,7 +5,7 @@ namespace SubitoPuntoItAlert\Exception;
 
 use Exception;
 
-class NoSuchEntityException extends Exception
+class InvalidFilterConditionException extends Exception
 {
 
 }

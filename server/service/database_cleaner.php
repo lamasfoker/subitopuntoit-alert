@@ -6,7 +6,7 @@ set_time_limit(10800);
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
 
-const NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP = 80;
+const NUMBER_OF_USER_ANNOUNCEMENTS_TO_KEEP = 80;
 
 $announcementRepository = new AnnouncementRepository();
 $subscriptionRepository = new SubscriptionRepository();
@@ -25,7 +25,7 @@ foreach ($announcementRepository->getAnnouncements() as $announcement) {
 
 foreach ($subscriptionRepository->getSubscriptions() as $subscription) {
     $userAnnouncements = $announcementRepository->getAnnouncementsByEndpoint($subscription->getEndpoint());
-    $numberOfUserAnnouncementsToDelete = count($userAnnouncements) - NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP;
+    $numberOfUserAnnouncementsToDelete = count($userAnnouncements) - NUMBER_OF_USER_ANNOUNCEMENTS_TO_KEEP;
     for ($index = 0; $index < $numberOfUserAnnouncementsToDelete; $index++) {
         $announcementRepository->delete($userAnnouncements[$index]);
     }

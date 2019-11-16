@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace SubitoPuntoItAlert\Database\Model;
 
-class Announcement
+use SubitoPuntoItAlert\Database\AbstractModel;
+
+class Announcement extends AbstractModel
 {
     /**
      * @var string
@@ -15,16 +17,6 @@ class Announcement
      */
     private $details;
 
-
-    /**
-     * Announcement constructor.
-     * @param String $endpoint
-     */
-    public function __construct(String $endpoint)
-    {
-        $this->setEndpoint($endpoint);
-    }
-
     /**
      * @return string
      */
@@ -35,10 +27,12 @@ class Announcement
 
     /**
      * @param string $details
+     * @return Announcement
      */
-    public function setDetails(string $details): void
+    public function setDetails(string $details): Announcement
     {
         $this->details = $details;
+        return $this;
     }
 
     /**
@@ -51,9 +45,11 @@ class Announcement
 
     /**
      * @param string $endpoint
+     * @return Announcement
      */
-    private function setEndpoint(string $endpoint): void
+    public function setEndpoint(string $endpoint): Announcement
     {
         $this->endpoint = $endpoint;
+        return $this;
     }
 }
