@@ -11,6 +11,8 @@ use SubitoPuntoItAlert\Database\Repository\NotificationRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Notification\Sender;
 
+const NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP = 80;
+
 $notificationRepository = new NotificationRepository();
 $researchRepository = new ResearchRepository();
 $announcementRepository = new AnnouncementRepository();
