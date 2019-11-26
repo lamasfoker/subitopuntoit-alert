@@ -12,7 +12,7 @@ let Announcements = {
                         <div class="small card">
                             <a href="#/error" target="_blank">
                                 <div class="card-image">
-                                    <img src="/app/assets/images/no-photo-available.svg" alt="announcement-image">
+                                    <img src="/app/assets/images/no-photo-available.svg" alt="announcement-image" loading="lazy">
                                 </div>
                             </a>
                             <div class="card-content">
