@@ -47,12 +47,42 @@ class AnnouncementRepository
     }
 
     /**
+     * @param string $endpoint
+     * @param int $toKeep
+     */
+    public function keepLatestAnnouncements(string $endpoint, int $toKeep): void
+    {
+        $toDelete = $this->countAnnouncementByEndpoint($endpoint) - $toKeep;
+        $stmt = $this->getDb()->prepare(
+            'DELETE FROM Announcement ' .
+            'WHERE endpoint = ? ' .
+            'ORDER BY id ASC ' .
+            'LIMIT ' . $toDelete
+        );
+        $stmt->execute([$endpoint]);
+    }
+
+    /**
+     * @param string $endpoint
+     * @return int
+     */
+    public function countAnnouncementByEndpoint(string $endpoint): int
+    {
+        $stmt = $this->getDb()->prepare(
+            'SELECT COUNT(*) FROM Announcement ' .
+            'WHERE endpoint = ?'
+        );
+        $stmt->execute([$endpoint]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
      * @return Generator
      */
     public function getAnnouncements(): Generator
     {
         $stmt = $this->getDb()->prepare(
-            'SELECT * FROM Announcement'.
+            'SELECT * FROM Announcement '.
             'ORDER BY id ' . $this->getOrder()
         );
         $stmt->execute();

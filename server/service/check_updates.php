@@ -11,7 +11,7 @@ use SubitoPuntoItAlert\Database\Repository\NotificationRepository;
 use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Notification\Sender;
 
-const NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP = 50;
+const NUMBER_OF_USERS_ANNOUNCEMENTS_TO_KEEP = 50;
 
 $notificationRepository = new NotificationRepository();
 $researchRepository = new ResearchRepository();
@@ -36,22 +36,13 @@ foreach ($researchRepository->getResearches() as $research){
     }
 
     $notification = new Notification($endpoint);
+    $notification->setMessage("Hai dei nuovi annunci!");
     $notificationRepository->save($notification);
-
-    $userAnnouncements = $announcementRepository->getAnnouncementsByEndpoint($endpoint);
-    $numberOfUserAnnouncementsToDelete = count($userAnnouncements) - NUMBER_OF_ANNOUNCEMENTS_PER_USERS_TO_KEEP;
-    for ($index = 0; $index < $numberOfUserAnnouncementsToDelete; $index++) {
-        $announcementRepository->delete($userAnnouncements[$index]);
-    }
 }
 
-try {
-    foreach ($notificationRepository->getNotifications() as $notification) {
-        $notification->setMessage("Hai dei nuovi annunci!");
-        $sender->send($notification);
-        $notificationRepository->delete($notification);
-    }
-    $sender->flushReports();
-} catch (ErrorException $e) {
-    $notificationRepository->deleteAll();
+foreach ($notificationRepository->getNotifications() as $notification) {
+    $sender->send($notification);
+    $notificationRepository->delete($notification);
+    $announcementRepository->keepLatestAnnouncements($notification->getEndpoint(), NUMBER_OF_USERS_ANNOUNCEMENTS_TO_KEEP);
 }
+$sender->flushReports();
