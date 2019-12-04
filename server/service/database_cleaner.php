@@ -4,12 +4,10 @@ require __DIR__ . '/../../vendor/autoload.php';
 set_time_limit(10800);
 
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
-use SubitoPuntoItAlert\Database\Repository\SubscriptionRepository;
 
 const NUMBER_OF_USER_ANNOUNCEMENTS_TO_KEEP = 80;
 
 $announcementRepository = new AnnouncementRepository();
-$subscriptionRepository = new SubscriptionRepository();
 date_default_timezone_set('Europe/Rome');
 $oneMonthAgo = date("Y-m-d H:i:s",strtotime("-1 months"));;
 
