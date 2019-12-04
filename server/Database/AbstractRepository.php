@@ -26,7 +26,7 @@ abstract class AbstractRepository
     /**
      * array with the name of the columns
      */
-    const COLUMNS_NAME = ['id'];
+    const COLUMNS_NAME = [];
 
     /**
      * @var PDO
@@ -94,20 +94,23 @@ abstract class AbstractRepository
      */
     public function save(AbstractModel $model): void
     {
-
         $columns = static::COLUMNS_NAME;
         foreach ($columns as $key => $value){
             $columns[$key]  = '?';
         }
-//        if ($model->getId()) {
-//            $this->deleteById($model->getId());
-//        }
-        $stmt = $this->getDb()->prepare(
-            'INSERT INTO ' . static::TABLE_NAME .
-            ' (' . implode(', ', static::COLUMNS_NAME) . ') ' .
-            'VALUES (' . implode(', ', $columns) . ')'
-        );
-        $stmt->execute($this->dryModel($model));
+        $parameters = $this->dryModel($model);
+        if ($model->getId()) {
+            $query = 'UPDATE ' . static::TABLE_NAME .
+                ' SET ' . implode('=?, ', static::COLUMNS_NAME) . '=?' .
+                ' WHERE id=?';
+            $parameters[] = $model->getId();
+        } else {
+            $query = 'INSERT INTO ' . static::TABLE_NAME .
+                ' (' . implode(', ', static::COLUMNS_NAME) . ') ' .
+                'VALUES (' . implode(', ', $columns) . ')';
+        }
+        $stmt = $this->getDb()->prepare($query);
+        $stmt->execute($parameters);
     }
 
     /**
