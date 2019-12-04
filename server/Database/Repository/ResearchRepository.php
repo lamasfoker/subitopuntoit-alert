@@ -10,8 +10,7 @@ use SubitoPuntoItAlert\Database\Model\Research;
 class ResearchRepository extends AbstractRepository
 {
     const TABLE_NAME = 'Research';
-    const ID_NAME = 'id';
-    const COLUMNS_NAME = ['id', 'endpoint', 'location', 'locationParameters', 'onlyInTitle', 'query', 'lastCheck'];
+    const COLUMNS_NAME = ['endpoint', 'location', 'locationParameters', 'onlyInTitle', 'query', 'lastCheck'];
 
     /**
      * @param $data
@@ -37,7 +36,6 @@ class ResearchRepository extends AbstractRepository
     {
         /** @var Research $model */
         return [
-            $model->getId(),
             $model->getEndpoint(),
             $model->getLocation(),
             $model->getLocationParameters(),

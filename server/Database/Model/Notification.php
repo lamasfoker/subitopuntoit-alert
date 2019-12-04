@@ -10,6 +10,11 @@ class Notification extends AbstractModel
     /**
      * @var string
      */
+    private $endpoint;
+
+    /**
+     * @var string
+     */
     private $message = '';
 
     /**
@@ -36,7 +41,7 @@ class Notification extends AbstractModel
      */
     public function setEndpoint(string $endpoint): Notification
     {
-        $this->setId($endpoint);
+        $this->endpoint = $endpoint;
         return $this;
     }
 
@@ -45,6 +50,6 @@ class Notification extends AbstractModel
      */
     public function getEndpoint(): string
     {
-        return $this->getId();
+        return $this->endpoint;
     }
 }

@@ -10,7 +10,6 @@ use SubitoPuntoItAlert\Database\Model\Subscription;
 class SubscriptionRepository extends AbstractRepository
 {
     const TABLE_NAME = 'Subscription';
-    const ID_NAME = 'endpoint';
     const COLUMNS_NAME = ['endpoint', 'contentEncoding', 'authToken', 'publicKey'];
 
     /**
@@ -20,7 +19,8 @@ class SubscriptionRepository extends AbstractRepository
     protected function hydrateModel($data): AbstractModel
     {
         $subscription = new Subscription($data[static::ID_NAME]);
-        $subscription->setContentEncoding($data['contentEncoding'])
+        $subscription->setEndpoint($data['endpoint'])
+            ->setContentEncoding($data['contentEncoding'])
             ->setAuthToken($data['authToken'])
             ->setPublicKey($data['publicKey']);
         return $subscription;

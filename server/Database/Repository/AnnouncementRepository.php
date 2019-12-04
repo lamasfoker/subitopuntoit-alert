@@ -10,8 +10,7 @@ use SubitoPuntoItAlert\Database\Model\Announcement;
 class AnnouncementRepository extends AbstractRepository
 {
     const TABLE_NAME = 'Announcement';
-    const ID_NAME = 'id';
-    const COLUMNS_NAME = ['id', 'endpoint', 'details'];
+    const COLUMNS_NAME = ['endpoint', 'details'];
 
     /**
      * @param $data
@@ -33,7 +32,6 @@ class AnnouncementRepository extends AbstractRepository
     {
         /** @var Announcement $model */
         return [
-            $model->getId(),
             $model->getEndpoint(),
             $model->getDetails()
         ];

@@ -1,4 +1,5 @@
 CREATE TABLE Notification (
-    endpoint VARCHAR(500) NOT NULL PRIMARY KEY,
+    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    endpoint VARCHAR(500) NOT NULL,
     message VARCHAR(500) NOT NULL
 );

@@ -10,6 +10,11 @@ class Subscription extends AbstractModel
     /**
      * @var string
      */
+    private $endpoint;
+
+    /**
+     * @var string
+     */
     private $publicKey;
 
     /**
@@ -27,7 +32,17 @@ class Subscription extends AbstractModel
      */
     public function getEndpoint(): string
     {
-        return $this->getId();
+        return $this->endpoint;
+    }
+
+    /**
+     * @param string $endpoint
+     * @return Subscription
+     */
+    public function setEndpoint(string $endpoint): Subscription
+    {
+        $this->endpoint = $endpoint;
+        return $this;
     }
 
     /**

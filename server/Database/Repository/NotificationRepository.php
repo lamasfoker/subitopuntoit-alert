@@ -10,7 +10,6 @@ use SubitoPuntoItAlert\Database\Model\Notification;
 class NotificationRepository extends AbstractRepository
 {
     const TABLE_NAME = 'Notification';
-    const ID_NAME = 'endpoint';
     const COLUMNS_NAME = ['endpoint', 'message'];
 
     /**
@@ -20,7 +19,8 @@ class NotificationRepository extends AbstractRepository
     protected function hydrateModel($data): AbstractModel
     {
         $notification = new Notification($data[static::ID_NAME]);
-        $notification->setMessage($data['message']);
+        $notification->setEndpoint($data['endpoint'])
+            ->setMessage($data['message']);
         return $notification;
     }
 
