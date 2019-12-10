@@ -46,15 +46,14 @@ if (empty($location)) {
 }
 
 $announcementApi = new Announcement();
-$research = new Research($request['endpoint']);
-date_default_timezone_set('Europe/Rome');
-$yesterday = date("Y-m-d H:i:s",strtotime("-1 days"));
+$research = new Research();
 
-$research->setLocation($location['name'])
+$research->setEndpoint($request['endpoint'])
+    ->setLocation($location['name'])
     ->setLocationParameters($location['parameters'])
     ->setOnlyInTitle($request['only_title'])
     ->setQuery($query)
-    ->setLastCheck($yesterday);
+    ->setLastCheck(get_yesterday_date());
 
 if (!$announcementApi->validate($research)) {
     $response->setHttpCode(404)
@@ -149,4 +148,13 @@ function parse_location(string $location): array
         $locationType = NONE;
     }
     return ['name' => $location, 'type' => $locationType];
+}
+
+/**
+ * @return string
+ */
+function get_yesterday_date(): string
+{
+    date_default_timezone_set('Europe/Rome');
+    return date("Y-m-d H:i:s",strtotime("-1 days"));
 }

@@ -10,6 +10,11 @@ class Research extends AbstractModel
     /**
      * @var string
      */
+    private $endpoint;
+
+    /**
+     * @var string
+     */
     private $location;
 
     /**
@@ -37,7 +42,7 @@ class Research extends AbstractModel
      */
     public function getEndpoint(): string
     {
-        return $this->getId();
+        return $this->endpoint;
     }
 
     /**
@@ -46,7 +51,7 @@ class Research extends AbstractModel
      */
     public function setEndpoint(string $endpoint): Research
     {
-        $this->setId($endpoint);
+        $this->endpoint = $endpoint;
         return $this;
     }
 

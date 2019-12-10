@@ -72,7 +72,7 @@ abstract class AbstractRepository
         $parameterValue = null;
         if ($searchCriteria) {
             $orderBy = $searchCriteria->getOrderBy();
-            if ($orderBy && !in_array($orderBy, static::COLUMNS_NAME)) {
+            if ($orderBy && !in_array($orderBy, [static::COLUMNS_NAME, static::ID_NAME])) {
                 throw new InvalidOrderByException();
             }
             $parameterName = $searchCriteria->getParameterName();

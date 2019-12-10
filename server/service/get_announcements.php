@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use SubitoPuntoItAlert\Api\Response;
-use SubitoPuntoItAlert\Database\Counter;
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 use SubitoPuntoItAlert\Database\SearchCriteria;
 

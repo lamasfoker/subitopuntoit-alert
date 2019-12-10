@@ -14,12 +14,13 @@ use SubitoPuntoItAlert\Database\Repository\ResearchRepository;
 use SubitoPuntoItAlert\Database\SearchCriteria;
 use SubitoPuntoItAlert\Notification\Sender;
 
+const NUMBER_OF_USER_ANNOUNCEMENTS_TO_KEEP = 50;
+
 $notificationRepository = new NotificationRepository();
 $researchRepository = new ResearchRepository();
 $announcementRepository = new AnnouncementRepository();
 $api = new Announcement();
 $sender = new Sender();
-date_default_timezone_set('Europe/Rome');
 $counter = new Counter();
 $searchCriteria = new SearchCriteria();
 $searchCriteria->setParameterName('endpoint')
@@ -29,8 +30,7 @@ $searchCriteria->setParameterName('endpoint')
 /** @var Research $research */
 foreach ($researchRepository->get() as $research){
     $response = $api->getAnnouncements($research);
-    $today = date("Y-m-d H:i:s");
-    $research->setLastCheck($today);
+    $research->setLastCheck(get_today_date());
     $researchRepository->save($research);
     $endpoint = $research->getEndpoint();
 
@@ -39,12 +39,16 @@ foreach ($researchRepository->get() as $research){
     }
 
     foreach ($response->getData() as $detail) {
-        $announcement = new AnnouncementModel($endpoint);
-        $announcement->setDetails(json_encode($detail));
+        $announcement = new AnnouncementModel();
+        $announcement->setEndpoint($endpoint)
+            ->setDetails(json_encode($detail));
         $announcementRepository->save($announcement);
     }
 
-    $notificationRepository->save(new Notification($endpoint));
+    $notification = new Notification();
+    $notification->setEndpoint($endpoint)
+        ->setMessage('Hai dei nuovi annunci!');
+    $notificationRepository->save($notification);
 
     $searchCriteria->setParameterValue($endpoint);
     $numberOfUserAnnouncements = $counter->count(AnnouncementRepository::TABLE_NAME, $searchCriteria);
@@ -58,11 +62,16 @@ foreach ($researchRepository->get() as $research){
 try {
     /** @var Notification $notification */
     foreach ($notificationRepository->get() as $notification) {
-        $notification->setMessage("Hai dei nuovi annunci!");
         $sender->send($notification);
         $notificationRepository->deleteById($notification->getId());
     }
     $sender->flushReports();
 } catch (ErrorException $e) {
     $notificationRepository->delete();
+}
+
+function get_today_date(): string
+{
+    date_default_timezone_set('Europe/Rome');
+    return date("Y-m-d H:i:s");
 }

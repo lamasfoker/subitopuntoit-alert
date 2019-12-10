@@ -5,8 +5,6 @@ set_time_limit(10800);
 
 use SubitoPuntoItAlert\Database\Repository\AnnouncementRepository;
 
-const NUMBER_OF_USER_ANNOUNCEMENTS_TO_KEEP = 80;
-
 $announcementRepository = new AnnouncementRepository();
 date_default_timezone_set('Europe/Rome');
 $oneMonthAgo = date("Y-m-d H:i:s",strtotime("-1 months"));;

@@ -32,8 +32,9 @@ $searchCriteria->setParameterName('endpoint')
 switch ($method) {
     case 'POST':
         // create a new subscription entry in your database (endpoint is unique)
-        $subscription = new Subscription($post['endpoint']);
-        $subscription->setPublicKey($post['publicKey'])
+        $subscription = new Subscription();
+        $subscription->setEndpoint($post['endpoint'])
+            ->setPublicKey($post['publicKey'])
             ->setContentEncoding($post['contentEncoding'])
             ->setAuthToken($post['authToken']);
         $subscriptionRepository->save($subscription);
@@ -41,7 +42,7 @@ switch ($method) {
     case 'PUT':
         // update the key and token of subscription corresponding to the endpoint
         try {
-            $subscription = $subscriptionRepository->getById($post['endpoint']);
+            $subscription = $subscriptionRepository->get($searchCriteria)->current();
             $subscription->setPublicKey($post['publicKey'])
                 ->setAuthToken($post['authToken']);
             $subscriptionRepository->save($subscription);
@@ -52,7 +53,7 @@ switch ($method) {
         break;
     case 'DELETE':
         // delete the subscription corresponding to the endpoint
-        $subscriptionRepository->deleteById($post['endpoint']);
+        $subscriptionRepository->delete($searchCriteria);
         $researchRepository->delete($searchCriteria);
         $announcementRepository->delete($searchCriteria);
         break;
