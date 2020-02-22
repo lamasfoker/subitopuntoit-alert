@@ -114,9 +114,9 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param $id
+     * @param int $id
      */
-    public function deleteById($id): void
+    public function deleteById(int $id): void
     {
         $stmt = $this->getDb()->prepare(
             'DELETE FROM ' . static::TABLE_NAME .
