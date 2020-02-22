@@ -160,7 +160,7 @@ abstract class AbstractRepository
     /**
      * @return PDO
      */
-    private function getDb(): PDO
+    protected function getDb(): PDO
     {
         return $this->db;
     }

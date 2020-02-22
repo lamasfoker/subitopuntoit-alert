@@ -6,11 +6,32 @@ namespace SubitoPuntoItAlert\Database\Repository;
 use SubitoPuntoItAlert\Database\AbstractRepository;
 use SubitoPuntoItAlert\Database\AbstractModel;
 use SubitoPuntoItAlert\Database\Model\Subscription;
+use SubitoPuntoItAlert\Exception\NoSuchEntityException;
 
 class SubscriptionRepository extends AbstractRepository
 {
     const TABLE_NAME = 'Subscription';
     const COLUMNS_NAME = ['endpoint', 'contentEncoding', 'authToken', 'publicKey'];
+
+    /**
+     * @param $endpoint
+     * @return AbstractModel
+     * @throws NoSuchEntityException
+     */
+    public function getByEndpoint($endpoint): AbstractModel
+    {
+        $stmt = $this->getDb()->prepare(
+            'SELECT * FROM ' . static::TABLE_NAME .
+            ' WHERE endpoint = ? LIMIT 1'
+        );
+        $stmt->execute([$endpoint]);
+        $row = $stmt->fetch();
+        if ($row){
+            return $this->hydrateModel($row);
+        } else {
+            throw new NoSuchEntityException();
+        }
+    }
 
     /**
      * @param $data

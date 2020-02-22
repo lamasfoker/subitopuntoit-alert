@@ -25,9 +25,10 @@ if (
     return;
 }
 
+$endpoint = $post['endpoint'];
 $searchCriteria->setParameterName('endpoint')
     ->setCondition('eq')
-    ->setParameterValue($post['endpoint']);
+    ->setParameterValue($endpoint);
 
 switch ($method) {
     case 'POST':
@@ -42,7 +43,7 @@ switch ($method) {
     case 'PUT':
         // update the key and token of subscription corresponding to the endpoint
         try {
-            $subscription = $subscriptionRepository->get($searchCriteria)->current();
+            $subscription = $subscriptionRepository->getByEndpoint($endpoint);
             $subscription->setPublicKey($post['publicKey'])
                 ->setAuthToken($post['authToken']);
             $subscriptionRepository->save($subscription);
