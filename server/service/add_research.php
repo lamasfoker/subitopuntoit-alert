@@ -30,9 +30,9 @@ if (
 }
 
 $query = $request['query'];
-if ($query === '') {
+if (strlen($query) < 3) {
     $response->setHttpCode(404)
-        ->setMessage('ERRORE: inserisci un termine di ricerca')
+        ->setMessage('ATTENZIONE: inserisci un termine di ricerca valido o più specifico')
         ->send();
     return;
 }
