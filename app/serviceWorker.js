@@ -44,7 +44,7 @@ self.addEventListener('push', function (event) {
 
     const sendNotification = body => {
         // you could refresh a notification badge here with postMessage API
-        const title = "Subito.it Alert";
+        const title = "Subito Alert";
 
         return self.registration.showNotification(title, {
             body,

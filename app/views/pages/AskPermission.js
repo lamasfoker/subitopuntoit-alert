@@ -9,7 +9,7 @@ let AskPermission = {
             <div class="modal">
                 <div class="modal-content">
                     <h4>Permessi</h4>
-                    <p>Dopo questo messaggio ti sarà chiesto di dare a Subito.it Alert la possibilità di mostrare notifiche. Se non accetterai l'applicazione non potrà funzionare correttamente.</p>
+                    <p>Dopo questo messaggio ti sarà chiesto di dare a Subito Alert la possibilità di mostrare notifiche. Se non accetterai l'applicazione non potrà funzionare correttamente.</p>
                 </div>
                 <div class="modal-footer">
                     <a href="#/add-research" class="modal-close waves-effect waves-green btn-flat">Ho capito</a>
