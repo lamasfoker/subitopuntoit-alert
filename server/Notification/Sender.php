@@ -58,7 +58,7 @@ class Sender
     {
         $endpoint = $notification->getEndpoint();
         try {
-            $subscriptionModel = $this->subscriptionRepository->getById($endpoint);
+            $subscriptionModel = $this->subscriptionRepository->getByEndpoint($endpoint);
             $subscription = new Subscription(
                 $endpoint,
                 $subscriptionModel->getPublicKey(),
@@ -93,7 +93,7 @@ class Sender
                 $searchCriteria->setParameterName('endpoint')
                     ->setCondition('eq')
                     ->setParameterValue($endpoint);
-                $this->subscriptionRepository->deleteById($endpoint);
+                $this->subscriptionRepository->delete($searchCriteria);
                 $this->researchRepository->delete($searchCriteria);
                 $this->announcementRepository->delete($searchCriteria);
             }
