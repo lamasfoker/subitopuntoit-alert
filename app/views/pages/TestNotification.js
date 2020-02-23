@@ -14,15 +14,14 @@ let TestNotification = {
         const serviceWorkerRegistration = await navigator.serviceWorker.ready;
         const subscription = await serviceWorkerRegistration.pushManager.getSubscription();
         if (!subscription) {
-            alert('Please enable push notifications');
+            M.toast({html: 'Per favore abilita le push notifications'});
             return;
         }
-        const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
-        const jsonSubscription = subscription.toJSON();
-        await ApiRequest.post(
+        let jsonResponse = await ApiRequest.post(
             '/test-notification',
-            JSON.stringify(Object.assign(jsonSubscription, {contentEncoding}))
+            JSON.stringify({'endpoint': subscription.endpoint})
         );
+        M.toast({html: jsonResponse.message});
     }
 };
 

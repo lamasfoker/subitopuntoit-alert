@@ -1,41 +1,34 @@
 <?php
 declare(strict_types=1);
 
-use Minishlink\WebPush\WebPush;
-use Minishlink\WebPush\Subscription;
 use SubitoPuntoItAlert\Api\Response;
+use SubitoPuntoItAlert\Database\Model\Notification;
+use SubitoPuntoItAlert\Notification\Sender;
 
-$subscription = Subscription::create(json_decode(file_get_contents('php://input'), true));
+$post = json_decode(file_get_contents('php://input'), true);
 $response = new Response();
+$sender = new Sender();
+$notification = new Notification();
 
-$auth = array(
-    'VAPID' => array(
-        'subject' => 'https://github.com/lamasfoker/subitopuntoitalert',
-        'publicKey' => getenv('PUBLIC_KEY'),
-        'privateKey' => getenv('PRIVATE_KEY'),
-    ),
-);
-
-$webPush = new WebPush($auth);
-
-$res = $webPush->sendNotification(
-    $subscription,
-    'Test Notification'
-);
-
-foreach ($webPush->flush() as $report) {
-    $endpoint = $report->getRequest()->getUri()->__toString();
-
-    if (!$report->isSuccess()) {
-        $response->setHttpCode(500)
-            ->setMessage("Message failed to sent for subscription {$endpoint}: {$report->getReason()}");
-    }
-    if ($report->isSubscriptionExpired()) {
-        $response->setHttpCode(404)
-            ->setMessage("Subscription expired");
-    }
-    $response->setHttpCode(200)
-        ->setMessage("Message sent successfully for subscription {$endpoint}");
+if (!array_key_exists('endpoint', $post)) {
+    $response->setHttpCode(404)
+        ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
+        ->send();
+    return;
 }
 
-$response->send();
+$notification->setEndpoint($post['endpoint'])
+    ->setMessage('Test Notification');
+try {
+    $sender->send($notification);
+    $sender->flushReports();
+} catch (Exception $e) {
+    $response->setHttpCode(500)
+        ->setMessage($e->getMessage())
+        ->send();
+    return;
+}
+
+$response->setHttpCode(200)
+    ->setMessage('Notifica inviata con successo')
+    ->send();
