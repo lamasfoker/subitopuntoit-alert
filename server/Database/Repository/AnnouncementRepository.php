@@ -18,7 +18,7 @@ class AnnouncementRepository extends AbstractRepository
      */
     protected function hydrateModel($data): AbstractModel
     {
-       $announcement = new Announcement($data[static::ID_NAME]);
+       $announcement = new Announcement((int) $data[static::ID_NAME]);
        $announcement->setEndpoint($data['endpoint'])
            ->setDetails($data['details']);
        return $announcement;

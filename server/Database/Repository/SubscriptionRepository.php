@@ -14,11 +14,11 @@ class SubscriptionRepository extends AbstractRepository
     const COLUMNS_NAME = ['endpoint', 'contentEncoding', 'authToken', 'publicKey'];
 
     /**
-     * @param $endpoint
+     * @param string $endpoint
      * @return AbstractModel
      * @throws NoSuchEntityException
      */
-    public function getByEndpoint($endpoint): AbstractModel
+    public function getByEndpoint(string $endpoint): AbstractModel
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM ' . static::TABLE_NAME .
@@ -39,7 +39,7 @@ class SubscriptionRepository extends AbstractRepository
      */
     protected function hydrateModel($data): AbstractModel
     {
-        $subscription = new Subscription($data[static::ID_NAME]);
+        $subscription = new Subscription((int) $data[static::ID_NAME]);
         $subscription->setEndpoint($data['endpoint'])
             ->setContentEncoding($data['contentEncoding'])
             ->setAuthToken($data['authToken'])

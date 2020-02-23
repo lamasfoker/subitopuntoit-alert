@@ -6,31 +6,33 @@ namespace SubitoPuntoItAlert\Database;
 abstract class AbstractModel
 {
     /**
-     * @var mixed
+     * @var int|null
      */
-    private $id;
+    private $id = null;
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
-    public function __construct($id = null)
+    public function __construct(int $id = null)
     {
-        $this->setId($id);
+        if ($id) {
+            $this->setId($id);
+        }
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return AbstractModel
      */
-    protected function setId($id): AbstractModel
+    private function setId(int $id): AbstractModel
     {
         $this->id = $id;
         return $this;

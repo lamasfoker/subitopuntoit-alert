@@ -39,11 +39,11 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return AbstractModel
      * @throws NoSuchEntityException
      */
-    public function getById($id): AbstractModel
+    public function getById(int $id): AbstractModel
     {
         $stmt = $this->getDb()->prepare(
             'SELECT * FROM ' . static::TABLE_NAME .
@@ -59,7 +59,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param SearchCriteria|null $searchCriteria
+     * @param SearchCriteria $searchCriteria
      * @return Generator
      * @throws InvalidFilterConditionException
      * @throws InvalidFilterParameterException

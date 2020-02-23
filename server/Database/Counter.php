@@ -24,7 +24,7 @@ class Counter
      * @return int
      * @throws InvalidFilterConditionException
      */
-    public function count(string $table, SearchCriteria $searchCriteria = null): int
+    public function count(string $table, ?SearchCriteria $searchCriteria): int
     {
         $query = 'SELECT COUNT(*) FROM ' . $table;
         $parameterValue = null;

@@ -18,7 +18,7 @@ class NotificationRepository extends AbstractRepository
      */
     protected function hydrateModel($data): AbstractModel
     {
-        $notification = new Notification($data[static::ID_NAME]);
+        $notification = new Notification((int) $data[static::ID_NAME]);
         $notification->setEndpoint($data['endpoint'])
             ->setMessage($data['message']);
         return $notification;

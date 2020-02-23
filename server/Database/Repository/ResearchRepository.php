@@ -18,7 +18,7 @@ class ResearchRepository extends AbstractRepository
      */
     protected function hydrateModel($data): AbstractModel
     {
-        $research = new Research($data[static::ID_NAME]);
+        $research = new Research((int) $data[static::ID_NAME]);
         $research->setEndpoint($data['endpoint'])
             ->setLocation($data['location'])
             ->setLocationParameters($data['locationParameters'])
