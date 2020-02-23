@@ -118,11 +118,10 @@ abstract class AbstractRepository
      */
     public function deleteById(int $id): void
     {
-        $stmt = $this->getDb()->prepare(
+        $this->getDb()->exec(
             'DELETE FROM ' . static::TABLE_NAME .
-            'WHERE ' . static::ID_NAME . ' = ?'
+            ' WHERE ' . static::ID_NAME . ' = ' . $id
         );
-        $stmt->execute([$id]);
     }
 
     /**

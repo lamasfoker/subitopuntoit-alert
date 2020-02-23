@@ -68,7 +68,7 @@ let Researches = {
                 cln.querySelector('.is-in-title').style.display = 'none';
             }
             cln.querySelector('.delete').addEventListener('click', () => {
-                Researches.deleteResearch(Object.assign(research.id, {endpoint}), cln);
+                Researches.deleteResearch({'id': research.id, 'endpoint': endpoint}, cln);
             });
 
             document.getElementById("researches-list").appendChild(cln);

@@ -20,7 +20,8 @@ if (
 }
 
 /** @var Research $research */
-$research = $researchRepository->getById($post['id']);
+$id = (int) $post['id'];
+$research = $researchRepository->getById($id);
 if ($research->getEndpoint() !== $post['endpoint']) {
     $response->setHttpCode(401)
         ->setMessage('ERRORE: qualcosa è andato storto nella richiesta')
@@ -28,6 +29,6 @@ if ($research->getEndpoint() !== $post['endpoint']) {
     return;
 }
 
-$researchRepository->deleteById($post['id']);
+$researchRepository->deleteById($id);
 $response->setMessage('Ricerca eliminata')
     ->send();
