@@ -22,7 +22,7 @@ class ResearchRepository extends AbstractRepository
         $research->setEndpoint($data['endpoint'])
             ->setLocation($data['location'])
             ->setLocationParameters($data['locationParameters'])
-            ->setOnlyInTitle($data['onlyInTitle']===1)
+            ->setOnlyInTitle($data['onlyInTitle']==='1')
             ->setQuery($data['query'])
             ->setLastCheck($data['lastCheck']);
         return $research;
