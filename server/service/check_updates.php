@@ -26,6 +26,7 @@ $searchCriteria = new SearchCriteria();
 $searchCriteria->setParameterName('endpoint')
     ->setCondition('eq')
     ->setOrderBy(AnnouncementRepository::ID_NAME);
+$message = 'Hai dei nuovi annunci!';
 
 /** @var Research $research */
 foreach ($researchRepository->get() as $research){
@@ -47,7 +48,7 @@ foreach ($researchRepository->get() as $research){
 
     $notification = new Notification();
     $notification->setEndpoint($endpoint)
-        ->setMessage('Hai dei nuovi annunci!');
+        ->setMessage($message);
     $notificationRepository->save($notification);
 
     $searchCriteria->setParameterValue($endpoint);
@@ -55,20 +56,20 @@ foreach ($researchRepository->get() as $research){
     $numberOfUserAnnouncementsToDelete = $numberOfUserAnnouncements - NUMBER_OF_USER_ANNOUNCEMENTS_TO_KEEP;
     $userAnnouncements = $announcementRepository->get($searchCriteria);
     for ($index = 0; $index < $numberOfUserAnnouncementsToDelete; $index++) {
-        $announcementRepository->deleteById($userAnnouncements[$index]->getId());
+        $announcementRepository->deleteById($userAnnouncements->current()->getId());
+        $userAnnouncements->next();
     }
 }
 
-try {
-    /** @var Notification $notification */
-    foreach ($notificationRepository->get() as $notification) {
-        $sender->send($notification);
-        $notificationRepository->deleteById($notification->getId());
-    }
-    $sender->flushReports();
-} catch (ErrorException $e) {
-    $notificationRepository->delete();
+$searchCriteria->setParameterName('message')
+    ->setCondition('eq')
+    ->setParameterValue($message);
+/** @var Notification $notification */
+foreach ($notificationRepository->get($searchCriteria) as $notification) {
+    $sender->send($notification);
+    $notificationRepository->deleteById($notification->getId());
 }
+$sender->flushReports();
 
 function get_today_date(): string
 {
