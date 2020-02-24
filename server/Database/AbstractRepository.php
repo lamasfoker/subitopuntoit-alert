@@ -94,20 +94,22 @@ abstract class AbstractRepository
      */
     public function save(AbstractModel $model): void
     {
-        $columns = static::COLUMNS_NAME;
-        foreach ($columns as $key => $value){
-            $columns[$key]  = '?';
-        }
         $parameters = $this->dryModel($model);
         if ($model->getId()) {
+            $conditions = array_map(function ($name) {
+                return $name . '=?';
+            }, static::COLUMNS_NAME);
             $query = 'UPDATE ' . static::TABLE_NAME .
-                ' SET ' . implode('=?, ', static::COLUMNS_NAME) . '=?' .
-                ' WHERE id=?';
+                ' SET ' . implode(', ', $conditions) .
+                ' WHERE ' . static::ID_NAME . '=?';
             $parameters[] = $model->getId();
         } else {
+            $conditions = array_map(function ($value) {
+                return '?';
+            }, static::COLUMNS_NAME);
             $query = 'INSERT INTO ' . static::TABLE_NAME .
                 ' (' . implode(', ', static::COLUMNS_NAME) . ') ' .
-                'VALUES (' . implode(', ', $columns) . ')';
+                'VALUES (' . implode(', ', $conditions) . ')';
         }
         $stmt = $this->getDb()->prepare($query);
         $stmt->execute($parameters);
